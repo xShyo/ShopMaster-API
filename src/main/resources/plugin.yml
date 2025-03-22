@@ -1,0 +1,11 @@
+name: ShopMaster
+version: '${project.version}'
+main: xshyo.us.shopMaster.ShopMaster
+author: xShyo_
+website: docs.xshyo.us
+softdepend:
+  - TokenManager
+  - PlayerPoints
+  - Vault
+  - PlaceholderAPI
+api-version: '1.16'

@@ -1,0 +1,59 @@
+config:
+
+  gui:
+
+    buttons:
+      buy: "LEFT" # Opciones: LEFT, RIGHT, SHIFT_LEFT, SHIFT_RIGHT, MIDDLE
+      sell: "RIGHT"
+
+    purchase-confirmation:
+      enabled: true
+
+    truncate-titles: true  # Set to true to enable truncation
+    max-title-length: 37    # Maximum title length before truncation
+
+    black-list:
+      world:
+        - ExampleWorld
+      gameModes:
+        - ADVENTURE
+        - CREATIVE
+        - SPECTATOR
+
+  command:
+
+    admin:
+      # Enable or disable the base command, this requires a server restart.
+      enabled: true
+      #Base command name, requires a server restart
+      name: adminshop
+      #Aliases for the command
+      aliases:
+        - jashop
+
+    shop:
+      enabled: true
+      need-permissions: true
+      permission: shopmaster.open
+      name: shop
+      aliases: []
+
+    sell:
+      enabled: true  # Asegúrate de que el plugin soporte esta opción
+      need-permissions: true
+      permission: shopmaster.sell
+      name: sell
+      aliases: []
+      subcommands:
+        all:
+          enabled: true
+          need-permissions: true
+          permission: shopmaster.sell.all
+        hand:
+          enabled: true
+          need-permissions: true
+          permission: shopmaster.sell.hand
+
+
+
+file-version: 1

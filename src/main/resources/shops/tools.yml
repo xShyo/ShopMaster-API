@@ -1,0 +1,177 @@
+tools:
+
+  enable: true
+  title: '&8☀ Tienda | &lTOOLS'
+  size: 54
+
+  category:
+    material: IRON_PICKAXE
+    slot: 10
+    amount: 1
+    model_data: 0
+    display_name: '&cCategoria Tools'
+    glowing: false
+    item_flags:
+      - HIDE_ATTRIBUTES
+    lore:
+      - "&8ᴄᴀᴛᴇɢᴏʀɪᴇs"
+      - ""
+      - "&8 ● &fEsta es una tienda categoria tools"
+      - ""
+      - "&e► Click to open the menu!"
+
+
+  buttons: []
+
+  items:
+    # Ejemplo de item encantado
+    1:
+      slot: "10"
+      page: 1
+      buyPrice: 5000
+      sellPrice: 2500
+      item:
+        material: DIAMOND_SWORD
+        quantity: 1
+        name: "&6Espada Legendaria"
+        lore:
+          - "&7Una espada forjada por los"
+          - "&7dioses del servidor"
+        enchantments:
+          DAMAGE_ALL: 5
+          FIRE_ASPECT: 2
+          KNOCKBACK: 2
+
+    # Ejemplo de poción personalizada
+    2:
+      slot: "12"
+      page: 1
+      buyPrice: 1000
+      sellPrice: 500
+      item:
+        material: POTION
+        quantity: 1
+        name: "&dPoción de Curación Mejorada"
+        lore:
+          - "&7Poción que cura y regenera"
+        potion:
+          type: INSTANT_HEAL
+          extended: false
+          upgraded: true
+          custom_effects:
+            1:
+              type: REGENERATION
+              duration: 200
+              amplifier: 1
+
+    # Ejemplo de banner personalizado
+    3:
+      slot: "14"
+      page: 1
+      buyPrice: 2000
+      sellPrice: 1000
+      item:
+        material: WHITE_BANNER
+        quantity: 1
+        name: "&eBanner del Gremio"
+        banner:
+          base_color: BLUE
+          patterns:
+            1:
+              pattern: CIRCLE_MIDDLE
+              color: WHITE
+            2:
+              pattern: BORDER
+              color: RED
+
+    # Ejemplo de fuego artificial personalizado
+    4:
+      slot: "16"
+      page: 1
+      buyPrice: 1500
+      sellPrice: 750
+      item:
+        material: FIREWORK_ROCKET
+        quantity: 5
+        name: "&cFuegos Artificiales Celebración"
+        firework:
+          power: 3
+          effects:
+            1:
+              type: BALL_LARGE
+              flicker: true
+              trail: true
+              colors:
+                - "255,0,0"    # Rojo
+                - "0,0,255"    # Azul
+              fade_colors:
+                - "255,255,255"  # Blanco
+
+    5:
+      slot: 19
+      page: 1
+      buyPrice: 500
+      sellPrice: 250
+      item:
+        material: AXOLOTL_BUCKET
+        quantity: 1
+        name: "&b&lAjolote Azul"
+        lore:
+          - "&7¡Ajolote azul!"
+          - "&7¡Variante rara!"
+        axolotl:
+          variant: BLUE
+
+    6:
+      slot: 21
+      page: 1
+      buyPrice: 80
+      sellPrice: 40
+      item:
+        material: TIPPED_ARROW
+        quantity: 16
+        name: "&2&lFlecha de Veneno"
+        lore:
+          - "&7Flecha con veneno prolongado"
+        arrow_potion:
+          type: POISON
+          extended: true
+          upgraded: false
+
+    7:
+      slot: 23
+      page: 1
+      buyPrice: 300
+      sellPrice: 150
+      item:
+        material: CROSSBOW
+        quantity: 1
+        name: "&c&lBallesta Mortal"
+        lore:
+          - "&7Ballesta precargada con"
+          - "&7flecha de daño instantáneo"
+        enchantments:
+          QUICK_CHARGE: 3
+        loaded_projectiles:
+          1:
+            material: TIPPED_ARROW
+            quantity: 1
+            potion:
+              type: INSTANT_DAMAGE
+              extended: false
+              upgraded: true
+
+    8:
+      slot: 25
+      page: 1
+      buyPrice: 300
+      sellPrice: 150
+      item:
+        material: PLAYER_HEAD
+        skin: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTY0ZGRmZTlhNTMxOWNmZTgxY2U4NTZjYTJmYjNiODQ5NWQ3MzVkODMzN2IwMTBiNjk1YjQ2MmU2ZGRmNjk5OSJ9fX0=
+        quantity: 1
+        name: "&8Player Head (Heart)"
+        lore: []
+
+
+file-version: 1

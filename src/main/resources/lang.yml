@@ -1,0 +1,66 @@
+MESSAGES:
+  # Placeholders
+  PLACEHOLDER:
+    SECONDS: s
+    MINUTES: m
+    HOURS: h
+    DAYS: d
+    SEPARATOR: ' '
+
+  # Gui
+  GUI:
+    PURCHASE:
+      INVALID: "&cError: Currency management is not configured correctly."
+      ERROR: "&cError occurred during purchase. Please try again later."
+      NOT_ENOUGH: "&cNo tienes {1} para comprar este articulo"
+      SUCCESS: "&aCompra exitosa! Has comprado {1} {2} por {3}"
+      NO_SPACE: "No tienes suficiente espacio para comprar esto."
+
+  # Commands
+  COMMANDS:
+    # Disable in world
+    NO_USAGE_IN_WORLD: "&cYou can't use this in this world."
+
+    #No Perms
+    NOPERMS: "&cYou do not have permission {2} to use this command."
+    NOPERMS_LOGGER: "&cUser {1} does not have permission {2}"
+
+    #Help
+    NO_SUCH_COMMAND: "No such command. please type /{admin} help for more info"
+    HELP_CONSOLE: |-
+      &7
+      &e&l BASIC CONSOLE COMMANDS
+      &7
+      &8 » &e/{admin} reload &8- &fReloads the configuration
+      &8 » &e/{admin} help &8- &fView help message
+      &8 » &e/{admin} remove [player] <value>  &8- &fRemove a player's reward
+      &8 » &e/{admin} removeall [player] &8- &fRemove all rewards for a player
+      &7
+    HELP:
+      - "&e&lBASIC COMMANDS"
+      - "&7"
+      - "&8 » &e/{shortenedcmd} &8- &fOpen rewards menu"
+      - "&7"
+      - "&8 » &e/{cmd} reload &8- &fReload the configuration"
+      - "&8 » &e/{cmd} help &8- &fView help message"
+      - "&8 » &e/{cmd} remove [type] [player] <value>  &8- &fRemove a player's reward"
+      - "&8 » &e/{cmd} removeall [player] &8- &fRemove all rewards for a player"
+    HELP_USAGE: "&cCorrect usage: /{cmd} help (page)"
+
+    # reload
+    RELOAD: '&aAll YML files have been successfully reset.'
+    RELOAD_COOLDOWN: 'You must wait {1} before reloading the configuration.'
+
+    SHOP:
+      OPEN:
+        SUCCESS: "&aAbriendo la tienda: &6{1}"
+        NOT_FOUND: "&cLa tienda &6{1} &cno existe."
+        PLAYER_ONLY: "&cSolo los jugadores pueden abrir tiendas para sí mismos."
+        OTHER_SUCCESS: "&aHas abierto la tienda &6{1} &apara &6{2}&a."
+        PLAYER_OFFLINE: "&cEl jugador &6{1} &cno está en línea."
+        USAGE: "Uso correcto: /shop [tienda] [jugador]"
+
+
+file-version: 1
+
+

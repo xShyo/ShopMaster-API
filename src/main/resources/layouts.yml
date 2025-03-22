@@ -1,0 +1,486 @@
+inventories:
+  #This is the main menu, where you will be able to see all the available categories
+  main:
+    # The title of the inventory.
+    title: "&8☀ Main Menu Shop"
+
+    # The size of the inventory.
+    # Must be a multiple of 9. (9, 18, 27, 36, 45, 54)
+    size: 54
+
+    # Here you will find the fixed buttons (You can deactivate them if you don't need them)
+    # In this section you will not be able to add new items to the menu, only edit the current ones.
+    # If you want to add more items use the custom-items section:
+    buttons:
+      close:
+        enabled: true
+        material: BOOK
+        slot: 49
+        amount: 1
+        model_data: 0
+        display_name: '&cClose'
+        glowing: false
+        item_flags:
+        - HIDE_ATTRIBUTES
+        lore: []
+
+    # In this section you can add more items to the inventory.
+    # Wiki: https://xshyotsus.gitbook.io/plugins-wiki/free-plugins/therewards/layouts#custom-items
+    custom-items: []
+  #  back:
+  #    material: ARROW
+  #    amount: 1
+  #    display_name: '&aBack'
+  #    lore: [ ]
+  #    slot: 39
+  #    actions:
+  #      - "[command] dm open Menu {player}"
+
+  # This is the menu will show the category (It has a page system)
+  categories:
+    # The title of the inventory. (This title will only work if you leave your category title empty.)
+    title: '&8☀ Tienda | &lGENERAL' #  [{page} / {totalpages}]'
+    # The size of the inventory.  (This size will only work if you leave the size of your category empty.)
+    # Must be a multiple of 9. (9, 18, 27, 36, 45, 54)
+    size: 54
+
+
+    items:
+
+      loreFormat:
+        # Formato cuando el ítem se puede comprar y vender
+        both:
+          - ""
+          - "&8 ● &fPrecio de compra: #FBD008{buy}"
+          - "&8 ● &fPrecio de venta: #FBD008{sell}"
+          - ""
+          - "&e« Click izquierdo para comprar"
+          - "&e» Click derecho para vender"
+
+        # Formato cuando solo se puede vender
+        only-sell:
+          - ""
+          - "&8 ● &fPrecio de venta: #FBD008{sell}"
+          - ""
+          - "&e» Click derecho para vender"
+
+        # Formato cuando solo se puede comprar
+        only-buy:
+          - ""
+          - "&8 ● &fPrecio de compra: #FBD008{buy}"
+          - ""
+          - "&e« Click izquierdo para comprar"
+
+
+    # Here you find the fixed buttons (You can disable it if you don't need it)
+    # In this section you will not be able to add new items to the menu, only edit the current ones.
+    # If you want to add more items use the custom-items section:
+    buttons:
+      #Recuerde que cada botón puede personalizarse en su propia categoría.
+      next:
+        enabled: true
+        material: ARROW
+        slot: 50
+        amount: 1
+        model_data: 0
+        display_name: '&cNext page'
+        glowing: false
+        item_flags:
+        - HIDE_ATTRIBUTES
+        lore: []
+
+      previous:
+        enabled: true
+        material: ARROW
+        slot: 48
+        amount: 1
+        model_data: 0
+        display_name: '&cPrevious page'
+        glowing: false
+        item_flags:
+        - HIDE_ATTRIBUTES
+        lore: []
+
+      close:
+        enabled: true
+        material: BOOK
+        slot: 49
+        amount: 1
+        model_data: 0
+        display_name: '&cClose'
+        glowing: false
+        item_flags:
+        - HIDE_ATTRIBUTES
+        lore: []
+
+      back:
+        enabled: true
+        material: ARROW
+        slot: 46
+        amount: 1
+        model_data: 0
+        display_name: '&cBack'
+        glowing: false
+        item_flags:
+        - HIDE_ATTRIBUTES
+        lore: []
+
+      indicator:
+        enabled: true
+        material: NETHER_STAR
+        slot: 4
+        amount: 1
+        model_data: 0
+        display_name: '&eCurrent'
+        glowing: false
+        item_flags:
+        - HIDE_ATTRIBUTES
+        lore: []
+
+    # In this section you can add more items to the inventory.
+    # Wiki: https://xshyotsus.gitbook.io/plugins-wiki/free-plugins/therewards/layouts#custom-items
+    custom-items: []
+  #  back:
+  #    material: ARROW
+  #    amount: 1
+  #    display_name: '&aBack'
+  #    lore: [ ]
+  #    slot: 39
+  #    actions:
+  #      - "[command] dm open Menu {player}"
+
+  # Esta es el menu que se mostrará para editar tu compra
+  purchase-confirmation:
+    # The title of the inventory.
+    title: '&8☀ Confirmar Compra: &f{item}'
+    # The size of the inventory.
+    # Must be a multiple of 9. (9, 18, 27, 36, 45, 54)
+    size: 45
+
+    #Esta es la categoria de items que se mostraran en el menú
+    items:
+
+      # Este es el display del item que se comprará (Solo puedes habicar la posicion)
+      display:
+        # Slot en el que se mostrara el item que se desea comprar
+        slot: 10
+
+      # En esta seccion puedes crear multiples items donde podras aumentar o disminuir la cantidad que desea compra
+      quantity-controls:
+        # Para que funcione correctamente debe saber:
+        #           set_amount: # Es la cantidad que se incrementara / disminuira al item
+        # Use + para aumentar
+        # Use - para disminuir
+        # No use ningun signo para establecer la cantidad.
+
+        decrease_small:
+          slot: 21
+          material: RED_STAINED_GLASS_PANE
+          amount: 1
+          model_data: 0
+          display_name: '#FB0808Remover 1'
+          glowing: false
+          set_amount: -1
+          item_flags:
+          - HIDE_ATTRIBUTES
+          lore:
+          - '&8AJustes de Compra'
+          - ''
+          - '&8 ● &fEsto eliminará #FB08081'
+          - '   &fitems de la cantidad'
+          - ''
+          - '#FB0808► Click para configurar.'
+
+        decrease_medium:
+          slot: 22
+          material: RED_STAINED_GLASS_PANE
+          amount: 5
+          model_data: 0
+          display_name: '#FB0808Remover 5'
+          glowing: false
+          set_amount: -5
+          item_flags:
+          - HIDE_ATTRIBUTES
+          lore:
+          - '&8AJustes de Compra'
+          - ''
+          - '&8 ● &fEsto eliminará #FB08085'
+          - '   &fitems de la cantidad'
+          - ''
+          - '#FB0808► Click para configurar.'
+
+        decrease_big:
+          slot: 23
+          material: RED_STAINED_GLASS_PANE
+          amount: 10
+          model_data: 0
+          display_name: '#FB0808Remover 10'
+          glowing: false
+          set_amount: -10
+          item_flags:
+          - HIDE_ATTRIBUTES
+          lore:
+          - '&8AJustes de Compra'
+          - ''
+          - '&8 ● &fEsto eliminará #FB08085'
+          - '   &fitems de la cantidad'
+          - ''
+          - '#FB0808► Click para configurar.'
+
+        decrease:
+          slot: 25
+          material: RED_STAINED_GLASS
+          amount: 1
+          model_data: 0
+          display_name: '#FB0808Set 1'
+          glowing: false
+          set_amount: 1
+          item_flags:
+          - HIDE_ATTRIBUTES
+          lore:
+          - '&8AJustes de Compra'
+          - ''
+          - '&8 ● &fEsto eliminará #FB08085'
+          - '   &fitems de la cantidad'
+          - ''
+          - '#FB0808► Click para configurar.'
+
+
+        increase_small:
+          slot: 12
+          material: LIME_STAINED_GLASS_PANE
+          amount: 1
+          model_data: 0
+          display_name: '#FBD008Añadir 1'
+          glowing: false
+          set_amount: +1
+          item_flags:
+          - HIDE_ATTRIBUTES
+          lore:
+          - '&8AJustes de Compra'
+          - ''
+          - '&8 ● &fEsto agregará #FBD0081'
+          - '   &fitems a la cantidad'
+          - ''
+          - '#FBD008► Click para configurar.'
+
+        increase_medium:
+          slot: 13
+          material: LIME_STAINED_GLASS_PANE
+          amount: 5
+          model_data: 0
+          display_name: '#FBD008Añadir 5'
+          glowing: false
+          set_amount: +5
+          item_flags:
+          - HIDE_ATTRIBUTES
+          lore:
+          - '&8AJustes de Compra'
+          - ''
+          - '&8 ● &fEsto agregará #FBD0085'
+          - '   &fitems a la cantidad'
+          - ''
+          - '#FBD008► Click para configurar.'
+
+        increase_big:
+          slot: 14
+          material: LIME_STAINED_GLASS_PANE
+          amount: 10
+          model_data: 0
+          display_name: '#FBD008Añadir 10'
+          glowing: false
+          set_amount: +10
+          item_flags:
+          - HIDE_ATTRIBUTES
+          lore:
+          - '&8AJustes de Compra'
+          - ''
+          - '&8 ● &fEsto agregará #FBD0085'
+          - '   &fitems a la cantidad'
+          - ''
+          - '#FBD008► Click para configurar.'
+
+        increase:
+          slot: 16
+          material: LIME_STAINED_GLASS
+          amount: 64
+          model_data: 0
+          display_name: '#FBD008Set 64'
+          glowing: false
+          set_amount: 64
+          item_flags:
+          - HIDE_ATTRIBUTES
+          lore:
+          - '&8AJustes de Compra'
+          - ''
+          - '&8 ● &fEsto agregará #FBD0085'
+          - '   &fitems a la cantidad'
+          - ''
+          - '#FBD008► Click para configurar.'
+
+
+
+      stack_selector:
+        slot: 28
+        material: ENDER_CHEST
+        amount: 1
+        model_data: 0
+        display_name: '#FBD008Seleccionar Stacks'
+        glowing: true
+        item_flags:
+        - HIDE_ATTRIBUTES
+        lore:
+        - '&8AJustes de Compra'
+        - ''
+        - '&8 ● &fAbre un menú para seleccionar'
+        - '   &fentre 1 a 12 stacks completos'
+        - ''
+        - '#FBD008► Click para abrir selector.'
+
+      confirm:
+        slot: 41
+        material: LIME_CONCRETE
+        amount: 1
+        model_data: 0
+        display_name: '#FBD008Confirmar Compra'
+        glowing: false
+        item_flags:
+        - HIDE_ATTRIBUTES
+        lore:
+        - '&8AJustes de Compra'
+        - ''
+        - '&8 ● &fSi todo esta correctamente'
+        - '   &fconfigurado haga click para comprar'
+        - ''
+        - '&a► Click para comprar.'
+
+
+      information:
+        slot: 4
+        material: NETHER_STAR
+        amount: 1
+        model_data: 0
+        display_name: '#FBD008Information'
+        glowing: false
+        item_flags:
+        - HIDE_ATTRIBUTES
+        lore:
+        - '&8Información'
+        - ''
+        - '&8 ● &f{displayName}'
+        - '&8 ● &f{material}'
+        - '&8 ● &f{price}'
+        - ''
+        - '&a► Click para comprar.'
+
+    # Here you will find the fixed buttons (You can deactivate them if you don't need them)
+    # In this section you will not be able to add new items to the menu, only edit the current ones.
+    # If you want to add more items use the custom-items section:
+    buttons:
+      close:
+        enabled: true
+        material: BOOK
+        slot: 40
+        amount: 1
+        model_data: 0
+        display_name: '&cClose'
+        glowing: false
+        item_flags:
+        - HIDE_ATTRIBUTES
+        lore: []
+      back:
+        enabled: true
+        material: ARROW
+        slot: 39
+        amount: 1
+        model_data: 0
+        display_name: '&cRegresar'
+        glowing: false
+        item_flags:
+        - HIDE_ATTRIBUTES
+        lore: []
+
+    custom-items: []
+  #  back:
+  #    material: ARROW
+  #    amount: 1
+  #    display_name: '&aBack'
+  #    lore: [ ]
+  #    slot: 39
+  #    actions:
+  #      - "[command] dm open Menu {player}"
+
+
+  stack-selector:
+    # The title of the inventory.
+    title: '&8☀ Seleccionar Cantidad de Stacks'
+    # The size of the inventory.
+    # Must be a multiple of 9. (9, 18, 27, 36, 45, 54)
+    size: 54
+
+    #Esta es la categoria de items que se mostraran en el menú
+    items:
+
+      #Esta es la seccion de items que el jugador podra comprar por stack
+      stack-controls:
+        # Stack options (1-12)
+        stack_1:
+          slot: 10
+          material: GRAY_STAINED_GLASS_PANE
+          amount: 1
+          model_data: 0
+          display_name: '#FBD0081 Stack'
+          glowing: false
+          item_flags:
+          - HIDE_ATTRIBUTES
+          lore:
+          - '&8Selector de Stacks'
+          - ''
+          - '&8 ● &fSeleccionar #FBD0081 stack'
+          - '   &f(64 items)'
+          - ''
+          - '#FBD008► Click para seleccionar.'
+
+
+    # Here you find the fixed buttons (You can disable it if you don't need it)
+    # In this section you will not be able to add new items to the menu, only edit the current ones.
+    # If you want to add more items use the custom-items section:
+    buttons:
+
+      close:
+        enabled: true
+        material: BOOK
+        slot: 49
+        amount: 1
+        model_data: 0
+        display_name: '&cClose'
+        glowing: false
+        item_flags:
+        - HIDE_ATTRIBUTES
+        lore: []
+
+      back:
+        enabled: true
+        material: ARROW
+        slot: 46
+        amount: 1
+        model_data: 0
+        display_name: '&cBack'
+        glowing: false
+        item_flags:
+        - HIDE_ATTRIBUTES
+        lore: []
+
+
+    custom-items: []
+  #  back:
+  #    material: ARROW
+  #    amount: 1
+  #    display_name: '&aBack'
+  #    lore: [ ]
+  #    slot: 39
+  #    actions:
+  #      - "[command] dm open Menu {player}"
+
+file-version: 1
+
