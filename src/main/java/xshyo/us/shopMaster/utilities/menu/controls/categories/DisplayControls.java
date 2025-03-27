@@ -2,7 +2,6 @@ package xshyo.us.shopMaster.utilities.menu.controls.categories;
 
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import lombok.AllArgsConstructor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -10,10 +9,8 @@ import xshyo.us.shopMaster.ShopMaster;
 import xshyo.us.shopMaster.shop.data.ShopItem;
 import xshyo.us.shopMaster.utilities.menu.Controls;
 import xshyo.us.theAPI.utilities.Utils;
-import xshyo.us.theAPI.utilities.item.ItemBuilder;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 

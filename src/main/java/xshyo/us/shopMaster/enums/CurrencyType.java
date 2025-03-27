@@ -8,6 +8,7 @@ import java.util.Locale;
 public enum CurrencyType {
     VAULT("money"),
     LEVEL("levels"),
+    EXP_POINTS("xp-points"),
     PLAYER_POINTS("player-points"),
     TOKEN_MANAGER("token-manager"),
     BEAST_TOKENS("beast-tokens"),

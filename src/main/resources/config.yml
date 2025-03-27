@@ -38,6 +38,7 @@ config:
       aliases: []
 
       enable-summary: true
+
       summary:
         show-total-items: true
         show-total-earnings: true

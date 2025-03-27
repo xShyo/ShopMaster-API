@@ -10,7 +10,7 @@ import java.util.List;
 
 @AllArgsConstructor
 public class ArgReload implements CommandArg {
-    private static final String PERMISSION_RELOAD = "theitemskin.reload";
+    private static final String PERMISSION_RELOAD = "shopmaster.reload";
 
     private final ShopMaster shopMaster = ShopMaster.getInstance();
 

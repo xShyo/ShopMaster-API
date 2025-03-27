@@ -6,10 +6,7 @@ import org.black_ixx.playerpoints.PlayerPoints;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import xshyo.us.shopMaster.ShopMaster;
-import xshyo.us.shopMaster.economys.BeastTokensHook;
-import xshyo.us.shopMaster.economys.PlayerPointsHook;
-import xshyo.us.shopMaster.economys.TokenManagerHook;
-import xshyo.us.shopMaster.economys.VaultHook;
+import xshyo.us.shopMaster.economys.*;
 import xshyo.us.shopMaster.enums.CurrencyType;
 import xshyo.us.theAPI.utilities.Utils;
 import java.util.UUID;
@@ -128,6 +125,28 @@ public abstract class CurrencyManager {
                 }
                 Bukkit.getConsoleSender().sendMessage(Utils.translate("&e[ShopMaster] BeastTokens is not available! Changing cost type to " + costType.name() + "' type!"));
             }
+        }else if (costType == CurrencyType.LEVEL) {
+            if (Bukkit.getPluginManager().isPluginEnabled("L")) {
+                try {
+                    BeastTokensAPI.getTokensManager();
+                    Bukkit.getConsoleSender().sendMessage(Utils.translate("&a[ShopMaster] Currency Type 'BEAST_TOKENS' has been enabled!"));
+
+                } catch (Throwable e) {
+                    costType = defaultCostType;
+                    if (costType == null || costType == CurrencyType.DISABLED) {
+                        Bukkit.getConsoleSender().sendMessage(Utils.translate("&e[ShopMaster] BeastTokens is not available! Disabling economy support.."));
+                        return null;
+                    }
+                    Bukkit.getConsoleSender().sendMessage(Utils.translate("&e[ShopMaster] BeastTokens is not available! Changing cost type to " + costType.name() + "' type!"));
+                }
+            } else {
+                costType = defaultCostType;
+                if (costType == null || costType == CurrencyType.DISABLED) {
+                    Bukkit.getConsoleSender().sendMessage(Utils.translate("&e[ShopMaster] BeastTokens is not available! Disabling economy support.."));
+                    return null;
+                }
+                Bukkit.getConsoleSender().sendMessage(Utils.translate("&e[ShopMaster] BeastTokens is not available! Changing cost type to " + costType.name() + "' type!"));
+            }
         }
         switch (costType) {
             case PLAYER_POINTS:
@@ -139,7 +158,9 @@ public abstract class CurrencyManager {
             case BEAST_TOKENS:
                 return new BeastTokensHook();
             case LEVEL:
-//                return new LevelsHook();
+                return new LevelsHook();
+            case EXP_POINTS:
+                return new ExpPointsHook();
         }
         return null;
     }
