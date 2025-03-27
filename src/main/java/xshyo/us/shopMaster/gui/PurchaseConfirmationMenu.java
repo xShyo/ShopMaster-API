@@ -1,5 +1,6 @@
 package xshyo.us.shopMaster.gui;
 
+import dev.dejvokep.boostedyaml.block.implementation.Section;
 import dev.triumphteam.gui.guis.Gui;
 import dev.triumphteam.gui.guis.GuiItem;
 import net.kyori.adventure.text.Component;
@@ -18,6 +19,7 @@ import xshyo.us.shopMaster.utilities.menu.controls.confirm.StackSelectorControls
 import xshyo.us.shopMaster.utilities.menu.controls.stacks.BackControls;
 import xshyo.us.shopMaster.utilities.menu.controls.stacks.CloseControls;
 import xshyo.us.theAPI.utilities.Utils;
+import xshyo.us.theAPI.utilities.item.ItemBuilder;
 
 import java.util.*;
 
@@ -43,16 +45,108 @@ public class PurchaseConfirmationMenu {
         this.pricePerUnit = item.getBuyPrice();
         this.plugin = ShopMaster.getInstance();
         this.confirmationMenu = initializeGui();
-
     }
+
+    private void setupDirectQuantityControls() {
+        Section quantityControlsSection = plugin.getLayouts().getSection(MENU_PATH + ".items.quantity-controls");
+
+        if (quantityControlsSection == null) return;
+
+        for (Object key : quantityControlsSection.getKeys()) {
+            String controlKey = key.toString();
+            Section controlSection = quantityControlsSection.getSection(controlKey);
+            if (controlSection == null) continue;
+
+            int slot = controlSection.getInt("slot", 0);
+            String setAmountStr = controlSection.getString("set_amount", "0");
+
+            // Determinar si es un cambio absoluto o relativo
+            boolean isAbsolute = !(setAmountStr.startsWith("+") || setAmountStr.startsWith("-"));
+            int changeValue = Integer.parseInt(setAmountStr.startsWith("+") ? setAmountStr.substring(1) : setAmountStr);
+
+            int maxStackSize = item.createItemStack().getMaxStackSize();
+
+            boolean shouldDisplay = isValidQuantityChange(changeValue, isAbsolute, maxStackSize);
+            if (shouldDisplay) {
+                Material material = Material.valueOf(controlSection.getString("material", "STONE"));
+                int amount = controlSection.getInt("amount", 1);
+                String displayName = controlSection.getString("display_name", "");
+
+                ItemStack controlItem = new ItemBuilder(material)
+                        .setAmount(amount)
+                        .setName(Utils.translate(displayName))
+                        .build();
+
+                final int finalChangeValue = changeValue;
+                final boolean finalIsAbsolute = isAbsolute;
+
+                reservedSlots.add(slot);
+                confirmationMenu.setItem(slot, new GuiItem(controlItem, event -> {
+                    event.setCancelled(true);
+                    updateQuantityDirectly(finalChangeValue, finalIsAbsolute);
+                }));
+            } else {
+                // Si no se debe mostrar, eliminar el ítem del slot
+                confirmationMenu.removeItem(slot);
+                reservedSlots.remove(slot);
+            }
+        }
+    }
+
+
+    private boolean isValidQuantityChange(int changeValue, boolean isAbsolute, int maxStackSize) {
+        // Si el stack máximo es 1, no mostrar ningún botón de cambio de cantidad
+        if (maxStackSize <= 1) {
+            return false;
+        }
+
+        if (isAbsolute) {
+            // Para valores absolutos, verificar que estén dentro del rango del stack máximo
+            return changeValue >= 1 && changeValue <= maxStackSize;
+        } else {
+            // Para cambios relativos, verificar que el resultado esté dentro del rango del stack máximo
+            int resultingQuantity = quantity + changeValue;
+            return resultingQuantity >= 1 && resultingQuantity <= maxStackSize;
+        }
+    }
+
+
+    private void updateQuantityDirectly(int changeValue, boolean isAbsolute) {
+        int newQuantity;
+
+        if (isAbsolute) {
+            newQuantity = changeValue;
+        } else {
+            newQuantity = quantity + changeValue;
+        }
+
+        // Asegurar que la nueva cantidad esté dentro del rango válido
+        newQuantity = Math.max(1, Math.min(64, newQuantity));
+
+        // Actualizar la cantidad
+        quantity = newQuantity;
+
+        // Debug log
+        System.out.println("Updating quantity to: " + quantity);
+
+        // Actualizar los ítems del menú
+        updateItemsWithQuantity();
+    }
+
 
     private void updateItemsWithQuantity() {
 
-        ItemStack itemdisplay = item.createItemStack();
+        setupDirectQuantityControls();
+
+
+        int displaySlot = plugin.getLayouts().getInt(MENU_PATH + ".items.display.slot");
+        ItemStack itemdisplay = new ItemStack(item.createItemStack());
         itemdisplay.setAmount(quantity);
-        confirmationMenu.updateItem(plugin.getLayouts().getInt(MENU_PATH + ".items.display.slot"),
-                new GuiItem(itemdisplay));
-        reservedSlots.add(plugin.getLayouts().getInt(MENU_PATH + ".items.display.slot"));
+
+        GuiItem guiItem = new GuiItem(itemdisplay, event -> event.setCancelled(true));
+        confirmationMenu.updateItem(displaySlot, guiItem);
+
+        reservedSlots.add(displaySlot);
 
 
         // Actualizar confirm item
@@ -98,6 +192,7 @@ public class PurchaseConfirmationMenu {
             }
         });
 
+
         // Actualizar la GUI
         confirmationMenu.update();
     }
@@ -109,6 +204,9 @@ public class PurchaseConfirmationMenu {
         for (int i = 0; i < confirmationMenu.getRows() * 9; i++) {
             confirmationMenu.removeItem(i);
         }
+
+        setupDirectQuantityControls();
+
 
         // Configurar botones de cierre
         PluginUtils.loadSingleButton(MENU_PATH + ".buttons.close", plugin.getLayouts(),

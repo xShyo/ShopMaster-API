@@ -52,6 +52,40 @@ MESSAGES:
     RELOAD_COOLDOWN: 'You must wait {1} before reloading the configuration.'
 
     SHOP:
+      SELL:
+        USAGE: "&cUso: /sell <hand|all>"
+        DISABLED: "&cEste comando está desactivado."
+        HAND:
+          DISABLED: "&cEste subcomando está desactivado."
+          EMPTY: "&cNo tienes permiso para vender el ítem en tu mano."
+          SUCCESS: "&aHas vendido &e{1}x {2} &apor &e${3}"
+          NOT_SELLABLE: "&cEste ítem no se puede vender."
+          ERROR: "&cHa ocurrido un error al vender el ítem."
+          WORLD_BLACKLISTED: "&cNo puedes usar este comando en este mundo"
+          GAMEMODE_BLACKLISTED: "&cNo puedes usar este comando en tu modo de juego actual."
+          INVALID_ECONOMY: "&cLa economy del item esta incorrecta por favor avise a un administrador."
+        ALL:
+          DISABLED: "&cEste subcomando está desactivado."
+          EMPTY: "&cNo tienes permiso para vender el ítem en tu mano."
+          NO_SELLABLE_ITEMS: "&cNo tines items para vender"
+          ERROR: "&cHa ocurrido un error al vender el ítem."
+          WORLD_BLACKLISTED: "&cNo puedes usar este comando en este mundo"
+          GAMEMODE_BLACKLISTED: "&cNo puedes usar este comando en tu modo de juego actual."
+          INVALID_ECONOMY: "&cLa economy del item esta incorrecta por favor avise a un administrador."
+
+          SUMMARY_MESSAGES:
+            HEADER: "&a---------- Resumen de Venta ----------"
+            TOTAL_ITEMS: "&aHas vendido &e{total_items} &aítems"
+            TOTAL_EARNINGS: "&aPor un total de &e${total_earnings}"
+            CURRENCY_BREAKDOWN_HEADER: "&aDesglose por moneda:"
+            CURRENCY_BREAKDOWN_FORMAT: "&7- &e{currency}: ${amount}"
+            ITEM_BREAKDOWN_FORMAT: "&7- &e{amount}x {item_name}"
+            SKIPPED_ITEMS: "&e{skipped_count} &6ítems no se vendieron porque no tienen una economía válida configurada."
+            FOOTER: "&a---------------------------------------"
+
+          SIMPLE_MESSAGE: "&aHas vendido &e{total_items} &aítems por un total de &e${total_earnings}"
+
+
       OPEN:
         SUCCESS: "&aAbriendo la tienda: &6{1}"
         NOT_FOUND: "&cLa tienda &6{1} &cno existe."

@@ -9,6 +9,8 @@ import xshyo.us.shopMaster.ShopMaster;
 import xshyo.us.shopMaster.managers.SellManager;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import xshyo.us.shopMaster.superclass.AbstractCommand;
+import xshyo.us.shopMaster.utilities.PluginUtils;
+import xshyo.us.theAPI.utilities.Utils;
 
 import java.util.*;
 
@@ -36,7 +38,7 @@ public class SellCommand extends AbstractCommand {
 
         // Check if the main command is enabled
         if (!config.getBoolean("config.command.sell.enabled", true)) {
-            player.sendMessage("&cEste comando está desactivado.");
+            PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.SELL.DISABLED");
             return true;
         }
 
@@ -44,13 +46,12 @@ public class SellCommand extends AbstractCommand {
         boolean needPermission = config.getBoolean("config.command.sell.need-permissions", true);
         String mainPermission = config.getString("config.command.sell.permission", "shopmaster.sell");
 
-        if (needPermission && !player.hasPermission(mainPermission)) {
-            player.sendMessage("&cNo tienes permiso para usar este comando.");
+        if (needPermission && !PluginUtils.hasPermission(player, mainPermission)) {
             return true;
         }
 
         if (args.length == 0) {
-            player.sendMessage("&cUso: /sell <hand|all>");
+            PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.SELL.USAGE");
             return true;
         }
 
@@ -60,7 +61,7 @@ public class SellCommand extends AbstractCommand {
             case "hand":
                 // Check if hand subcommand is enabled
                 if (!config.getBoolean("config.command.sell.subcommands.hand.enabled", true)) {
-                    player.sendMessage("&cEste subcomando está desactivado.");
+                    PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.SELL.HAND.DISABLED");
                     return true;
                 }
 
@@ -68,8 +69,7 @@ public class SellCommand extends AbstractCommand {
                 boolean needHandPermission = config.getBoolean("config.command.sell.subcommands.hand.need-permissions", true);
                 String handPermission = config.getString("config.command.sell.subcommands.hand.permission", "shopmaster.sell.hand");
 
-                if (needHandPermission && !player.hasPermission(handPermission)) {
-                    player.sendMessage("&cNo tienes permiso para vender el ítem en tu mano.");
+                if (needHandPermission && !PluginUtils.hasPermission(player, handPermission)) {
                     return true;
                 }
 
@@ -79,7 +79,7 @@ public class SellCommand extends AbstractCommand {
             case "all":
                 // Check if all subcommand is enabled
                 if (!config.getBoolean("config.command.sell.subcommands.all.enabled", true)) {
-                    player.sendMessage("&cEste subcomando está desactivado.");
+                    PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.SELL.ALL.DISABLED");
                     return true;
                 }
 
@@ -87,8 +87,7 @@ public class SellCommand extends AbstractCommand {
                 boolean needAllPermission = config.getBoolean("config.command.sell.subcommands.all.need-permissions", true);
                 String allPermission = config.getString("config.command.sell.subcommands.all.permission", "shopmaster.sell.all");
 
-                if (needAllPermission && !player.hasPermission(allPermission)) {
-                    player.sendMessage("&cNo tienes permiso para vender todos los ítems.");
+                if (needAllPermission && !PluginUtils.hasPermission(player, allPermission)) {
                     return true;
                 }
 
@@ -96,7 +95,7 @@ public class SellCommand extends AbstractCommand {
                 break;
 
             default:
-                player.sendMessage("&cUso: /sell <hand|all>");
+                PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.SELL.USAGE");
                 break;
         }
 
@@ -107,7 +106,7 @@ public class SellCommand extends AbstractCommand {
         ItemStack itemInHand = player.getInventory().getItemInMainHand();
 
         if (itemInHand == null || itemInHand.getType() == Material.AIR) {
-            player.sendMessage("&cNo tienes ningún ítem en tu mano.");
+            PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.SELL.HAND.EMPTY");
             return;
         }
 
@@ -115,57 +114,34 @@ public class SellCommand extends AbstractCommand {
 
         switch (result.status()) {
             case SUCCESS:
-                player.sendMessage("&aHas vendido &e" + itemInHand.getAmount() + "x " +
-                        formatItemName(itemInHand.getType()) + " &apor &e$" + result.price());
+                PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.SELL.HAND.SUCCESS", itemInHand.getAmount(), PluginUtils.formatItemName(itemInHand.getType()), result.price());
                 player.getInventory().setItemInMainHand(null);
                 break;
+            case WORLD_BLACKLISTED:
+                PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.SELL.HAND.WORLD_BLACKLISTED");
+                break;
+            case GAMEMODE_BLACKLISTED:
+                PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.SELL.HAND.GAMEMODE_BLACKLISTED");
+                break;
             case NOT_SELLABLE:
-                player.sendMessage("&cEste ítem no se puede vender.");
+                PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.SELL.HAND.NOT_SELLABLE");
+                break;
+            case INVALID_ECONOMY:
+                PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.SELL.HAND.INVALID_ECONOMY");
                 break;
             case ERROR:
-                player.sendMessage("&cHa ocurrido un error al vender el ítem.");
+                PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.SELL.HAND.ERROR");
                 break;
+
         }
     }
 
 
     private void sellAllItems(Player player) {
         // Llamar al método optimizado en SellManager
-        SellManager.SellAllResult result = sellManager.sellAllItems(
-                player,
-                this::formatItemName
-        );
+        SellManager.SellAllResult result = sellManager.sellAllItems(player);
+        result.generateSummaryMessages(player);
 
-        // Mostrar el resumen de venta
-        List<String> messages = result.generateSummaryMessages(this::formatItemName);
-        for (String message : messages) {
-            player.sendMessage(message);
-        }
-    }
-
-
-
-    private String formatItemName(Material material) {
-        String name = material.toString();
-        name = name.replace("_", " ").toLowerCase();
-
-        // Capitalizar las palabras
-        StringBuilder formattedName = new StringBuilder();
-        boolean capitalizeNext = true;
-
-        for (char c : name.toCharArray()) {
-            if (c == ' ') {
-                capitalizeNext = true;
-                formattedName.append(c);
-            } else if (capitalizeNext) {
-                formattedName.append(Character.toUpperCase(c));
-                capitalizeNext = false;
-            } else {
-                formattedName.append(c);
-            }
-        }
-
-        return formattedName.toString();
     }
 
 

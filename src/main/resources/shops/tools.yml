@@ -75,7 +75,6 @@ tools:
         quantity: 1
         name: "&eBanner del Gremio"
         banner:
-          base_color: BLUE
           patterns:
             1:
               pattern: CIRCLE_MIDDLE

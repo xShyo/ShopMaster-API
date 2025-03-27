@@ -3,6 +3,7 @@ package xshyo.us.shopMaster.utilities;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import lombok.experimental.UtilityClass;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import xshyo.us.shopMaster.ShopMaster;
@@ -18,6 +19,30 @@ import java.util.function.Function;
 
 @UtilityClass
 public class PluginUtils {
+
+    public String formatItemName(Material material) {
+        String name = material.toString();
+        name = name.replace("_", " ").toLowerCase();
+
+        // Capitalizar las palabras
+        StringBuilder formattedName = new StringBuilder();
+        boolean capitalizeNext = true;
+
+        for (char c : name.toCharArray()) {
+            if (c == ' ') {
+                capitalizeNext = true;
+                formattedName.append(c);
+            } else if (capitalizeNext) {
+                formattedName.append(Character.toUpperCase(c));
+                capitalizeNext = false;
+            } else {
+                formattedName.append(c);
+            }
+        }
+
+        return formattedName.toString();
+    }
+
 
     public String formatTitle(String title) {
         // Get the truncation settings from config

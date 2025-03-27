@@ -12,14 +12,6 @@ config:
     truncate-titles: true  # Set to true to enable truncation
     max-title-length: 37    # Maximum title length before truncation
 
-    black-list:
-      world:
-        - ExampleWorld
-      gameModes:
-        - ADVENTURE
-        - CREATIVE
-        - SPECTATOR
-
   command:
 
     admin:
@@ -44,6 +36,24 @@ config:
       permission: shopmaster.sell
       name: sell
       aliases: []
+
+      enable-summary: true
+      summary:
+        show-total-items: true
+        show-total-earnings: true
+        show-currency-breakdown: true
+        show-item-breakdown: true
+        max-items-to-show: 5
+        show-skipped-items: true
+
+      black-list:
+        world:
+          - ExampleWorld
+        gameModes:
+          - ADVENTURE
+          - CREATIVE
+          - SPECTATOR
+
       subcommands:
         all:
           enabled: true

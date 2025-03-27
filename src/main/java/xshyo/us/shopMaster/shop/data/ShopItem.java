@@ -9,7 +9,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
-import org.bukkit.DyeColor;
 import org.bukkit.block.banner.Pattern;
 import xshyo.us.theAPI.utilities.Utils;
 import xshyo.us.theAPI.utilities.item.ItemBuilder;
@@ -37,7 +36,6 @@ public class ShopItem {
     private boolean extended;
     private boolean upgraded;
     private List<PotionEffect> customEffects;
-    private DyeColor bannerBaseColor;
     private List<Pattern> bannerPatterns;
     private int fireworkPower;
     private List<FireworkEffect> fireworkEffects;
@@ -184,10 +182,6 @@ public class ShopItem {
      * Aplicar metadatos de banner al ItemBuilder
      */
     private void applyBannerMetadata(ItemBuilder builder) {
-        if (bannerBaseColor != null) {
-            builder.setBannerBaseColor(bannerBaseColor);
-        }
-
         for (Pattern pattern : bannerPatterns) {
             builder.addBannerPattern(pattern);
         }

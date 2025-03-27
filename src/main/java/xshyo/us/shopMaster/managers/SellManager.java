@@ -11,6 +11,8 @@ import xshyo.us.shopMaster.enums.SellStatus;
 import xshyo.us.shopMaster.shop.Shop;
 import xshyo.us.shopMaster.shop.data.ShopItem;
 import xshyo.us.shopMaster.superclass.CurrencyManager;
+import xshyo.us.shopMaster.utilities.PluginUtils;
+import xshyo.us.theAPI.utilities.Utils;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -327,40 +329,21 @@ public class SellManager {
     }
 
     /**
-     * Da dinero al jugador por la venta de ítems
-     */
-    public void giveMoney(Player player, double amount, SellableItemInfo itemInfo) {
-        // Obtener el tipo de moneda del item que se está vendiendo
-        String economyType = itemInfo.shopItem().getEconomy();
-
-        // Convertir el String a CurrencyType
-        CurrencyManager currencyManager = ShopMaster.getInstance().getCurrencyMap()
-                .get(CurrencyType.getType(economyType, CurrencyType.VAULT));
-
-        if (currencyManager != null) {
-            if (currencyManager.add(player, amount)) {
-                // Transacción exitosa - usar StringBuilder para concatenación eficiente
-                StringBuilder message = new StringBuilder("&aSe han depositado &e$")
-                        .append(String.format("%.2f", amount))
-                        .append(" &aen tu cuenta.");
-                player.sendMessage(message.toString());
-            } else {
-                // Error al depositar el dinero
-                player.sendMessage("&cHa ocurrido un error al depositar el dinero.");
-            }
-        } else {
-            // Moneda inválida o no configurada
-            StringBuilder message = new StringBuilder("&cNo se pudo encontrar un sistema de economía válido para: ")
-                    .append(economyType);
-            player.sendMessage(message.toString());
-        }
-    }
-
-    /**
      * Vende un ítem y retorna el resultado
      */
     public SellResult sellItem(Player player, ItemStack item, int amount) {
         // Obtener la información del ítem vendible (incluye verificaciones de mundo y gamemode)
+
+        String worldName = player.getWorld().getName();
+        if (isWorldBlacklisted(worldName)) {
+            return new SellResult(SellStatus.WORLD_BLACKLISTED, 0);
+        }
+
+        // Check gamemode blacklist
+        if (isGameModeBlacklisted(player.getGameMode().toString())) {
+            return new SellResult(SellStatus.GAMEMODE_BLACKLISTED, 0);
+        }
+
         SellableItemInfo info = getSellableShopItem(player, item);
 
         if (info == null) {
@@ -385,11 +368,6 @@ public class SellManager {
             return new SellResult(SellStatus.ERROR, 0);
         }
 
-        StringBuilder message = new StringBuilder("&aSe han depositado &e$")
-                .append(String.format("%.2f", totalPrice))
-                .append(" &aen tu cuenta.");
-        player.sendMessage(message.toString());
-
         return new SellResult(SellStatus.SUCCESS, totalPrice);
     }
 
@@ -404,13 +382,12 @@ public class SellManager {
 
     /**
      * Vende todos los ítems vendibles del inventario del jugador
+     *
      * @param player Jugador que vende los ítems
-     * @param formatItemNameFunction Función para formatear nombres de materiales
      * @return Resultado de la venta con toda la información relevante
      */
     public SellAllResult sellAllItems(
-            Player player,
-            java.util.function.Function<Material, String> formatItemNameFunction) {
+            Player player) {
 
         // Check world blacklist
         String worldName = player.getWorld().getName();
@@ -505,7 +482,21 @@ public class SellManager {
             if (amount > 0) {
                 // Usar cualquier ítem de esta moneda para el pago
                 Material firstMaterial = currencyEntry.getValue().keySet().iterator().next();
-                giveMoney(player, amount, materialInfoCache.get(firstMaterial));
+
+                CurrencyManager currencyManager = ShopMaster.getInstance().getCurrencyMap()
+                        .get(CurrencyType.getType(materialInfoCache.get(firstMaterial).shopItem.getEconomy(), CurrencyType.VAULT));
+
+                if (currencyManager == null) {
+                    return new SellAllResult(SellStatus.INVALID_ECONOMY, 0, Collections.emptyMap(), Collections.emptyMap(),
+                            skippedItems, skippedItems.size());
+                }
+
+                boolean success = currencyManager.add(player, totalItemsSold);
+                if (!success) {
+                    return new SellAllResult(SellStatus.ERROR, 0, Collections.emptyMap(), Collections.emptyMap(),
+                            skippedItems, skippedItems.size());
+                }
+
             }
         }
 
@@ -540,68 +531,152 @@ public class SellManager {
         /**
          * Genera un mensaje de resumen de venta formateado
          */
-        public List<String> generateSummaryMessages(java.util.function.Function<Material, String> formatItemNameFunction) {
-            List<String> messages = new ArrayList<>();
+        public void generateSummaryMessages(Player player) {
 
             if (status != SellStatus.SUCCESS) {
                 switch (status) {
                     case WORLD_BLACKLISTED:
-                        messages.add("&cNo puedes vender ítems en este mundo.");
+                        PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.SELL.ALL.WORLD_BLACKLISTED");
                         break;
                     case GAMEMODE_BLACKLISTED:
-                        messages.add("&cNo puedes vender ítems en este modo de juego.");
+                        PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.SELL.ALL.GAMEMODE_BLACKLISTED");
                         break;
                     case NO_SELLABLE_ITEMS:
-                        messages.add("&cNo tienes ítems que se puedan vender.");
+                        PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.SELL.ALL.NO_SELLABLE_ITEMS");
                         break;
                     case INVALID_ECONOMY:
-                        messages.add("&cNinguno de tus ítems se pudo vender. Algunos no tienen una economía válida configurada.");
+                        PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.SELL.ALL.INVALID_ECONOMY");
                         break;
-                    default:
-                        messages.add("&cHa ocurrido un error al vender tus ítems.");
+                    case ERROR:
+                        PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.SELL.ALL.ERROR");
                         break;
+
                 }
-                return messages;
+                return;
             }
+            if (ShopMaster.getInstance().getConf().getBoolean("config.command.sell.enable-summary")) {
+                List<String> messages = new ArrayList<>();
 
-            messages.add("&a---------- Resumen de Venta ----------");
-            messages.add("&aHas vendido &e" + totalItemsSold + " &aítems por un total de &e$" + String.format("%.2f", totalEarnings));
+                // Recuperar configuraciones de mensajes
+                String headerMessage = ShopMaster.getInstance().getLang().getString(
+                        "MESSAGES.COMMANDS.SHOP.SELL.ALL.SUMMARY_MESSAGES.HEADER",
+                        "&a---------- Resumen de Venta ----------"
+                );
+                String totalItemsMessage = ShopMaster.getInstance().getLang().getString(
+                        "MESSAGES.COMMANDS.SHOP.SELL.ALL.SUMMARY_MESSAGES.TOTAL_ITEMS",
+                        "&aHas vendido &e{total_items} &aítems"
+                );
+                String totalEarningsMessage = ShopMaster.getInstance().getLang().getString(
+                        "MESSAGES.COMMANDS.SHOP.SELL.ALL.SUMMARY_MESSAGES.TOTAL_EARNINGS",
+                        "&aPor un total de &e${total_earnings}"
+                );
+                String currencyBreakdownHeader = ShopMaster.getInstance().getLang().getString(
+                        "MESSAGES.COMMANDS.SHOP.SELL.ALL.SUMMARY_MESSAGES.CURRENCY_BREAKDOWN_HEADER",
+                        "&aDesglose por moneda:"
+                );
+                String currencyBreakdownFormat = ShopMaster.getInstance().getLang().getString(
+                        "MESSAGES.COMMANDS.SHOP.SELL.ALL.SUMMARY_MESSAGES.CURRENCY_BREAKDOWN_FORMAT",
+                        "&7- &e{currency}: ${amount}"
+                );
+                String itemBreakdownFormat = ShopMaster.getInstance().getLang().getString(
+                        "MESSAGES.COMMANDS.SHOP.SELL.ALL.SUMMARY_MESSAGES.ITEM_BREAKDOWN_FORMAT",
+                        "&7- &e{amount}x {item_name}"
+                );
+                String skippedItemsMessage = ShopMaster.getInstance().getLang().getString(
+                        "MESSAGES.COMMANDS.SHOP.SELL.ALL.SUMMARY_MESSAGES.SKIPPED_ITEMS",
+                        "&e{skipped_count} &6ítems no se vendieron porque no tienen una economía válida configurada."
+                );
+                String footerMessage = ShopMaster.getInstance().getLang().getString(
+                        "MESSAGES.COMMANDS.SHOP.SELL.ALL.SUMMARY_MESSAGES.FOOTER",
+                        "&a---------------------------------------"
+                );
 
-            // Mostrar desglose por moneda si hay más de una
-            if (earningsByCurrency.size() > 1) {
-                messages.add("&aDesglose por moneda:");
-                for (Map.Entry<String, Double> entry : earningsByCurrency.entrySet()) {
-                    messages.add("&7- &e" + entry.getKey() + ": $" + String.format("%.2f", entry.getValue()));
+                // Configuración de elementos del summary
+                boolean showTotalItems = ShopMaster.getInstance().getConf().getBoolean("config.command.sell.summary.show-total-items", true);
+                boolean showTotalEarnings = ShopMaster.getInstance().getConf().getBoolean("config.command.sell.summary.show-total-earnings", true);
+                boolean showCurrencyBreakdown = ShopMaster.getInstance().getConf().getBoolean("config.command.sell.summary.show-currency-breakdown", true);
+                boolean showItemBreakdown = ShopMaster.getInstance().getConf().getBoolean("config.command.sell.summary.show-item-breakdown", true);
+                int maxItemsToShow = ShopMaster.getInstance().getConf().getInt("config.command.sell.summary.max-items-to-show", 5);
+                boolean showSkippedItems = ShopMaster.getInstance().getConf().getBoolean("config.command.sell.summary.show-skipped-items", true);
+
+                // Añadir mensajes al resumen
+                messages.add(headerMessage);
+
+                // Mostrar total de ítems vendidos
+                if (showTotalItems) {
+                    messages.add(totalItemsMessage
+                            .replace("{total_items}", String.valueOf(totalItemsSold))
+                    );
                 }
-            }
 
-            // Opcional: mostrar desglose de los ítems vendidos si no son muchos
-            if (soldItems.size() <= 5) {
-                for (Map.Entry<Material, Integer> entry : soldItems.entrySet()) {
-                    messages.add("&7- &e" + entry.getValue() + "x " + formatItemNameFunction.apply(entry.getKey()));
+                // Mostrar ganancias totales
+                if (showTotalEarnings) {
+                    messages.add(totalEarningsMessage
+                            .replace("{total_earnings}", String.format("%.2f", totalEarnings))
+                    );
                 }
+
+                // Mostrar desglose por moneda si hay más de una y está habilitado
+                if (showCurrencyBreakdown && earningsByCurrency.size() > 1) {
+                    messages.add(currencyBreakdownHeader);
+                    for (Map.Entry<String, Double> entry : earningsByCurrency.entrySet()) {
+                        messages.add(currencyBreakdownFormat
+                                .replace("{currency}", entry.getKey())
+                                .replace("{amount}", String.format("%.2f", entry.getValue()))
+                        );
+                    }
+                }
+
+                // Mostrar desglose de ítems vendidos
+                if (showItemBreakdown && soldItems.size() <= maxItemsToShow) {
+                    for (Map.Entry<Material, Integer> entry : soldItems.entrySet()) {
+                        messages.add(itemBreakdownFormat
+                                .replace("{amount}", String.valueOf(entry.getValue()))
+                                .replace("{item_name}", PluginUtils.formatItemName(entry.getKey()))
+                        );
+                    }
+                }
+
+                // Informar sobre ítems omitidos
+                if (showSkippedItems && !skippedItems.isEmpty()) {
+                    int skippedCount = skippedItems.size();
+                    messages.add(skippedItemsMessage
+                            .replace("{skipped_count}", String.valueOf(skippedCount))
+                    );
+                }
+
+                messages.add(footerMessage);
+
+                // Enviar los mensajes del resumen
+                for (String message : messages) {
+                    player.sendMessage(Utils.translate(message));
+                }
+            } else {
+                // Si el summary está desactivado, solo enviar mensaje de venta básico
+                String defaultSimpleMessage = ShopMaster.getInstance().getConf().getString(
+                        "MESSAGES.COMMANDS.SHOP.SELL.ALL.SIMPLE_MESSAGE",
+                        "&aHas vendido &e{total_items} &aítems por un total de &e${total_earnings}"
+                );
+
+                player.sendMessage(Utils.translate(
+                        defaultSimpleMessage
+                                .replace("{total_items}", String.valueOf(totalItemsSold))
+                                .replace("{total_earnings}", String.format("%.2f", totalEarnings))
+                ));
             }
 
-            // Informar sobre ítems omitidos si hay alguno
-            if (!skippedItems.isEmpty()) {
-                int skippedCount = skippedItems.size();
-                messages.add("&e" + skippedCount + " &6ítems no se vendieron porque no tienen una economía válida configurada.");
-            }
-
-            messages.add("&a---------------------------------------");
-            return messages;
         }
     }
 
     private boolean isWorldBlacklisted(String worldName) {
         YamlDocument config = ShopMaster.getInstance().getConf();
-        List<String> blacklistedWorlds = config.getStringList("config.gui.black-list.world");
+        List<String> blacklistedWorlds = config.getStringList("config.command.sell.black-list.world");
         return blacklistedWorlds.contains(worldName);
     }
 
     private boolean isGameModeBlacklisted(String gameMode) {
         YamlDocument config = ShopMaster.getInstance().getConf();
-        List<String> blacklistedGameModes = config.getStringList("config.gui.black-list.gameModes");
+        List<String> blacklistedGameModes = config.getStringList("config.command.sell.black-list.gameModes");
         return blacklistedGameModes.contains(gameMode);
     }
 

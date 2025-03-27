@@ -180,15 +180,7 @@ public class Shop {
                 // Procesar configuración específica para banners
                 if (material.endsWith("_BANNER")) {
                     if (config.contains(path + ".item.banner")) {
-                        String baseColorStr = config.getString(path + ".item.banner.base_color", "WHITE");
-                        try {
-                            DyeColor baseColor = DyeColor.valueOf(baseColorStr.toUpperCase());
-                            item.setBannerBaseColor(baseColor);
-                        } catch (IllegalArgumentException e) {
-                            ShopMaster.getInstance().getLogger().warning("Color de banner inválido en la tienda " + name + ", ítem " + key + ": " + baseColorStr);
-                        }
 
-                        // Cargar patrones si existen
                         if (config.contains(path + ".item.banner.patterns")) {
                             for (String patternKey : config.getSection(path + ".item.banner.patterns").getRoutesAsStrings(false)) {
                                 try {
