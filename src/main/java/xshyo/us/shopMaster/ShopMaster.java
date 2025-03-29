@@ -9,28 +9,26 @@ import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
 import lombok.Getter;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandMap;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import xshyo.us.shopMaster.commands.SellCommand;
-import xshyo.us.shopMaster.managers.SellManager;
+import xshyo.us.shopMaster.services.PurchaseService;
+import xshyo.us.shopMaster.services.SellService;
 import xshyo.us.shopMaster.superclass.AbstractCommand;
 import xshyo.us.shopMaster.commands.ShopCommand;
 import xshyo.us.shopMaster.enums.CurrencyType;
 import xshyo.us.shopMaster.placeholders.JPlaceholderAPI;
 import xshyo.us.shopMaster.managers.ShopManager;
-import xshyo.us.shopMaster.superclass.CurrencyManager;
+import xshyo.us.shopMaster.managers.CurrencyManager;
+import xshyo.us.shopMaster.utilities.NumberFormatter;
 import xshyo.us.theAPI.TheAPI;
 import xshyo.us.theAPI.utilities.Utils;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.util.HashMap;
-import java.util.List;
 import java.util.logging.Level;
 
 @Getter
@@ -40,7 +38,9 @@ public final class ShopMaster extends TheAPI {
     private static ShopMaster instance;
     private YamlDocument conf, lang, layouts;
     private ShopManager shopManager;
-    private SellManager sellManager;
+    private SellService sellService;
+    private PurchaseService purchaseService;
+    private NumberFormatter numberFormatter;
 
     private final HashMap<CurrencyType, CurrencyManager> currencyMap;
     private Economy economy;
@@ -87,8 +87,11 @@ public final class ShopMaster extends TheAPI {
 
         this.shopManager = new ShopManager();
         this.shopManager.load();
-        this.sellManager = new SellManager(this, shopManager);
-        new SellCommand(this, sellManager).register(); // Registrar el comando
+        this.purchaseService = new PurchaseService();
+        this.sellService = new SellService(this, shopManager);
+        this.numberFormatter = new NumberFormatter();
+
+        new SellCommand(this, sellService).register(); // Registrar el comando
 
 
         logPluginEnabled(startTime);
@@ -123,7 +126,8 @@ public final class ShopMaster extends TheAPI {
             throw new RuntimeException(e);
         }
         shopManager.load();
-        sellManager.reload();
+        sellService.reload();
+        numberFormatter.reload();
         reloadConfig();
     }
 
@@ -177,13 +181,6 @@ public final class ShopMaster extends TheAPI {
         if (currencyManager2 != null) {
             this.currencyMap.put(CurrencyType.VAULT, currencyManager2);
             Bukkit.getConsoleSender().sendMessage(Utils.translate("&a[ShopMaster] Currency VAULT successfully loaded!"));
-        }
-
-        CurrencyManager currencyManager4 = CurrencyManager.initializeManager("TOKEN_MANAGER", null);
-        if (currencyManager4 != null) {
-            this.currencyMap.put(CurrencyType.TOKEN_MANAGER, currencyManager4);
-            Bukkit.getConsoleSender().sendMessage(Utils.translate("&a[ShopMaster] Currency TOKEN_MANAGER successfully loaded!"));
-
         }
 
         CurrencyManager currencyManager5 = CurrencyManager.initializeManager("BEAST_TOKENS", null);

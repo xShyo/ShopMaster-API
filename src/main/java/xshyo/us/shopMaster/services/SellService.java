@@ -1,4 +1,4 @@
-package xshyo.us.shopMaster.managers;
+package xshyo.us.shopMaster.services;
 
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
@@ -10,16 +10,17 @@ import org.bukkit.inventory.PlayerInventory;
 import xshyo.us.shopMaster.ShopMaster;
 import xshyo.us.shopMaster.enums.CurrencyType;
 import xshyo.us.shopMaster.enums.SellStatus;
+import xshyo.us.shopMaster.managers.ShopManager;
 import xshyo.us.shopMaster.shop.Shop;
 import xshyo.us.shopMaster.shop.data.ShopItem;
-import xshyo.us.shopMaster.superclass.CurrencyManager;
+import xshyo.us.shopMaster.managers.CurrencyManager;
 
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-public class SellManager {
+public class SellService {
     private static final int MAX_CACHE_SIZE = 100;
     private static final int PARALLEL_THRESHOLD = 100;
 
@@ -30,7 +31,7 @@ public class SellManager {
     private final Map<CacheKey, SellableItemInfo> resultCache;
     private final ListeningExecutorService executorService;
 
-    public SellManager(ShopMaster plugin, ShopManager shopManager) {
+    public SellService(ShopMaster plugin, ShopManager shopManager) {
         this.plugin = plugin;
         this.shopManager = shopManager;
         this.sellableItems = new ConcurrentHashMap<>();

@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import xshyo.us.shopMaster.ShopMaster;
 import xshyo.us.shopMaster.enums.TypeService;
-import xshyo.us.shopMaster.managers.SellManager;
+import xshyo.us.shopMaster.services.SellService;
 import xshyo.us.shopMaster.shop.Shop;
 import xshyo.us.shopMaster.shop.data.ShopItem;
 import xshyo.us.shopMaster.utilities.PluginUtils;
@@ -38,7 +38,7 @@ public class SellAllConfirmationMenu {
     private final ShopMaster plugin;
     private static final String MENU_PATH = "inventories.sell-all-confirmation";
     private final Set<Integer> reservedSlots = new HashSet<>();
-    private final SellManager sellManager;
+    private final SellService sellService;
 
     public SellAllConfirmationMenu(Player viewer, ShopItem item, Shop shop, int returnPage) {
         this.viewer = viewer;
@@ -47,7 +47,7 @@ public class SellAllConfirmationMenu {
         this.returnPage = returnPage;
         this.pricePerUnit = item.getSellPrice();
         this.plugin = ShopMaster.getInstance();
-        this.sellManager = plugin.getSellManager();
+        this.sellService = plugin.getSellService();
         this.sellAllMenu = initializeGui();
         this.quantity = Math.max(1, item.getAmount());
 
@@ -207,12 +207,12 @@ public class SellAllConfirmationMenu {
 
         // Actualizar confirm item
         PluginUtils.loadSingleButton(MENU_PATH + ".items.confirm", plugin.getLayouts(),
-                path -> new ConfirmControls(MENU_PATH + ".items.confirm", quantity, item, sellManager, TypeService.SELL),
+                path -> new ConfirmControls(MENU_PATH + ".items.confirm", quantity, item, sellService, TypeService.SELL),
                 sellAllMenu.getRows()
         ).forEach((slot, controls) -> {
             if (controls.getButtonItem(viewer).getType() != Material.AIR) {
                 sellAllMenu.updateItem(slot, new GuiItem(controls.getButtonItem(viewer),
-                        event -> new ConfirmControls(MENU_PATH + ".items.confirm", quantity, item, null, TypeService.BUY).clicked(viewer, event.getSlot(), event.getClick(), event.getHotbarButton())));
+                        event -> new ConfirmControls(MENU_PATH + ".items.confirm", quantity, item, sellService, TypeService.SELL).clicked(viewer, event.getSlot(), event.getClick(), event.getHotbarButton())));
                 reservedSlots.add(slot);
             }
         });
@@ -238,7 +238,7 @@ public class SellAllConfirmationMenu {
         ).forEach((slot, controls) -> {
             if (controls.getButtonItem(viewer).getType() != Material.AIR) {
                 sellAllMenu.updateItem(slot, new GuiItem(controls.getButtonItem(viewer),
-                        event -> sellManager.sellAllItemOfType(viewer, itemdisplay)));
+                        event -> sellService.sellAllItemOfType(viewer, itemdisplay)));
                 reservedSlots.add(slot);
             }
         });

@@ -6,20 +6,20 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import xshyo.us.shopMaster.ShopMaster;
-import xshyo.us.shopMaster.managers.SellManager;
 import dev.dejvokep.boostedyaml.YamlDocument;
+import xshyo.us.shopMaster.services.SellService;
 import xshyo.us.shopMaster.superclass.AbstractCommand;
 import xshyo.us.shopMaster.utilities.PluginUtils;
 
 public class SellCommand extends AbstractCommand {
 
     private final ShopMaster plugin;
-    private final SellManager sellManager;
+    private final SellService sellService;
 
-    public SellCommand(ShopMaster plugin, SellManager sellManager) {
+    public SellCommand(ShopMaster plugin, SellService sellService) {
         super("sell", "/sell [all/hand]", "Vende automaticamente");
         this.plugin = plugin;
-        this.sellManager = sellManager;
+        this.sellService = sellService;
     }
 
 
@@ -107,7 +107,7 @@ public class SellCommand extends AbstractCommand {
             return;
         }
 
-        SellManager.SellResult result = sellManager.sellItem(player, itemInHand, itemInHand.getAmount(), false);
+        SellService.SellResult result = sellService.sellItem(player, itemInHand, itemInHand.getAmount(), false);
 
         switch (result.status()) {
             case SUCCESS:
@@ -136,7 +136,7 @@ public class SellCommand extends AbstractCommand {
 
     private void sellAllItems(Player player) {
         // Llamar al método optimizado en SellManager
-        SellManager.SellAllResult result = sellManager.sellAllItems(player);
+        SellService.SellAllResult result = sellService.sellAllItems(player);
         result.generateSummaryMessages(player);
 
     }

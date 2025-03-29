@@ -96,12 +96,4 @@ public class ShopManager {
         return shopMap.get(name);
     }
 
-    public void reloadShops() {
-        load();
-    }
-
-    // Getter for the loaded items count
-    public int getLoadedItemsCount() {
-        return loadedItemsCount;
-    }
 }

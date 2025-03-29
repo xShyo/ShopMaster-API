@@ -113,7 +113,7 @@ public class ShopCategoryMenu {
                             if (plugin.getConf().getBoolean("config.gui.purchase-confirmation.enabled")) {
                                 new PurchaseConfirmationMenu(viewer, shopItem, shop, currentPage).openMenu();
                             } else {
-                                PurchaseService.processPurchase(viewer, shopItem, 1); // Comprar 1 unidad directamente
+                                plugin.getPurchaseService().processPurchase(viewer, shopItem, 1); // Comprar 1 unidad directamente
                           }
                         } else if (clickType.equals(sellButton)) {
                             new SellAllConfirmationMenu(viewer, shopItem, shop, currentPage).openMenu();
