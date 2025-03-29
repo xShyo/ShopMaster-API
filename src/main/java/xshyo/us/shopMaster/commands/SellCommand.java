@@ -10,9 +10,6 @@ import xshyo.us.shopMaster.managers.SellManager;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import xshyo.us.shopMaster.superclass.AbstractCommand;
 import xshyo.us.shopMaster.utilities.PluginUtils;
-import xshyo.us.theAPI.utilities.Utils;
-
-import java.util.*;
 
 public class SellCommand extends AbstractCommand {
 
@@ -29,7 +26,7 @@ public class SellCommand extends AbstractCommand {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage("&cEste comando solo puede ser usado por jugadores.");
+            sender.sendMessage("&cThis command can only be used by players.");
             return true;
         }
 
@@ -110,7 +107,7 @@ public class SellCommand extends AbstractCommand {
             return;
         }
 
-        SellManager.SellResult result = sellManager.sellItem(player, itemInHand, itemInHand.getAmount());
+        SellManager.SellResult result = sellManager.sellItem(player, itemInHand, itemInHand.getAmount(), false);
 
         switch (result.status()) {
             case SUCCESS:

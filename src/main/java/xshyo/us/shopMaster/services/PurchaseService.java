@@ -8,6 +8,9 @@ import xshyo.us.shopMaster.shop.data.ShopItem;
 import xshyo.us.shopMaster.superclass.CurrencyManager;
 import xshyo.us.shopMaster.utilities.PluginUtils;
 
+import java.util.Map;
+import java.util.TreeMap;
+
 public class PurchaseService {
 
     /**
@@ -18,7 +21,7 @@ public class PurchaseService {
      * @param quantity La cantidad a comprar
      */
     public static void processPurchase(Player player, ShopItem item, int quantity) {
-        double pricePerUnit = item.getBuyPrice();
+        double pricePerUnit = (double) item.getBuyPrice() / item.getAmount(); // Ajusta el precio por unidad correctamente
         double totalPrice = pricePerUnit * quantity;
 
         CurrencyManager currencyManager = ShopMaster.getInstance().getCurrencyMap()
@@ -32,12 +35,10 @@ public class PurchaseService {
 
         if (!currencyManager.hasEnough(player, totalPrice)) {
             player.closeInventory();
-
             PluginUtils.sendMessage(player, "MESSAGES.GUI.PURCHASE.NOT_ENOUGH", totalPrice);
             return;
         }
 
-        // Crear un ItemStack del ítem a comprar para obtener su tamaño máximo de stack
         ItemStack sampleItem = item.createItemStack();
         if (sampleItem == null) {
             PluginUtils.sendMessage(player, "MESSAGES.GUI.PURCHASE.ERROR");
@@ -45,8 +46,6 @@ public class PurchaseService {
         }
 
         int maxStackSize = sampleItem.getType().getMaxStackSize();
-
-        // Verificar espacio en inventario
         int totalStacksNeeded = (quantity / maxStackSize) + (quantity % maxStackSize == 0 ? 0 : 1);
         int freeSlots = countFreeSlots(player);
 
@@ -56,31 +55,26 @@ public class PurchaseService {
             return;
         }
 
-        // IMPORTANTE: Solo llegamos aquí si hay suficiente espacio
-
-        // Proceder con la transacción
         if (!currencyManager.withdraw(player, totalPrice)) {
             player.closeInventory();
             PluginUtils.sendMessage(player, "MESSAGES.GUI.PURCHASE.ERROR");
             return;
         }
 
-        // Dar los ítems al jugador
         try {
             giveItemsToPlayer(player, item, quantity);
         } catch (Exception e) {
-            // Devolver el dinero
             currencyManager.add(player, totalPrice);
             player.closeInventory();
-
             PluginUtils.sendMessage(player, "MESSAGES.GUI.PURCHASE.ERROR");
             return;
         }
 
-        // Notificar éxito
         PluginUtils.sendMessage(player, "MESSAGES.GUI.PURCHASE.SUCCESS", quantity, item.getDisplayName(), totalPrice);
         player.closeInventory();
     }
+
+
 
     private static int countFreeSlots(Player player) {
         int freeSlots = 0;
@@ -148,4 +142,7 @@ public class PurchaseService {
         }
 
     }
+
+
+
 }

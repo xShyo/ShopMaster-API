@@ -15,6 +15,8 @@ MESSAGES:
       NOT_ENOUGH: "&cNo tienes {1} para comprar este articulo"
       SUCCESS: "&aCompra exitosa! Has comprado {1} {2} por {3}"
       NO_SPACE: "No tienes suficiente espacio para comprar esto."
+    SELL:
+
 
   # Commands
   COMMANDS:
@@ -33,19 +35,17 @@ MESSAGES:
       &7
       &8 » &e/{admin} reload &8- &fReloads the configuration
       &8 » &e/{admin} help &8- &fView help message
-      &8 » &e/{admin} remove [player] <value>  &8- &fRemove a player's reward
-      &8 » &e/{admin} removeall [player] &8- &fRemove all rewards for a player
       &7
     HELP:
       - "&e&lBASIC COMMANDS"
       - "&7"
-      - "&8 » &e/{shortenedcmd} &8- &fOpen rewards menu"
+      - "&8 » &e/{shop} &8- &fOpen shop menu"
+      - "&8 » &e/{sell} &8- &fCommand to sell"
       - "&7"
-      - "&8 » &e/{cmd} reload &8- &fReload the configuration"
-      - "&8 » &e/{cmd} help &8- &fView help message"
-      - "&8 » &e/{cmd} remove [type] [player] <value>  &8- &fRemove a player's reward"
-      - "&8 » &e/{cmd} removeall [player] &8- &fRemove all rewards for a player"
-    HELP_USAGE: "&cCorrect usage: /{cmd} help (page)"
+      - "&8 » &e/{admin} reload &8- &fReload the configuration"
+      - "&8 » &e/{admin} help &8- &fView help message"
+      - ""
+    HELP_USAGE: "&cCorrect usage: /{admin} help (page)"
 
     # reload
     RELOAD: '&aAll YML files have been successfully reset.'
@@ -53,11 +53,11 @@ MESSAGES:
 
     SHOP:
       SELL:
-        USAGE: "&cUso: /sell <hand|all>"
+        USAGE: "&cUso: /{sell} <hand|all>"
         DISABLED: "&cEste comando está desactivado."
         HAND:
           DISABLED: "&cEste subcomando está desactivado."
-          EMPTY: "&cNo tienes permiso para vender el ítem en tu mano."
+          EMPTY: "&cNo tienes nada en tu mano para vender."
           SUCCESS: "&aHas vendido &e{1}x {2} &apor &e${3}"
           NOT_SELLABLE: "&cEste ítem no se puede vender."
           ERROR: "&cHa ocurrido un error al vender el ítem."
@@ -66,7 +66,7 @@ MESSAGES:
           INVALID_ECONOMY: "&cLa economy del item esta incorrecta por favor avise a un administrador."
         ALL:
           DISABLED: "&cEste subcomando está desactivado."
-          EMPTY: "&cNo tienes permiso para vender el ítem en tu mano."
+          EMPTY: "&cNo tienes nada en tu mano para vender."
           NO_SELLABLE_ITEMS: "&cNo tines items para vender"
           ERROR: "&cHa ocurrido un error al vender el ítem."
           WORLD_BLACKLISTED: "&cNo puedes usar este comando en este mundo"
@@ -92,7 +92,7 @@ MESSAGES:
         PLAYER_ONLY: "&cSolo los jugadores pueden abrir tiendas para sí mismos."
         OTHER_SUCCESS: "&aHas abierto la tienda &6{1} &apara &6{2}&a."
         PLAYER_OFFLINE: "&cEl jugador &6{1} &cno está en línea."
-        USAGE: "Uso correcto: /shop [tienda] [jugador]"
+        USAGE: "Uso correcto: /{shop} [tienda] [jugador]"
 
 
 file-version: 1

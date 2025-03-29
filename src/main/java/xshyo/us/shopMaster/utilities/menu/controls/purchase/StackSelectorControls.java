@@ -1,4 +1,4 @@
-package xshyo.us.shopMaster.utilities.menu.controls.confirm;
+package xshyo.us.shopMaster.utilities.menu.controls.purchase;
 
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import lombok.AllArgsConstructor;
@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 
 @AllArgsConstructor
-public class ConfirmControls extends Controls {
+public class StackSelectorControls extends Controls {
 
     private final ShopMaster plugin = ShopMaster.getInstance();
     private final String path;

@@ -205,35 +205,14 @@ public final class ShopMaster extends TheAPI {
 
     }
 
+
     @Override
     public void setupCommands() {
         new ShopCommand().register(); // Registrar el comando
-
-
-        if (conf.getBoolean("config.command.admin.enabled")) {
-            JSCommand.addDefaultArguments();
-            String basecommand = conf.getString("config.command.admin.name");
-            List<String> aliases = conf.getStringList("config.command.admin.aliases");
-            JSCommand psc = new JSCommand(basecommand);
-            for (String command : aliases) {
-                psc.getAliases().add(command);
-            }
-            registerCommand(basecommand, psc);
-        }
-
+        new JSCommand().register(); // Registrar el comando
     }
 
-    private void registerCommand(String nombre, Command comando) {
-        try {
-            Field campo = Bukkit.getServer().getClass().getDeclaredField("commandMap");
-            campo.setAccessible(true);
-            CommandMap commandMap = (CommandMap) campo.get(Bukkit.getServer());
 
-            commandMap.register(nombre, comando);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            getLogger().log(Level.SEVERE, "Error when registering the command " + nombre, e);
-        }
-    }
 
 
 

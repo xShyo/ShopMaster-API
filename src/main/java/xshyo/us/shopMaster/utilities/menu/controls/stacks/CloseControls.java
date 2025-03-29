@@ -57,8 +57,4 @@ public class CloseControls extends Controls {
                 .build();
 
     }
-
-
-
-
 }

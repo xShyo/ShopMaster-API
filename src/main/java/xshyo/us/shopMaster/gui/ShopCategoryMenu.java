@@ -116,6 +116,7 @@ public class ShopCategoryMenu {
                                 PurchaseService.processPurchase(viewer, shopItem, 1); // Comprar 1 unidad directamente
                           }
                         } else if (clickType.equals(sellButton)) {
+                            new SellAllConfirmationMenu(viewer, shopItem, shop, currentPage).openMenu();
                             System.out.println("sellItem(viewer, shopItem, shop)");
                         }
                     }));

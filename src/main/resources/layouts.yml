@@ -21,7 +21,7 @@ inventories:
         display_name: '&cClose'
         glowing: false
         item_flags:
-        - HIDE_ATTRIBUTES
+          - HIDE_ATTRIBUTES
         lore: []
 
     # In this section you can add more items to the inventory.
@@ -86,7 +86,7 @@ inventories:
         display_name: '&cNext page'
         glowing: false
         item_flags:
-        - HIDE_ATTRIBUTES
+          - HIDE_ATTRIBUTES
         lore: []
 
       previous:
@@ -98,7 +98,7 @@ inventories:
         display_name: '&cPrevious page'
         glowing: false
         item_flags:
-        - HIDE_ATTRIBUTES
+          - HIDE_ATTRIBUTES
         lore: []
 
       close:
@@ -110,7 +110,7 @@ inventories:
         display_name: '&cClose'
         glowing: false
         item_flags:
-        - HIDE_ATTRIBUTES
+          - HIDE_ATTRIBUTES
         lore: []
 
       back:
@@ -122,7 +122,7 @@ inventories:
         display_name: '&cBack'
         glowing: false
         item_flags:
-        - HIDE_ATTRIBUTES
+          - HIDE_ATTRIBUTES
         lore: []
 
       indicator:
@@ -134,7 +134,7 @@ inventories:
         display_name: '&eCurrent'
         glowing: false
         item_flags:
-        - HIDE_ATTRIBUTES
+          - HIDE_ATTRIBUTES
         lore: []
 
     # In this section you can add more items to the inventory.
@@ -182,14 +182,14 @@ inventories:
           glowing: false
           set_amount: -1
           item_flags:
-          - HIDE_ATTRIBUTES
+            - HIDE_ATTRIBUTES
           lore:
-          - '&8AJustes de Compra'
-          - ''
-          - '&8 ● &fEsto eliminará #FB08081'
-          - '   &fitems de la cantidad'
-          - ''
-          - '#FB0808► Click para configurar.'
+            - '&8AJustes de Compra'
+            - ''
+            - '&8 ● &fEsto eliminará #FB08081'
+            - '   &fitems de la cantidad'
+            - ''
+            - '#FB0808► Click para configurar.'
 
         decrease_medium:
           slot: 22
@@ -200,14 +200,14 @@ inventories:
           glowing: false
           set_amount: -5
           item_flags:
-          - HIDE_ATTRIBUTES
+            - HIDE_ATTRIBUTES
           lore:
-          - '&8AJustes de Compra'
-          - ''
-          - '&8 ● &fEsto eliminará #FB08085'
-          - '   &fitems de la cantidad'
-          - ''
-          - '#FB0808► Click para configurar.'
+            - '&8AJustes de Compra'
+            - ''
+            - '&8 ● &fEsto eliminará #FB08085'
+            - '   &fitems de la cantidad'
+            - ''
+            - '#FB0808► Click para configurar.'
 
         decrease_big:
           slot: 23
@@ -218,14 +218,14 @@ inventories:
           glowing: false
           set_amount: -10
           item_flags:
-          - HIDE_ATTRIBUTES
+            - HIDE_ATTRIBUTES
           lore:
-          - '&8AJustes de Compra'
-          - ''
-          - '&8 ● &fEsto eliminará #FB08085'
-          - '   &fitems de la cantidad'
-          - ''
-          - '#FB0808► Click para configurar.'
+            - '&8AJustes de Compra'
+            - ''
+            - '&8 ● &fEsto eliminará #FB08085'
+            - '   &fitems de la cantidad'
+            - ''
+            - '#FB0808► Click para configurar.'
 
         decrease:
           slot: 25
@@ -236,14 +236,14 @@ inventories:
           glowing: false
           set_amount: 1
           item_flags:
-          - HIDE_ATTRIBUTES
+            - HIDE_ATTRIBUTES
           lore:
-          - '&8AJustes de Compra'
-          - ''
-          - '&8 ● &fEsto eliminará #FB08085'
-          - '   &fitems de la cantidad'
-          - ''
-          - '#FB0808► Click para configurar.'
+            - '&8AJustes de Compra'
+            - ''
+            - '&8 ● &fEsto eliminará #FB08085'
+            - '   &fitems de la cantidad'
+            - ''
+            - '#FB0808► Click para configurar.'
 
 
         increase_small:
@@ -255,14 +255,14 @@ inventories:
           glowing: false
           set_amount: +1
           item_flags:
-          - HIDE_ATTRIBUTES
+            - HIDE_ATTRIBUTES
           lore:
-          - '&8AJustes de Compra'
-          - ''
-          - '&8 ● &fEsto agregará #FBD0081'
-          - '   &fitems a la cantidad'
-          - ''
-          - '#FBD008► Click para configurar.'
+            - '&8AJustes de Compra'
+            - ''
+            - '&8 ● &fEsto agregará #FBD0081'
+            - '   &fitems a la cantidad'
+            - ''
+            - '#FBD008► Click para configurar.'
 
         increase_medium:
           slot: 13
@@ -273,14 +273,14 @@ inventories:
           glowing: false
           set_amount: +5
           item_flags:
-          - HIDE_ATTRIBUTES
+            - HIDE_ATTRIBUTES
           lore:
-          - '&8AJustes de Compra'
-          - ''
-          - '&8 ● &fEsto agregará #FBD0085'
-          - '   &fitems a la cantidad'
-          - ''
-          - '#FBD008► Click para configurar.'
+            - '&8AJustes de Compra'
+            - ''
+            - '&8 ● &fEsto agregará #FBD0085'
+            - '   &fitems a la cantidad'
+            - ''
+            - '#FBD008► Click para configurar.'
 
         increase_big:
           slot: 14
@@ -291,14 +291,14 @@ inventories:
           glowing: false
           set_amount: +10
           item_flags:
-          - HIDE_ATTRIBUTES
+            - HIDE_ATTRIBUTES
           lore:
-          - '&8AJustes de Compra'
-          - ''
-          - '&8 ● &fEsto agregará #FBD0085'
-          - '   &fitems a la cantidad'
-          - ''
-          - '#FBD008► Click para configurar.'
+            - '&8AJustes de Compra'
+            - ''
+            - '&8 ● &fEsto agregará #FBD0085'
+            - '   &fitems a la cantidad'
+            - ''
+            - '#FBD008► Click para configurar.'
 
         increase:
           slot: 16
@@ -309,14 +309,14 @@ inventories:
           glowing: false
           set_amount: 64
           item_flags:
-          - HIDE_ATTRIBUTES
+            - HIDE_ATTRIBUTES
           lore:
-          - '&8AJustes de Compra'
-          - ''
-          - '&8 ● &fEsto agregará #FBD0085'
-          - '   &fitems a la cantidad'
-          - ''
-          - '#FBD008► Click para configurar.'
+            - '&8AJustes de Compra'
+            - ''
+            - '&8 ● &fEsto agregará #FBD0085'
+            - '   &fitems a la cantidad'
+            - ''
+            - '#FBD008► Click para configurar.'
 
 
 
@@ -328,14 +328,14 @@ inventories:
         display_name: '#FBD008Seleccionar Stacks'
         glowing: true
         item_flags:
-        - HIDE_ATTRIBUTES
+          - HIDE_ATTRIBUTES
         lore:
-        - '&8AJustes de Compra'
-        - ''
-        - '&8 ● &fAbre un menú para seleccionar'
-        - '   &fentre 1 a 12 stacks completos'
-        - ''
-        - '#FBD008► Click para abrir selector.'
+          - '&8AJustes de Compra'
+          - ''
+          - '&8 ● &fAbre un menú para seleccionar'
+          - '   &fentre 1 a 12 stacks completos'
+          - ''
+          - '#FBD008► Click para abrir selector.'
 
       confirm:
         slot: 41
@@ -345,14 +345,14 @@ inventories:
         display_name: '#FBD008Confirmar Compra'
         glowing: false
         item_flags:
-        - HIDE_ATTRIBUTES
+          - HIDE_ATTRIBUTES
         lore:
-        - '&8AJustes de Compra'
-        - ''
-        - '&8 ● &fSi todo esta correctamente'
-        - '   &fconfigurado haga click para comprar'
-        - ''
-        - '&a► Click para comprar.'
+          - '&8AJustes de Compra'
+          - ''
+          - '&8 ● &fSi todo esta correctamente'
+          - '   &fconfigurado haga click para comprar'
+          - ''
+          - '&a► Click para comprar.'
 
 
       information:
@@ -363,15 +363,15 @@ inventories:
         display_name: '#FBD008Information'
         glowing: false
         item_flags:
-        - HIDE_ATTRIBUTES
+          - HIDE_ATTRIBUTES
         lore:
-        - '&8Información'
-        - ''
-        - '&8 ● &f{displayName}'
-        - '&8 ● &f{material}'
-        - '&8 ● &f{price}'
-        - ''
-        - '&a► Click para comprar.'
+          - '&8Información'
+          - ''
+          - '&8 ● &f{displayName}'
+          - '&8 ● &f{material}'
+          - '&8 ● &f{price}'
+          - ''
+          - '&a► Click para comprar.'
 
     # Here you will find the fixed buttons (You can deactivate them if you don't need them)
     # In this section you will not be able to add new items to the menu, only edit the current ones.
@@ -386,7 +386,7 @@ inventories:
         display_name: '&cClose'
         glowing: false
         item_flags:
-        - HIDE_ATTRIBUTES
+          - HIDE_ATTRIBUTES
         lore: []
       back:
         enabled: true
@@ -397,7 +397,257 @@ inventories:
         display_name: '&cRegresar'
         glowing: false
         item_flags:
-        - HIDE_ATTRIBUTES
+          - HIDE_ATTRIBUTES
+        lore: []
+
+    custom-items: []
+  #  back:
+  #    material: ARROW
+  #    amount: 1
+  #    display_name: '&aBack'
+  #    lore: [ ]
+  #    slot: 39
+  #    actions:
+  #      - "[command] dm open Menu {player}"
+
+  sell-all-confirmation:
+    # The title of the inventory.
+    title: '&8☀ Confirmar Venta: &f{item}'
+    # The size of the inventory.
+    # Must be a multiple of 9. (9, 18, 27, 36, 45, 54)
+    size: 45
+
+    items:
+      quantity-controls:
+        # Para que funcione correctamente debe saber:
+        #           set_amount: # Es la cantidad que se incrementara / disminuira al item
+        # Use + para aumentar
+        # Use - para disminuir
+        # No use ningun signo para establecer la cantidad.
+
+        decrease_small:
+          slot: 21
+          material: RED_STAINED_GLASS_PANE
+          amount: 1
+          model_data: 0
+          display_name: '#FB0808Remover 1'
+          glowing: false
+          set_amount: -1
+          item_flags:
+            - HIDE_ATTRIBUTES
+          lore:
+            - '&8AJustes de Compra'
+            - ''
+            - '&8 ● &fEsto eliminará #FB08081'
+            - '   &fitems de la cantidad'
+            - ''
+            - '#FB0808► Click para configurar.'
+
+        decrease_medium:
+          slot: 22
+          material: RED_STAINED_GLASS_PANE
+          amount: 5
+          model_data: 0
+          display_name: '#FB0808Remover 5'
+          glowing: false
+          set_amount: -5
+          item_flags:
+            - HIDE_ATTRIBUTES
+          lore:
+            - '&8AJustes de Compra'
+            - ''
+            - '&8 ● &fEsto eliminará #FB08085'
+            - '   &fitems de la cantidad'
+            - ''
+            - '#FB0808► Click para configurar.'
+
+        decrease_big:
+          slot: 23
+          material: RED_STAINED_GLASS_PANE
+          amount: 10
+          model_data: 0
+          display_name: '#FB0808Remover 10'
+          glowing: false
+          set_amount: -10
+          item_flags:
+            - HIDE_ATTRIBUTES
+          lore:
+            - '&8AJustes de Compra'
+            - ''
+            - '&8 ● &fEsto eliminará #FB08085'
+            - '   &fitems de la cantidad'
+            - ''
+            - '#FB0808► Click para configurar.'
+
+        decrease:
+          slot: 25
+          material: RED_STAINED_GLASS
+          amount: 1
+          model_data: 0
+          display_name: '#FB0808Set 1'
+          glowing: false
+          set_amount: 1
+          item_flags:
+            - HIDE_ATTRIBUTES
+          lore:
+            - '&8AJustes de Compra'
+            - ''
+            - '&8 ● &fEsto eliminará #FB08085'
+            - '   &fitems de la cantidad'
+            - ''
+            - '#FB0808► Click para configurar.'
+
+
+        increase_small:
+          slot: 12
+          material: LIME_STAINED_GLASS_PANE
+          amount: 1
+          model_data: 0
+          display_name: '#FBD008Añadir 1'
+          glowing: false
+          set_amount: +1
+          item_flags:
+            - HIDE_ATTRIBUTES
+          lore:
+            - '&8AJustes de Compra'
+            - ''
+            - '&8 ● &fEsto agregará #FBD0081'
+            - '   &fitems a la cantidad'
+            - ''
+            - '#FBD008► Click para configurar.'
+
+        increase_medium:
+          slot: 13
+          material: LIME_STAINED_GLASS_PANE
+          amount: 5
+          model_data: 0
+          display_name: '#FBD008Añadir 5'
+          glowing: false
+          set_amount: +5
+          item_flags:
+            - HIDE_ATTRIBUTES
+          lore:
+            - '&8AJustes de Compra'
+            - ''
+            - '&8 ● &fEsto agregará #FBD0085'
+            - '   &fitems a la cantidad'
+            - ''
+            - '#FBD008► Click para configurar.'
+
+        increase_big:
+          slot: 14
+          material: LIME_STAINED_GLASS_PANE
+          amount: 10
+          model_data: 0
+          display_name: '#FBD008Añadir 10'
+          glowing: false
+          set_amount: +10
+          item_flags:
+            - HIDE_ATTRIBUTES
+          lore:
+            - '&8AJustes de Compra'
+            - ''
+            - '&8 ● &fEsto agregará #FBD0085'
+            - '   &fitems a la cantidad'
+            - ''
+            - '#FBD008► Click para configurar.'
+
+        increase:
+          slot: 16
+          material: LIME_STAINED_GLASS
+          amount: 64
+          model_data: 0
+          display_name: '#FBD008Set 64'
+          glowing: false
+          set_amount: 64
+          item_flags:
+            - HIDE_ATTRIBUTES
+          lore:
+            - '&8AJustes de Compra'
+            - ''
+            - '&8 ● &fEsto agregará #FBD0085'
+            - '   &fitems a la cantidad'
+            - ''
+            - '#FBD008► Click para configurar.'
+
+      sell-inventory:
+        slot: 28
+        material: ENDER_CHEST
+        amount: 1
+        model_data: 0
+        display_name: '#FBD008Seleccionar Stacks'
+        glowing: true
+        item_flags:
+          - HIDE_ATTRIBUTES
+        lore:
+          - '&8AJustes de Compra'
+          - ''
+          - '&8 ● &fAbre un menú para seleccionar'
+          - '   &fentre 1 a 12 stacks completos'
+          - ''
+          - '#FBD008► Click para abrir selector.'
+
+      confirm:
+        slot: 41
+        material: LIME_CONCRETE
+        amount: 1
+        model_data: 0
+        display_name: '#FBD008Confirmar Compra'
+        glowing: false
+        item_flags:
+          - HIDE_ATTRIBUTES
+        lore:
+          - '&8AJustes de Compra'
+          - ''
+          - '&8 ● &fSi todo esta correctamente'
+          - '   &fconfigurado haga click para comprar'
+          - ''
+          - '&a► Click para comprar.'
+
+
+      information:
+        slot: 4
+        material: NETHER_STAR
+        amount: 1
+        model_data: 0
+        display_name: '#FBD008Information'
+        glowing: false
+        item_flags:
+          - HIDE_ATTRIBUTES
+        lore:
+          - '&8Información'
+          - ''
+          - '&8 ● &f{displayName}'
+          - '&8 ● &f{material}'
+          - '&8 ● &f{price}'
+          - ''
+          - '&a► Click para comprar.'
+
+    # Here you will find the fixed buttons (You can deactivate them if you don't need them)
+    # In this section you will not be able to add new items to the menu, only edit the current ones.
+    # If you want to add more items use the custom-items section:
+    buttons:
+      close:
+        enabled: true
+        material: BOOK
+        slot: 40
+        amount: 1
+        model_data: 0
+        display_name: '&cClose'
+        glowing: false
+        item_flags:
+          - HIDE_ATTRIBUTES
+        lore: []
+      back:
+        enabled: true
+        material: ARROW
+        slot: 39
+        amount: 1
+        model_data: 0
+        display_name: '&cRegresar'
+        glowing: false
+        item_flags:
+          - HIDE_ATTRIBUTES
         lore: []
 
     custom-items: []
@@ -432,14 +682,14 @@ inventories:
           display_name: '#FBD0081 Stack'
           glowing: false
           item_flags:
-          - HIDE_ATTRIBUTES
+            - HIDE_ATTRIBUTES
           lore:
-          - '&8Selector de Stacks'
-          - ''
-          - '&8 ● &fSeleccionar #FBD0081 stack'
-          - '   &f(64 items)'
-          - ''
-          - '#FBD008► Click para seleccionar.'
+            - '&8Selector de Stacks'
+            - ''
+            - '&8 ● &fSeleccionar #FBD0081 stack'
+            - '   &f(64 items)'
+            - ''
+            - '#FBD008► Click para seleccionar.'
 
 
     # Here you find the fixed buttons (You can disable it if you don't need it)
@@ -456,7 +706,7 @@ inventories:
         display_name: '&cClose'
         glowing: false
         item_flags:
-        - HIDE_ATTRIBUTES
+          - HIDE_ATTRIBUTES
         lore: []
 
       back:
@@ -468,7 +718,7 @@ inventories:
         display_name: '&cBack'
         glowing: false
         item_flags:
-        - HIDE_ATTRIBUTES
+          - HIDE_ATTRIBUTES
         lore: []
 
 

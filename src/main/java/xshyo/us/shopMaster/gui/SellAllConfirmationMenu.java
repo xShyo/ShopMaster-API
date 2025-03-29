@@ -9,15 +9,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import xshyo.us.shopMaster.ShopMaster;
 import xshyo.us.shopMaster.enums.TypeService;
-import xshyo.us.shopMaster.services.PurchaseService;
-import xshyo.us.shopMaster.shop.data.ShopItem;
+import xshyo.us.shopMaster.managers.SellManager;
 import xshyo.us.shopMaster.shop.Shop;
+import xshyo.us.shopMaster.shop.data.ShopItem;
 import xshyo.us.shopMaster.utilities.PluginUtils;
 import xshyo.us.shopMaster.utilities.menu.Controls;
-import xshyo.us.shopMaster.utilities.menu.controls.CategoryControls;
 import xshyo.us.shopMaster.utilities.menu.controls.categories.ConfirmControls;
 import xshyo.us.shopMaster.utilities.menu.controls.categories.InformationControls;
-import xshyo.us.shopMaster.utilities.menu.controls.purchase.StackSelectorControls;
+import xshyo.us.shopMaster.utilities.menu.controls.sell.SellInventoryControls;
 import xshyo.us.shopMaster.utilities.menu.controls.stacks.BackControls;
 import xshyo.us.shopMaster.utilities.menu.controls.stacks.CloseControls;
 import xshyo.us.theAPI.utilities.Utils;
@@ -25,32 +24,86 @@ import xshyo.us.theAPI.utilities.item.ItemBuilder;
 
 import java.util.*;
 
-public class PurchaseConfirmationMenu {
+public class SellAllConfirmationMenu {
 
     private final Player viewer;
     private final ShopItem item;
-    private final Gui confirmationMenu;
+
+    private final Shop shop;
+    private final Gui sellAllMenu;
+    private final int returnPage;
     private int quantity = 1;
     private final double pricePerUnit;
-    private final Shop shop;
-    private final int returnPage;
+
     private final ShopMaster plugin;
-    private static final String MENU_PATH = "inventories.purchase-confirmation";
+    private static final String MENU_PATH = "inventories.sell-all-confirmation";
     private final Set<Integer> reservedSlots = new HashSet<>();
+    private final SellManager sellManager;
 
-
-    public PurchaseConfirmationMenu(Player viewer, ShopItem item, Shop shop, int returnPage) {
+    public SellAllConfirmationMenu(Player viewer, ShopItem item, Shop shop, int returnPage) {
         this.viewer = viewer;
         this.item = item;
         this.shop = shop;
         this.returnPage = returnPage;
-        this.pricePerUnit = item.getBuyPrice();
+        this.pricePerUnit = item.getSellPrice();
         this.plugin = ShopMaster.getInstance();
-        this.confirmationMenu = initializeGui();
+        this.sellManager = plugin.getSellManager();
+        this.sellAllMenu = initializeGui();
         this.quantity = Math.max(1, item.getAmount());
 
     }
 
+    public void openMenu() {
+        // Limpiar el menú y resetear los slots reservados
+        reservedSlots.clear();
+
+        for (int i = 0; i < sellAllMenu.getRows() * 9; i++) {
+            sellAllMenu.removeItem(i);
+        }
+
+        // Configurar botones de cierre
+        PluginUtils.loadSingleButton(MENU_PATH + ".buttons.close", plugin.getLayouts(),
+                path -> new CloseControls(MENU_PATH + ".buttons.close"),
+                sellAllMenu.getRows()
+        ).forEach((slot, controls) -> {
+            if (controls.getButtonItem(viewer).getType() != Material.AIR) {
+                sellAllMenu.setItem(slot, new GuiItem(controls.getButtonItem(viewer), event -> viewer.closeInventory()));
+                reservedSlots.add(slot);
+            }
+        });
+
+        // Configurar botones de retorno
+        PluginUtils.loadSingleButton(MENU_PATH + ".buttons.back", plugin.getLayouts(),
+                path -> new BackControls(MENU_PATH + ".buttons.back"),
+                sellAllMenu.getRows()
+        ).forEach((slot, controls) -> {
+            if (controls.getButtonItem(viewer).getType() != Material.AIR) {
+                sellAllMenu.setItem(slot, new GuiItem(controls.getButtonItem(viewer), event ->
+                        new ShopCategoryMenu(viewer, shop).openMenu(returnPage)));
+                reservedSlots.add(slot);
+            }
+        });
+
+
+        // Configurar controles de cantidad
+        setupDirectQuantityControls();
+
+        // Configurar ítems personalizados
+        setupCustomItems();
+
+        updateItemsWithQuantity();
+
+        // Rellenar slots vacíos
+        fillEmptySlots();
+
+        String title = plugin.getLayouts().getString(MENU_PATH + ".title", "&8Confirmar Venta: &f{item}");
+        title = title.replace("{item}", item.getDisplayName());
+        title = PluginUtils.formatTitle(title);
+        sellAllMenu.updateTitle(Utils.translate(title));
+
+        sellAllMenu.setDefaultClickAction(event -> event.setCancelled(true));
+        sellAllMenu.open(viewer);
+    }
 
     private void setupDirectQuantityControls() {
         Section quantityControlsSection = plugin.getLayouts().getSection(MENU_PATH + ".items.quantity-controls");
@@ -69,9 +122,10 @@ public class PurchaseConfirmationMenu {
             boolean isAbsolute = !(setAmountStr.startsWith("+") || setAmountStr.startsWith("-"));
             int changeValue = Integer.parseInt(setAmountStr.startsWith("+") ? setAmountStr.substring(1) : setAmountStr);
 
-            int maxStackSize = item.createItemStack().getMaxStackSize();
+            // Verificar que el cambio de cantidad sea válido
+            int playerInventoryItemCount = getTotalItemCountInPlayerInventory();
+            boolean shouldDisplay = isValidQuantityChange(changeValue, isAbsolute, playerInventoryItemCount);
 
-            boolean shouldDisplay = isValidQuantityChange(changeValue, isAbsolute, maxStackSize);
             if (shouldDisplay) {
                 Material material = Material.valueOf(controlSection.getString("material", "STONE"));
                 int amount = controlSection.getInt("amount", 1);
@@ -86,37 +140,41 @@ public class PurchaseConfirmationMenu {
                 final boolean finalIsAbsolute = isAbsolute;
 
                 reservedSlots.add(slot);
-                confirmationMenu.setItem(slot, new GuiItem(controlItem, event -> {
+                sellAllMenu.setItem(slot, new GuiItem(controlItem, event -> {
                     event.setCancelled(true);
                     updateQuantityDirectly(finalChangeValue, finalIsAbsolute);
                 }));
-            } else {
-                // Si no se debe mostrar, eliminar el ítem del slot
-                confirmationMenu.removeItem(slot);
-                reservedSlots.remove(slot);
             }
         }
     }
 
+    private int getTotalItemCountInPlayerInventory() {
+        int totalCount = 0;
+        for (ItemStack item : viewer.getInventory().getContents()) {
+            if (item != null && !item.getType().isAir()) {
+                totalCount += item.getAmount();
+            }
+        }
+        return totalCount;
+    }
 
-    private boolean isValidQuantityChange(int changeValue, boolean isAbsolute, int maxStackSize) {
-        // Si el stack máximo es 1, no mostrar ningún botón de cambio de cantidad
-        if (maxStackSize <= 1) {
+    private boolean isValidQuantityChange(int changeValue, boolean isAbsolute, int maxInventoryCount) {
+        if (maxInventoryCount <= 0) {
             return false;
         }
 
         if (isAbsolute) {
-            // Para valores absolutos, verificar que estén dentro del rango del stack máximo
-            return changeValue >= 1 && changeValue <= maxStackSize;
+            // Para valores absolutos, verificar que estén dentro del rango del inventario
+            return changeValue >= 1 && changeValue <= maxInventoryCount;
         } else {
-            // Para cambios relativos, verificar que el resultado esté dentro del rango del stack máximo
+            // Para cambios relativos, verificar que el resultado esté dentro del rango del inventario
             int resultingQuantity = quantity + changeValue;
-            return resultingQuantity >= 1 && resultingQuantity <= maxStackSize;
+            return resultingQuantity >= 1 && resultingQuantity <= maxInventoryCount;
         }
     }
 
-
     private void updateQuantityDirectly(int changeValue, boolean isAbsolute) {
+        int maxInventoryCount = getTotalItemCountInPlayerInventory();
         int newQuantity;
 
         if (isAbsolute) {
@@ -126,21 +184,16 @@ public class PurchaseConfirmationMenu {
         }
 
         // Asegurar que la nueva cantidad esté dentro del rango válido
-        newQuantity = Math.max(1, Math.min(64, newQuantity));
+        newQuantity = Math.max(1, Math.min(maxInventoryCount, newQuantity));
 
         // Actualizar la cantidad
         quantity = newQuantity;
 
-        // Debug log
-        System.out.println("Updating quantity to: " + quantity);
-
-        // Actualizar los ítems del menú
         updateItemsWithQuantity();
+
     }
 
-
     private void updateItemsWithQuantity() {
-
         setupDirectQuantityControls();
 
 
@@ -148,110 +201,51 @@ public class PurchaseConfirmationMenu {
         ItemStack itemdisplay = new ItemStack(item.createItemStack());
         itemdisplay.setAmount(quantity);
 
-
         GuiItem guiItem = new GuiItem(itemdisplay, event -> event.setCancelled(true));
-        confirmationMenu.updateItem(displaySlot, guiItem);
-
+        sellAllMenu.updateItem(displaySlot, guiItem);
         reservedSlots.add(displaySlot);
-
 
         // Actualizar confirm item
         PluginUtils.loadSingleButton(MENU_PATH + ".items.confirm", plugin.getLayouts(),
-                path -> new ConfirmControls(MENU_PATH + ".items.confirm", quantity, item, null, TypeService.BUY),
-                confirmationMenu.getRows()
+                path -> new ConfirmControls(MENU_PATH + ".items.confirm", quantity, item, sellManager, TypeService.SELL),
+                sellAllMenu.getRows()
         ).forEach((slot, controls) -> {
             if (controls.getButtonItem(viewer).getType() != Material.AIR) {
-                confirmationMenu.updateItem(slot, new GuiItem(controls.getButtonItem(viewer),
+                sellAllMenu.updateItem(slot, new GuiItem(controls.getButtonItem(viewer),
                         event -> new ConfirmControls(MENU_PATH + ".items.confirm", quantity, item, null, TypeService.BUY).clicked(viewer, event.getSlot(), event.getClick(), event.getHotbarButton())));
                 reservedSlots.add(slot);
             }
         });
 
-        // Actualizar information item
         PluginUtils.loadSingleButton(MENU_PATH + ".items.information", plugin.getLayouts(),
-                path -> new InformationControls(MENU_PATH + ".items.information", quantity, item, TypeService.BUY),
-                confirmationMenu.getRows()
+                path -> new InformationControls(MENU_PATH + ".items.information", quantity, item, TypeService.SELL),
+                sellAllMenu.getRows()
         ).forEach((slot, controls) -> {
             if (controls.getButtonItem(viewer).getType() != Material.AIR) {
-                confirmationMenu.updateItem(slot, new GuiItem(controls.getButtonItem(viewer)));
+                sellAllMenu.updateItem(slot, new GuiItem(controls.getButtonItem(viewer)));
                 reservedSlots.add(slot);
             }
         });
+
+
 
         // Actualizar stack_selector item
-        PluginUtils.loadSingleButton(MENU_PATH + ".items.stack_selector", plugin.getLayouts(),
-                path -> new StackSelectorControls(MENU_PATH + ".items.stack_selector", String.valueOf(quantity),
+        PluginUtils.loadSingleButton(MENU_PATH + ".items.sell-inventory", plugin.getLayouts(),
+                path -> new SellInventoryControls(MENU_PATH + ".items.sell-inventory", String.valueOf(quantity),
                         String.valueOf(pricePerUnit), String.valueOf(pricePerUnit * quantity), item.getDisplayName(),
                         item.getDisplayName(), item.getMaterial()),
-                confirmationMenu.getRows()
+                sellAllMenu.getRows()
         ).forEach((slot, controls) -> {
             if (controls.getButtonItem(viewer).getType() != Material.AIR) {
-                confirmationMenu.updateItem(slot, new GuiItem(controls.getButtonItem(viewer),
-                        event -> {
-//                            openStackSelector();
-                        }));
+                sellAllMenu.updateItem(slot, new GuiItem(controls.getButtonItem(viewer),
+                        event -> sellManager.sellAllItemOfType(viewer, itemdisplay)));
                 reservedSlots.add(slot);
             }
         });
 
 
-        // Actualizar la GUI
-        confirmationMenu.update();
     }
 
-    public void openMenu() {
-        // Limpiar el menú y resetear los slots reservados
-        reservedSlots.clear();
-
-        for (int i = 0; i < confirmationMenu.getRows() * 9; i++) {
-            confirmationMenu.removeItem(i);
-        }
-
-        setupDirectQuantityControls();
-
-
-        // Configurar botones de cierre
-        PluginUtils.loadSingleButton(MENU_PATH + ".buttons.close", plugin.getLayouts(),
-                path -> new CloseControls(MENU_PATH + ".buttons.close"),
-                confirmationMenu.getRows()
-        ).forEach((slot, controls) -> {
-            if (controls.getButtonItem(viewer).getType() != Material.AIR) {
-                confirmationMenu.setItem(slot, new GuiItem(controls.getButtonItem(viewer), event -> viewer.closeInventory()));
-                reservedSlots.add(slot);
-            }
-        });
-
-        // Configurar botones de cierre
-        PluginUtils.loadSingleButton(MENU_PATH + ".buttons.back", plugin.getLayouts(),
-                path -> new BackControls(MENU_PATH + ".buttons.back"),
-                confirmationMenu.getRows()
-        ).forEach((slot, controls) -> {
-            if (controls.getButtonItem(viewer).getType() != Material.AIR) {
-                confirmationMenu.setItem(slot, new GuiItem(controls.getButtonItem(viewer), event ->
-                        new ShopCategoryMenu(viewer, shop).openMenu(1)));
-                reservedSlots.add(slot);
-            }
-        });
-
-        // Configurar ítems personalizados
-        setupCustomItems();
-
-        // Ahora actualizar los ítems relacionados con la cantidad
-        updateItemsWithQuantity();
-
-        // Rellenar slots vacíos
-        fillEmptySlots();
-
-        // Actualizar el título del menú
-        String title = plugin.getLayouts().getString(MENU_PATH + ".title", "&8Confirmar Compra: &f{item}");
-        title = title.replace("{item}", item.getDisplayName());
-        title = PluginUtils.formatTitle(title);
-        confirmationMenu.updateTitle(Utils.translate(title));
-
-
-        confirmationMenu.setDefaultClickAction(event -> event.setCancelled(true));
-        confirmationMenu.open(viewer);
-    }
 
     private Gui initializeGui() {
         int configSize = plugin.getLayouts().getInt(MENU_PATH + ".size");
@@ -262,14 +256,13 @@ public class PurchaseConfirmationMenu {
                 .create();
     }
 
-
     private void setupCustomItems() {
         Map<Integer, Controls> customButtons = PluginUtils.loadCustomButtons(MENU_PATH + ".custom-items"
-                , plugin.getLayouts(), confirmationMenu.getRows());
+                , plugin.getLayouts(), sellAllMenu.getRows());
 
         customButtons.forEach((slot, button) -> {
             if (!reservedSlots.contains(slot)) {
-                confirmationMenu.setItem(slot, new GuiItem(
+                sellAllMenu.setItem(slot, new GuiItem(
                         button.getButtonItem(viewer),
                         event -> button.clicked(viewer, event.getSlot(), event.getClick(), event.getHotbarButton())
                 ));
@@ -279,15 +272,14 @@ public class PurchaseConfirmationMenu {
     }
 
     private void fillEmptySlots() {
-        for (int slot = 0; slot < confirmationMenu.getInventory().getSize(); slot++) {
+        for (int slot = 0; slot < sellAllMenu.getInventory().getSize(); slot++) {
             if (!reservedSlots.contains(slot)) {
-                confirmationMenu.setItem(slot, new GuiItem(
+                sellAllMenu.setItem(slot, new GuiItem(
                         new ItemStack(Material.AIR),
                         event -> event.setCancelled(true)
                 ));
             }
         }
     }
-
 
 }
