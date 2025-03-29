@@ -16,6 +16,12 @@ MESSAGES:
       SUCCESS: "&aCompra exitosa! Has comprado {1} {2} por {3}"
       NO_SPACE: "No tienes suficiente espacio para comprar esto."
     SELL:
+      SUCCESS: "&aHas vendido &e{1}x {2} &apor &e${3}"
+      WORLD_BLACKLISTED: "&cNo puedes usar este comando en este mundo"
+      GAMEMODE_BLACKLISTED: "&cNo puedes usar este comando en tu modo de juego actual."
+      NOT_SELLABLE: "&cEste ítem no se puede vender."
+      INVALID_ECONOMY: "&cLa economy del item esta incorrecta por favor avise a un administrador."
+      ERROR: "&cHa ocurrido un error al vender el ítem."
 
 
   # Commands

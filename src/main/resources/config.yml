@@ -1,4 +1,41 @@
 config:
+  number-format:
+    # SEPARADORES BÁSICOS
+    decimal-separator: "."         # Carácter para separar decimales (ej: 10.5)
+    grouping-separator: ","        # Carácter para separar miles (ej: 1,000)
+
+    # CONFIGURACIÓN DE DÍGITOS ENTEROS
+    minimum-integer-digits: 1       # Mínimo de dígitos para la parte entera (ej: 01 vs 1)
+    maximum-integer-digits: 32      # Máximo de dígitos permitidos para la parte entera
+
+    # CONFIGURACIÓN DE DECIMALES
+    minimum-fraction-digits: 0      # Mínimo de decimales a mostrar
+    maximum-fraction-digits: 8      # Máximo de decimales a mostrar
+
+    hide-fraction: true            # Si es true, oculta decimales innecesarios (100.00 → 100)
+
+    # NOTACIÓN ABREVIADA (MILLONES, BILLONES, ETC.)
+    short-scale:
+      enable-numbering: false   # Activar notación abreviada (ej: 1 millón en vez de 1,000,000)
+      limit: 1000000           # Número a partir del cual se usa notación abreviada
+      hand-decimal-limit: 2           # Decimales máximos en notación abreviada
+      hand-number-limit: 32           # Dígitos máximos en notación abreviada
+
+      # Lista de sufijos para cada rango numérico.
+      # IMPORTANTE: El orden determina qué sufijo se usa para cada magnitud:
+      # - El 1er elemento (índice 0) se usa para números entre 0 y 999
+      # - El 2do elemento (índice 1) se usa para números entre 1,000 y 999,999
+      # - El 3er elemento (índice 2) se usa para números entre 1,000,000 y 999,999,999
+      # - Y así sucesivamente, multiplicando por 1000 en cada nivel
+      suffixes:
+        - ""    # Unidades: 0-999 (sin sufijo)
+        - "K"   # Miles: 1,000-999,999 (Kilo)
+        - "M"   # Millones: 1,000,000-999,999,999 (Mega)
+        - "B"   # Billones: 1,000,000,000-999,999,999,999 (Billion)
+        - "T"   # Trillones: 1,000,000,000,000-999,999,999,999,999 (Trillion)
+        - "Q"   # Cuatrillones: 1,000,000,000,000,000+ (Quadrillion)
+        # Puedes agregar más sufijos según necesites
+
 
   gui:
 

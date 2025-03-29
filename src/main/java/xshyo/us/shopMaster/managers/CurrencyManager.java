@@ -1,7 +1,6 @@
-package xshyo.us.shopMaster.superclass;
+package xshyo.us.shopMaster.managers;
 
 import me.mraxetv.beasttokens.api.BeastTokensAPI;
-import me.realized.tokenmanager.TokenManagerPlugin;
 import org.black_ixx.playerpoints.PlayerPoints;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -56,31 +55,6 @@ public abstract class CurrencyManager {
                 Bukkit.getConsoleSender().sendMessage(Utils.translate("&e[ShopMaster] Vault is not available! Changing cost type to " + costType.name() + "' type!"));
 
             }
-        } else if (costType == CurrencyType.TOKEN_MANAGER) {
-            if (Bukkit.getPluginManager().isPluginEnabled("TokenManager")) {
-                try {
-                    TokenManagerPlugin.getInstance().getConfig();
-                    Bukkit.getConsoleSender().sendMessage(Utils.translate("&a[ShopMaster] Currency Type 'TOKEN_MANAGER' has been enabled!"));
-
-                } catch (Throwable e) {
-                    costType = defaultCostType;
-                    if (costType == null || costType == CurrencyType.DISABLED) {
-                        Bukkit.getConsoleSender().sendMessage(Utils.translate("&e[ShopMaster] TokenManager is not available! Disabling economy support.."));
-                        return null;
-                    }
-                    Bukkit.getConsoleSender().sendMessage(Utils.translate("&e[ShopMaster] TokenManager is not available! Changing cost type to " + costType.name() + "' type!"));
-
-                }
-            } else {
-                costType = defaultCostType;
-                if (costType == null || costType == CurrencyType.DISABLED) {
-                    Bukkit.getConsoleSender().sendMessage(Utils.translate("&e[ShopMaster] TokenManager is not available! Disabling economy support.."));
-
-                    return null;
-                }
-                Bukkit.getConsoleSender().sendMessage(Utils.translate("&e[ShopMaster] TokenManager is not available! Changing cost type to " + costType.name() + "' type!"));
-
-            }
         } else if (costType == CurrencyType.PLAYER_POINTS) {
             if (Bukkit.getPluginManager().isPluginEnabled("PlayerPoints")) {
                 try {
@@ -125,34 +99,10 @@ public abstract class CurrencyManager {
                 }
                 Bukkit.getConsoleSender().sendMessage(Utils.translate("&e[ShopMaster] BeastTokens is not available! Changing cost type to " + costType.name() + "' type!"));
             }
-        }else if (costType == CurrencyType.LEVEL) {
-            if (Bukkit.getPluginManager().isPluginEnabled("L")) {
-                try {
-                    BeastTokensAPI.getTokensManager();
-                    Bukkit.getConsoleSender().sendMessage(Utils.translate("&a[ShopMaster] Currency Type 'BEAST_TOKENS' has been enabled!"));
-
-                } catch (Throwable e) {
-                    costType = defaultCostType;
-                    if (costType == null || costType == CurrencyType.DISABLED) {
-                        Bukkit.getConsoleSender().sendMessage(Utils.translate("&e[ShopMaster] BeastTokens is not available! Disabling economy support.."));
-                        return null;
-                    }
-                    Bukkit.getConsoleSender().sendMessage(Utils.translate("&e[ShopMaster] BeastTokens is not available! Changing cost type to " + costType.name() + "' type!"));
-                }
-            } else {
-                costType = defaultCostType;
-                if (costType == null || costType == CurrencyType.DISABLED) {
-                    Bukkit.getConsoleSender().sendMessage(Utils.translate("&e[ShopMaster] BeastTokens is not available! Disabling economy support.."));
-                    return null;
-                }
-                Bukkit.getConsoleSender().sendMessage(Utils.translate("&e[ShopMaster] BeastTokens is not available! Changing cost type to " + costType.name() + "' type!"));
-            }
         }
         switch (costType) {
             case PLAYER_POINTS:
                 return new PlayerPointsHook(PlayerPoints.getInstance().getAPI());
-            case TOKEN_MANAGER:
-                return new TokenManagerHook((TokenManagerPlugin)Bukkit.getPluginManager().getPlugin("TokenManager"));
             case VAULT:
                 return new VaultHook(ShopMaster.getInstance().getEconomy());
             case BEAST_TOKENS:

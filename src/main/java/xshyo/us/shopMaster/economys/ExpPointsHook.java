@@ -3,7 +3,7 @@ package xshyo.us.shopMaster.economys;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import xshyo.us.shopMaster.enums.CurrencyType;
-import xshyo.us.shopMaster.superclass.CurrencyManager;
+import xshyo.us.shopMaster.managers.CurrencyManager;
 
 import java.util.UUID;
 

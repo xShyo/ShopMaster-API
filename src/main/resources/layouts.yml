@@ -418,6 +418,11 @@ inventories:
     size: 45
 
     items:
+      # Este es el display del item que se comprará (Solo puedes habicar la posicion)
+      display:
+        # Slot en el que se mostrara el item que se desea comprar
+        slot: 10
+
       quantity-controls:
         # Para que funcione correctamente debe saber:
         #           set_amount: # Es la cantidad que se incrementara / disminuira al item

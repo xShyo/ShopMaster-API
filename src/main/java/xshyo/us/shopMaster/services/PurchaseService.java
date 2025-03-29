@@ -5,11 +5,10 @@ import org.bukkit.inventory.ItemStack;
 import xshyo.us.shopMaster.ShopMaster;
 import xshyo.us.shopMaster.enums.CurrencyType;
 import xshyo.us.shopMaster.shop.data.ShopItem;
-import xshyo.us.shopMaster.superclass.CurrencyManager;
+import xshyo.us.shopMaster.managers.CurrencyManager;
 import xshyo.us.shopMaster.utilities.PluginUtils;
 
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.HashMap;
 
 public class PurchaseService {
 
@@ -20,7 +19,7 @@ public class PurchaseService {
      * @param item     El ítem de la tienda a comprar
      * @param quantity La cantidad a comprar
      */
-    public static void processPurchase(Player player, ShopItem item, int quantity) {
+    public void processPurchase(Player player, ShopItem item, int quantity) {
         double pricePerUnit = (double) item.getBuyPrice() / item.getAmount(); // Ajusta el precio por unidad correctamente
         double totalPrice = pricePerUnit * quantity;
 
@@ -35,7 +34,8 @@ public class PurchaseService {
 
         if (!currencyManager.hasEnough(player, totalPrice)) {
             player.closeInventory();
-            PluginUtils.sendMessage(player, "MESSAGES.GUI.PURCHASE.NOT_ENOUGH", totalPrice);
+            String formattedPrice = ShopMaster.getInstance().getNumberFormatter().format(totalPrice);
+            PluginUtils.sendMessage(player, "MESSAGES.GUI.PURCHASE.NOT_ENOUGH", formattedPrice);
             return;
         }
 
@@ -70,13 +70,12 @@ public class PurchaseService {
             return;
         }
 
-        PluginUtils.sendMessage(player, "MESSAGES.GUI.PURCHASE.SUCCESS", quantity, item.getDisplayName(), totalPrice);
+        String formattedPrice = ShopMaster.getInstance().getNumberFormatter().format(totalPrice);
+        PluginUtils.sendMessage(player, "MESSAGES.GUI.PURCHASE.SUCCESS", quantity, item.getDisplayName(), formattedPrice);
         player.closeInventory();
     }
 
-
-
-    private static int countFreeSlots(Player player) {
+    private int countFreeSlots(Player player) {
         int freeSlots = 0;
         for (int i = 0; i < 36; i++) { // Solo contar los slots principales (0-35), no la armadura
             if (player.getInventory().getItem(i) == null) {
@@ -86,7 +85,7 @@ public class PurchaseService {
         return freeSlots;
     }
 
-    private static void giveItemsToPlayer(Player player, ShopItem item, int quantity) {
+    private void giveItemsToPlayer(Player player, ShopItem item, int quantity) {
         // Verificar si item o createItemStack() retorna null
         if (item == null) {
             return;
@@ -113,7 +112,7 @@ public class PurchaseService {
             stackItem.setAmount(maxStackSize);
 
             // Guardar los resultados para verificar si hubo problemas
-            java.util.HashMap<Integer, ItemStack> results = player.getInventory().addItem(stackItem);
+            HashMap<Integer, ItemStack> results = player.getInventory().addItem(stackItem);
             if (!results.isEmpty()) {
                 // Intentar tirar los ítems al suelo
                 for (ItemStack remaining : results.values()) {
@@ -132,7 +131,7 @@ public class PurchaseService {
             remainingItem.setAmount(remainingItems);
 
             // Guardar los resultados para verificar si hubo problemas
-            java.util.HashMap<Integer, ItemStack> results = player.getInventory().addItem(remainingItem);
+            HashMap<Integer, ItemStack> results = player.getInventory().addItem(remainingItem);
             if (!results.isEmpty()) {
                 // Intentar tirar los ítems al suelo
                 for (ItemStack remaining : results.values()) {
@@ -140,9 +139,5 @@ public class PurchaseService {
                 }
             }
         }
-
     }
-
-
-
 }

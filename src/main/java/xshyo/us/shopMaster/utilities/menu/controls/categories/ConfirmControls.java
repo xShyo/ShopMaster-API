@@ -8,8 +8,8 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import xshyo.us.shopMaster.ShopMaster;
 import xshyo.us.shopMaster.enums.TypeService;
-import xshyo.us.shopMaster.managers.SellManager;
 import xshyo.us.shopMaster.services.PurchaseService;
+import xshyo.us.shopMaster.services.SellService;
 import xshyo.us.shopMaster.shop.data.ShopItem;
 import xshyo.us.shopMaster.utilities.PluginUtils;
 import xshyo.us.shopMaster.utilities.menu.Controls;
@@ -27,7 +27,7 @@ public class ConfirmControls extends Controls {
     private final String path;
     private final int amount;
     private final ShopItem shopItem;
-    private final SellManager sellManager;
+    private final SellService sellService;
     private final TypeService typeService;
 
     @Override
@@ -98,30 +98,30 @@ public class ConfirmControls extends Controls {
     @Override
     public void clicked(Player player, int slot, ClickType clickType, int hotbarButton) {
         if (typeService == TypeService.BUY) {
-            PurchaseService.processPurchase(player, shopItem, amount);
+            plugin.getPurchaseService().processPurchase(player, shopItem, amount);
 
         }else{
 
-            SellManager.SellResult result = sellManager.sellItem(player, shopItem.createItemStack(), amount, true);
+            SellService.SellResult result = sellService.sellItem(player, shopItem.createItemStack(), amount, true);
 
             switch (result.status()) {
                 case SUCCESS:
-                    PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.SELL.HAND.SUCCESS", shopItem.getAmount(), PluginUtils.formatItemName(shopItem.createItemStack().getType()), result.price());
+                    PluginUtils.sendMessage(player, "MESSAGES.GUI.SELL.SUCCESS", amount, PluginUtils.formatItemName(shopItem.createItemStack().getType()), result.price());
                     break;
                 case WORLD_BLACKLISTED:
-                    PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.SELL.HAND.WORLD_BLACKLISTED");
+                    PluginUtils.sendMessage(player, "MESSAGES.GUI.SELL.WORLD_BLACKLISTED");
                     break;
                 case GAMEMODE_BLACKLISTED:
-                    PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.SELL.HAND.GAMEMODE_BLACKLISTED");
+                    PluginUtils.sendMessage(player, "MESSAGES.GUI.SELL.GAMEMODE_BLACKLISTED");
                     break;
                 case NOT_SELLABLE:
-                    PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.SELL.HAND.NOT_SELLABLE");
+                    PluginUtils.sendMessage(player, "MESSAGES.GUI.SELL.NOT_SELLABLE");
                     break;
                 case INVALID_ECONOMY:
-                    PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.SELL.HAND.INVALID_ECONOMY");
+                    PluginUtils.sendMessage(player, "MESSAGES.GUI.SELL.INVALID_ECONOMY");
                     break;
                 case ERROR:
-                    PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.SELL.HAND.ERROR");
+                    PluginUtils.sendMessage(player, "MESSAGES.GUI.SELL.ERROR");
                     break;
 
             }
