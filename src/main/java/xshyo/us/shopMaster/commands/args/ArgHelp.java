@@ -53,8 +53,6 @@ public class ArgHelp implements CommandArg {
                 TextComponent textComponent = getHelpCommandPagination(page);
                 if(textComponent != null){
                     s.spigot().sendMessage(textComponent);
-                }else{
-                    System.out.println("TextComponent null");
                 }
             } else {
                 PluginUtils.sendMessage(s, "MESSAGES.COMMANDS.HELP_USAGE");

@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import xshyo.us.shopMaster.ShopMaster;
+import xshyo.us.shopMaster.shop.data.ShopItem;
 import xshyo.us.shopMaster.utilities.menu.Controls;
 import xshyo.us.theAPI.utilities.Utils;
 import xshyo.us.theAPI.utilities.item.ItemBuilder;
@@ -19,12 +20,8 @@ public class SellInventoryControls extends Controls {
 
     private final ShopMaster plugin = ShopMaster.getInstance();
     private final String path;
-    private final String amount;
-    private final String price;
-    private final String totalPrice;
-    private final String item;
-    private final String display;
-    private final String material;
+    private final int amount;
+    private final ShopItem shopItem;
 
     @Override
     public ItemStack getButtonItem(Player player) {
@@ -66,10 +63,37 @@ public class SellInventoryControls extends Controls {
     }
 
 
+
     private String replacePlaceholders(String text) {
-        return text.replace("{amount}", String.valueOf(amount))
-                .replace("{price}", String.valueOf(price))
-                .replace("{totalPrice}", String.valueOf(totalPrice))
+        // Ajuste el precio por unidad
+        double pricePerUnit = (double) shopItem.getBuyPrice() / shopItem.getAmount();
+        double totalPrice = pricePerUnit * amount;
+
+        // Obtener el displayName, y si es nulo, usar el nombre del material
+        ItemStack itemStack = shopItem.createItemStack();
+        String item = itemStack.getItemMeta() != null && itemStack.getItemMeta().hasDisplayName()
+                ? itemStack.getItemMeta().getDisplayName()
+                : itemStack.getType().toString(); // Si no tiene displayName, usar el material
+
+        // Asegurarse de que display no sea null
+        String displayName = shopItem.getDisplayName();
+        String display = displayName != null ? displayName : item; // Si no tiene displayName, usar el nombre por defecto
+        String material = itemStack.getType().toString(); // Nombre del material
+
+        // Asegurarse de que ningún valor de reemplazo sea null
+        String amountStr = String.valueOf(amount);
+        String priceStr = String.valueOf(pricePerUnit);
+        String totalPriceStr = String.valueOf(totalPrice);
+
+        // Garantizar que item no sea null (aunque ya debería estar cubierto arriba)
+        if (item == null) item = "Unknown Item";
+
+        // Garantizar que display no sea null
+        if (display == null) display = "Unknown Item";
+
+        return text.replace("{amount}", amountStr)
+                .replace("{price}", priceStr)
+                .replace("{totalPrice}", totalPriceStr)
                 .replace("{item}", item)
                 .replace("{displayName}", display)
                 .replace("{material}", material);

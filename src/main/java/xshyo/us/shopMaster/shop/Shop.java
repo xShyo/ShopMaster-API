@@ -486,7 +486,7 @@ public class Shop {
 
                 buttonMap.put(buttonKey, button);
             } catch (Exception e) {
-                System.err.println("Error al cargar el botón " + buttonKey + ": " + e.getMessage());
+                System.err.println("Error loading button " + buttonKey + ": " + e.getMessage());
             }
         }
 

@@ -7,6 +7,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 import xshyo.us.shopMaster.commands.args.ArgHelp;
+import xshyo.us.shopMaster.commands.args.ArgMigrator;
 import xshyo.us.shopMaster.commands.args.ArgReload;
 import xshyo.us.shopMaster.superclass.AbstractCommand;
 import xshyo.us.shopMaster.utilities.PluginUtils;
@@ -86,5 +87,7 @@ public class JSCommand extends AbstractCommand {
     public static void addDefaultArguments() {
         ShopMaster.getInstance().getCommandArgs().add(new ArgHelp());
         ShopMaster.getInstance().getCommandArgs().add(new ArgReload());
+        ShopMaster.getInstance().getCommandArgs().add(new ArgMigrator());
+
     }
 }

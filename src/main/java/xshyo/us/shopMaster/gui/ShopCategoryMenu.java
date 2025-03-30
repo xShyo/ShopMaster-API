@@ -117,7 +117,6 @@ public class ShopCategoryMenu {
                           }
                         } else if (clickType.equals(sellButton)) {
                             new SellAllConfirmationMenu(viewer, shopItem, shop, currentPage).openMenu();
-                            System.out.println("sellItem(viewer, shopItem, shop)");
                         }
                     }));
 

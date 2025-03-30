@@ -83,17 +83,29 @@ public class ConfirmControls extends Controls {
                 ? itemStack.getItemMeta().getDisplayName()
                 : itemStack.getType().toString(); // Si no tiene displayName, usar el material
 
-        String display = shopItem.getDisplayName() != null ? shopItem.getDisplayName() : item; // Si no tiene displayName, usar el nombre por defecto
+        // Asegurarse de que display no sea null
+        String displayName = shopItem.getDisplayName();
+        String display = displayName != null ? displayName : item; // Si no tiene displayName, usar el nombre por defecto
         String material = itemStack.getType().toString(); // Nombre del material
 
-        return text.replace("{amount}", String.valueOf(amount))
-                .replace("{price}", String.valueOf(pricePerUnit))
-                .replace("{totalPrice}", String.valueOf(totalPrice))
+        // Asegurarse de que ningún valor de reemplazo sea null
+        String amountStr = String.valueOf(amount);
+        String priceStr = String.valueOf(pricePerUnit);
+        String totalPriceStr = String.valueOf(totalPrice);
+
+        // Garantizar que item no sea null (aunque ya debería estar cubierto arriba)
+        if (item == null) item = "Unknown Item";
+
+        // Garantizar que display no sea null
+        if (display == null) display = "Unknown Item";
+
+        return text.replace("{amount}", amountStr)
+                .replace("{price}", priceStr)
+                .replace("{totalPrice}", totalPriceStr)
                 .replace("{item}", item)
                 .replace("{displayName}", display)
                 .replace("{material}", material);
     }
-
 
     @Override
     public void clicked(Player player, int slot, ClickType clickType, int hotbarButton) {

@@ -99,7 +99,7 @@ public record ShopButton(String id, boolean enabled, String material, List<Integ
                     }
                 } catch (NumberFormatException e) {
                     // Manejar error de formato
-                    System.err.println("Error al parsear el rango de slots: " + slotConfig);
+                    System.err.println("Error when parsing the slot range: " + slotConfig);
                 }
             }
         } else {

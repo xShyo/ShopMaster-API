@@ -410,6 +410,7 @@ inventories:
   #    actions:
   #      - "[command] dm open Menu {player}"
 
+
   sell-all-confirmation:
     # The title of the inventory.
     title: '&8☀ Confirmar Venta: &f{item}'
@@ -666,6 +667,7 @@ inventories:
   #      - "[command] dm open Menu {player}"
 
 
+
   stack-selector:
     # The title of the inventory.
     title: '&8☀ Seleccionar Cantidad de Stacks'
@@ -675,7 +677,6 @@ inventories:
 
     #Esta es la categoria de items que se mostraran en el menú
     items:
-
       #Esta es la seccion de items que el jugador podra comprar por stack
       stack-controls:
         # Stack options (1-12)
@@ -685,6 +686,7 @@ inventories:
           amount: 1
           model_data: 0
           display_name: '#FBD0081 Stack'
+          stack_amount: 1
           glowing: false
           item_flags:
             - HIDE_ATTRIBUTES
@@ -695,6 +697,107 @@ inventories:
             - '   &f(64 items)'
             - ''
             - '#FBD008► Click para seleccionar.'
+
+        # Puedes agregar más opciones de stacks así
+        stack_2:
+          slot: 11
+          material: GRAY_STAINED_GLASS_PANE
+          amount: 2
+          model_data: 0
+          display_name: '#FBD0082 Stacks'
+          stack_amount: 2
+          glowing: false
+          item_flags:
+            - HIDE_ATTRIBUTES
+          lore:
+            - '&8Selector de Stacks'
+            - ''
+            - '&8 ● &fSeleccionar #FBD0082 stacks'
+            - '   &f(128 items)'
+            - ''
+            - '#FBD008► Click para seleccionar.'
+
+        stack_4:
+          slot: 12
+          material: GRAY_STAINED_GLASS_PANE
+          amount: 4
+          model_data: 0
+          display_name: '#FBD0084 Stacks'
+          stack_amount: 4
+          glowing: false
+          item_flags:
+            - HIDE_ATTRIBUTES
+          lore:
+            - '&8Selector de Stacks'
+            - ''
+            - '&8 ● &fSeleccionar #FBD0084 stacks'
+            - '   &f(256 items)'
+            - ''
+            - '#FBD008► Click para seleccionar.'
+
+        stack_8:
+          slot: 13
+          material: GRAY_STAINED_GLASS_PANE
+          amount: 8
+          model_data: 0
+          display_name: '#FBD0088 Stacks'
+          stack_amount: 8
+          glowing: false
+          item_flags:
+            - HIDE_ATTRIBUTES
+          lore:
+            - '&8Selector de Stacks'
+            - ''
+            - '&8 ● &fSeleccionar #FBD0088 stacks'
+            - '   &f(512 items)'
+            - ''
+            - '#FBD008► Click para seleccionar.'
+
+        stack_16:
+          slot: 14
+          material: GRAY_STAINED_GLASS_PANE
+          amount: 16
+          model_data: 0
+          display_name: '#FBD00816 Stacks'
+          stack_amount: 16
+          glowing: false
+          item_flags:
+            - HIDE_ATTRIBUTES
+          lore:
+            - '&8Selector de Stacks'
+            - ''
+            - '&8 ● &fSeleccionar #FBD00816 stacks'
+            - '   &f(1024 items)'
+            - ''
+            - '#FBD008► Click para seleccionar.'
+
+        stack_32:
+          slot: 15
+          material: GRAY_STAINED_GLASS_PANE
+          amount: 32
+          model_data: 0
+          display_name: '#FBD00832 Stacks'
+          stack_amount: 32
+          glowing: false
+          item_flags:
+            - HIDE_ATTRIBUTES
+          lore:
+            - '&8Selector de Stacks'
+            - ''
+            - '&8 ● &fSeleccionar #FBD00832 stacks'
+            - '   &f(2048 items)'
+            - ''
+            - '#FBD008► Click para seleccionar.'
+
+      # Puedes añadir más items personalizados aquí
+      custom-items:
+        info:
+          slot: 4
+          material: "BOOK"
+          name: "&6Información"
+          lore:
+            - "&7Selecciona la cantidad de stacks"
+            - "&7que deseas comprar"
 
 
     # Here you find the fixed buttons (You can disable it if you don't need it)

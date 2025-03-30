@@ -53,6 +53,55 @@ public class SellAllConfirmationMenu {
 
     }
 
+
+    private void setupDirectQuantityControls() {
+        Section quantityControlsSection = plugin.getLayouts().getSection(MENU_PATH + ".items.quantity-controls");
+
+        if (quantityControlsSection == null) return;
+
+        int playerInventoryItemCount = getTotalItemCountInPlayerInventory();
+
+        for (Object key : quantityControlsSection.getKeys()) {
+            String controlKey = key.toString();
+            Section controlSection = quantityControlsSection.getSection(controlKey);
+            if (controlSection == null) continue;
+
+            int slot = controlSection.getInt("slot", 0);
+            String setAmountStr = controlSection.getString("set_amount", "0");
+
+            // Determinar si es un cambio absoluto o relativo
+            boolean isAbsolute = !(setAmountStr.startsWith("+") || setAmountStr.startsWith("-"));
+            int changeValue = Integer.parseInt(setAmountStr.startsWith("+") ? setAmountStr.substring(1) : setAmountStr);
+
+            // Verificar que el cambio de cantidad sea válido
+            boolean shouldDisplay = isValidQuantityChange(changeValue, isAbsolute, playerInventoryItemCount);
+
+            if (shouldDisplay) {
+                Material material = Material.valueOf(controlSection.getString("material", "STONE"));
+                int amount = controlSection.getInt("amount", 1);
+                String displayName = controlSection.getString("display_name", "");
+
+                ItemStack controlItem = new ItemBuilder(material)
+                        .setAmount(amount)
+                        .setName(Utils.translate(displayName))
+                        .build();
+
+                final int finalChangeValue = changeValue;
+                final boolean finalIsAbsolute = isAbsolute;
+
+                reservedSlots.add(slot);
+                sellAllMenu.setItem(slot, new GuiItem(controlItem, event -> {
+                    event.setCancelled(true);
+                    updateQuantityDirectly(finalChangeValue, finalIsAbsolute);
+                }));
+            } else {
+                // Si no se debe mostrar, eliminar el ítem del slot
+                sellAllMenu.removeItem(slot);
+                reservedSlots.remove(slot);
+            }
+        }
+    }
+
     public void openMenu() {
         // Limpiar el menú y resetear los slots reservados
         reservedSlots.clear();
@@ -96,8 +145,10 @@ public class SellAllConfirmationMenu {
         // Rellenar slots vacíos
         fillEmptySlots();
 
+        String displayName = item.getDisplayName() != null ? item.getDisplayName() : item.createItemStack().getType().toString();
+
         String title = plugin.getLayouts().getString(MENU_PATH + ".title", "&8Confirmar Venta: &f{item}");
-        title = title.replace("{item}", item.getDisplayName());
+        title = title.replace("{item}", displayName);
         title = PluginUtils.formatTitle(title);
         sellAllMenu.updateTitle(Utils.translate(title));
 
@@ -105,61 +156,25 @@ public class SellAllConfirmationMenu {
         sellAllMenu.open(viewer);
     }
 
-    private void setupDirectQuantityControls() {
-        Section quantityControlsSection = plugin.getLayouts().getSection(MENU_PATH + ".items.quantity-controls");
-
-        if (quantityControlsSection == null) return;
-
-        for (Object key : quantityControlsSection.getKeys()) {
-            String controlKey = key.toString();
-            Section controlSection = quantityControlsSection.getSection(controlKey);
-            if (controlSection == null) continue;
-
-            int slot = controlSection.getInt("slot", 0);
-            String setAmountStr = controlSection.getString("set_amount", "0");
-
-            // Determinar si es un cambio absoluto o relativo
-            boolean isAbsolute = !(setAmountStr.startsWith("+") || setAmountStr.startsWith("-"));
-            int changeValue = Integer.parseInt(setAmountStr.startsWith("+") ? setAmountStr.substring(1) : setAmountStr);
-
-            // Verificar que el cambio de cantidad sea válido
-            int playerInventoryItemCount = getTotalItemCountInPlayerInventory();
-            boolean shouldDisplay = isValidQuantityChange(changeValue, isAbsolute, playerInventoryItemCount);
-
-            if (shouldDisplay) {
-                Material material = Material.valueOf(controlSection.getString("material", "STONE"));
-                int amount = controlSection.getInt("amount", 1);
-                String displayName = controlSection.getString("display_name", "");
-
-                ItemStack controlItem = new ItemBuilder(material)
-                        .setAmount(amount)
-                        .setName(Utils.translate(displayName))
-                        .build();
-
-                final int finalChangeValue = changeValue;
-                final boolean finalIsAbsolute = isAbsolute;
-
-                reservedSlots.add(slot);
-                sellAllMenu.setItem(slot, new GuiItem(controlItem, event -> {
-                    event.setCancelled(true);
-                    updateQuantityDirectly(finalChangeValue, finalIsAbsolute);
-                }));
-            }
-        }
-    }
 
     private int getTotalItemCountInPlayerInventory() {
         int totalCount = 0;
-        for (ItemStack item : viewer.getInventory().getContents()) {
-            if (item != null && !item.getType().isAir()) {
-                totalCount += item.getAmount();
+
+        for (ItemStack inventoryItem : viewer.getInventory().getContents()) {
+            if (inventoryItem != null) {
+                boolean isSellable = ShopMaster.getInstance().getSellService().isSellable(viewer, inventoryItem);
+
+                if (isSellable) {
+                    totalCount += inventoryItem.getAmount();
+                }
             }
         }
         return totalCount;
     }
 
+
     private boolean isValidQuantityChange(int changeValue, boolean isAbsolute, int maxInventoryCount) {
-        if (maxInventoryCount <= 0) {
+        if (maxInventoryCount <= 1) {
             return false;
         }
 
@@ -175,6 +190,8 @@ public class SellAllConfirmationMenu {
 
     private void updateQuantityDirectly(int changeValue, boolean isAbsolute) {
         int maxInventoryCount = getTotalItemCountInPlayerInventory();
+        int itemMaxStackSize = item.createItemStack().getMaxStackSize();
+
         int newQuantity;
 
         if (isAbsolute) {
@@ -184,7 +201,7 @@ public class SellAllConfirmationMenu {
         }
 
         // Asegurar que la nueva cantidad esté dentro del rango válido
-        newQuantity = Math.max(1, Math.min(maxInventoryCount, newQuantity));
+        newQuantity = Math.max(1, Math.min(Math.min(maxInventoryCount, itemMaxStackSize), newQuantity));
 
         // Actualizar la cantidad
         quantity = newQuantity;
@@ -195,7 +212,6 @@ public class SellAllConfirmationMenu {
 
     private void updateItemsWithQuantity() {
         setupDirectQuantityControls();
-
 
         int displaySlot = plugin.getLayouts().getInt(MENU_PATH + ".items.display.slot");
         ItemStack itemdisplay = new ItemStack(item.createItemStack());
@@ -212,7 +228,13 @@ public class SellAllConfirmationMenu {
         ).forEach((slot, controls) -> {
             if (controls.getButtonItem(viewer).getType() != Material.AIR) {
                 sellAllMenu.updateItem(slot, new GuiItem(controls.getButtonItem(viewer),
-                        event -> new ConfirmControls(MENU_PATH + ".items.confirm", quantity, item, sellService, TypeService.SELL).clicked(viewer, event.getSlot(), event.getClick(), event.getHotbarButton())));
+                        event ->
+                        {
+                            new ConfirmControls(MENU_PATH + ".items.confirm", quantity, item, sellService, TypeService.SELL).clicked(viewer, event.getSlot(), event.getClick(), event.getHotbarButton());
+                            updateItemsWithQuantity();
+                        }
+
+                ));
                 reservedSlots.add(slot);
             }
         });
@@ -228,12 +250,9 @@ public class SellAllConfirmationMenu {
         });
 
 
-
         // Actualizar stack_selector item
         PluginUtils.loadSingleButton(MENU_PATH + ".items.sell-inventory", plugin.getLayouts(),
-                path -> new SellInventoryControls(MENU_PATH + ".items.sell-inventory", String.valueOf(quantity),
-                        String.valueOf(pricePerUnit), String.valueOf(pricePerUnit * quantity), item.getDisplayName(),
-                        item.getDisplayName(), item.getMaterial()),
+                path -> new SellInventoryControls(MENU_PATH + ".items.sell-inventory", quantity, item),
                 sellAllMenu.getRows()
         ).forEach((slot, controls) -> {
             if (controls.getButtonItem(viewer).getType() != Material.AIR) {
@@ -243,6 +262,7 @@ public class SellAllConfirmationMenu {
             }
         });
 
+        sellAllMenu.update();  // Esta línea es clave
 
     }
 

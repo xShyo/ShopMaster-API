@@ -69,9 +69,10 @@ public class PurchaseService {
             PluginUtils.sendMessage(player, "MESSAGES.GUI.PURCHASE.ERROR");
             return;
         }
+        String displayName = item.getDisplayName() != null ? item.getDisplayName() : item.createItemStack().getType().toString();
 
         String formattedPrice = ShopMaster.getInstance().getNumberFormatter().format(totalPrice);
-        PluginUtils.sendMessage(player, "MESSAGES.GUI.PURCHASE.SUCCESS", quantity, item.getDisplayName(), formattedPrice);
+        PluginUtils.sendMessage(player, "MESSAGES.GUI.PURCHASE.SUCCESS", quantity, displayName, formattedPrice);
         player.closeInventory();
     }
 

@@ -130,10 +130,6 @@ public class PurchaseConfirmationMenu {
 
         // Actualizar la cantidad
         quantity = newQuantity;
-
-        // Debug log
-        System.out.println("Updating quantity to: " + quantity);
-
         // Actualizar los ítems del menú
         updateItemsWithQuantity();
     }
@@ -180,15 +176,15 @@ public class PurchaseConfirmationMenu {
 
         // Actualizar stack_selector item
         PluginUtils.loadSingleButton(MENU_PATH + ".items.stack_selector", plugin.getLayouts(),
-                path -> new StackSelectorControls(MENU_PATH + ".items.stack_selector", String.valueOf(quantity),
-                        String.valueOf(pricePerUnit), String.valueOf(pricePerUnit * quantity), item.getDisplayName(),
-                        item.getDisplayName(), item.getMaterial()),
+                path -> new StackSelectorControls(MENU_PATH + ".items.stack_selector"),
                 confirmationMenu.getRows()
         ).forEach((slot, controls) -> {
             if (controls.getButtonItem(viewer).getType() != Material.AIR) {
                 confirmationMenu.updateItem(slot, new GuiItem(controls.getButtonItem(viewer),
                         event -> {
+                    new StackSelectorMenu(viewer, item, shop).openMenu();
 //                            openStackSelector();
+
                         }));
                 reservedSlots.add(slot);
             }
@@ -242,9 +238,9 @@ public class PurchaseConfirmationMenu {
         // Rellenar slots vacíos
         fillEmptySlots();
 
-        // Actualizar el título del menú
+        String displayName = item.getDisplayName() != null ? item.getDisplayName() : item.createItemStack().getType().toString();
         String title = plugin.getLayouts().getString(MENU_PATH + ".title", "&8Confirmar Compra: &f{item}");
-        title = title.replace("{item}", item.getDisplayName());
+        title = title.replace("{item}", displayName);
         title = PluginUtils.formatTitle(title);
         confirmationMenu.updateTitle(Utils.translate(title));
 
