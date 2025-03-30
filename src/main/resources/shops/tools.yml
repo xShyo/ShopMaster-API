@@ -166,8 +166,7 @@ tools:
       buyPrice: 300
       sellPrice: 150
       item:
-        material: PLAYER_HEAD
-        skin: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTY0ZGRmZTlhNTMxOWNmZTgxY2U4NTZjYTJmYjNiODQ5NWQ3MzVkODMzN2IwMTBiNjk1YjQ2MmU2ZGRmNjk5OSJ9fX0=
+        material: basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTY0ZGRmZTlhNTMxOWNmZTgxY2U4NTZjYTJmYjNiODQ5NWQ3MzVkODMzN2IwMTBiNjk1YjQ2MmU2ZGRmNjk5OSJ9fX0
         quantity: 1
         name: "&8Player Head (Heart)"
         lore: []
