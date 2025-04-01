@@ -22,77 +22,96 @@ tools:
 
 
   buttons: []
+# Shop Master Configuration - Example Shop with Advanced Items
 
   items:
-    # Ejemplo de item encantado
+    # Basic food item
     1:
-      slot: "10"
-      page: 1
-      buyPrice: 5000
-      sellPrice: 2500
       item:
-        material: DIAMOND_SWORD
-        quantity: 1
-        name: "&6Espada Legendaria"
+        material: COOKED_BEEF
+        quantity: 16
+        name: '&6Carne Asada'
         lore:
-          - "&7Una espada forjada por los"
-          - "&7dioses del servidor"
-        enchantments:
-          DAMAGE_ALL: 5
-          FIRE_ASPECT: 2
-          KNOCKBACK: 2
-
-    # Ejemplo de poción personalizada
-    2:
-      slot: "12"
+          - '&7Carne de la mejor calidad'
+          - '&7para satisfacer tu hambre'
+      slot: 10
       page: 1
-      buyPrice: 1000
-      sellPrice: 500
+      economy: VAULT
+      buyPrice: 320
+      sellPrice: 160
+
+    # Golden apple with enchantments
+    2:
+      item:
+        material: GOLDEN_APPLE
+        quantity: 1
+        name: '&eManzana Dorada'
+        lore:
+          - '&7Una manzana con poderes curativos'
+        enchantments:
+          UNBREAKING: 1
+        flags:
+          - HIDE_ENCHANTS
+      slot: 11
+      page: 1
+      economy: VAULT
+      buyPrice: 1200
+      sellPrice: 600
+      hidden: false
+
+    # Potion example
+    3:
       item:
         material: POTION
         quantity: 1
-        name: "&dPoción de Curación Mejorada"
+        name: '&bPoción de Velocidad'
         lore:
-          - "&7Poción que cura y regenera"
+          - '&7¡Corre como el viento!'
         potion:
-          type: INSTANT_HEAL
-          extended: false
-          upgraded: true
+          type: SPEED
+          extended: true
+          upgraded: false
           custom_effects:
             1:
-              type: REGENERATION
-              duration: 200
-              amplifier: 1
-
-    # Ejemplo de banner personalizado
-    3:
-      slot: "14"
+              type: NIGHT_VISION
+              duration: 3600
+              amplifier: 0
+      slot: 12
       page: 1
-      buyPrice: 2000
-      sellPrice: 1000
+      economy: VAULT
+      buyPrice: 550
+      sellPrice: 275
+
+    # Banner with patterns
+    4:
       item:
         material: WHITE_BANNER
         quantity: 1
-        name: "&eBanner del Gremio"
+        name: '&fBandera Personalizada'
+        lore:
+          - '&7Una bandera única'
         banner:
           patterns:
             1:
-              pattern: CIRCLE_MIDDLE
-              color: WHITE
-            2:
-              pattern: BORDER
+              pattern: GRADIENT
               color: RED
-
-    # Ejemplo de fuego artificial personalizado
-    4:
-      slot: "16"
+            2:
+              pattern: STRIPE_MIDDLE
+              color: BLACK
+      slots: 13-14
       page: 1
-      buyPrice: 1500
-      sellPrice: 750
+      economy: VAULT
+      buyPrice: 850
+      sellPrice: 425
+
+    # Firework rocket
+    5:
       item:
         material: FIREWORK_ROCKET
-        quantity: 5
-        name: "&cFuegos Artificiales Celebración"
+        quantity: 64
+        name: '&dFuegos Artificiales'
+        lore:
+          - '&7¡Ilumina el cielo!'
         firework:
           power: 3
           effects:
@@ -101,56 +120,68 @@ tools:
               flicker: true
               trail: true
               colors:
-                - "255,0,0"    # Rojo
-                - "0,0,255"    # Azul
+                - "255,0,0"
+                - "0,255,0"
+                - "0,0,255"
               fade_colors:
-                - "255,255,255"  # Blanco
-
-    5:
-      slot: 19
+                - "255,255,0"
+                - "0,255,255"
+      slot: 15
       page: 1
-      buyPrice: 500
-      sellPrice: 250
+      economy: VAULT
+      buyPrice: 750
+      sellPrice: 375
+
+    # Axolotl bucket
+    6:
       item:
         material: AXOLOTL_BUCKET
         quantity: 1
-        name: "&b&lAjolote Azul"
+        name: '&dCubeta con Ajolote'
         lore:
-          - "&7¡Ajolote azul!"
-          - "&7¡Variante rara!"
+          - '&7¡Mascota acuática!'
         axolotl:
           variant: BLUE
-
-    6:
-      slot: 21
+      slot: 16
       page: 1
-      buyPrice: 80
-      sellPrice: 40
+      economy: VAULT
+      buyPrice: 1500
+      sellPrice: -1
+
+    # Tipped arrow
+    7:
       item:
         material: TIPPED_ARROW
         quantity: 16
-        name: "&2&lFlecha de Veneno"
+        name: '&dFlechas Venenosas'
         lore:
-          - "&7Flecha con veneno prolongado"
+          - '&7Flechas con efectos especiales'
         arrow_potion:
           type: POISON
           extended: true
           upgraded: false
-
-    7:
-      slot: 23
+          custom_effects:
+            1:
+              type: WEAKNESS
+              duration: 200
+              amplifier: 0
+      slot: "20-21"
       page: 1
-      buyPrice: 300
-      sellPrice: 150
+      economy: VAULT
+      buyPrice: 400
+      sellPrice: 200
+
+    # Crossbow with loaded projectiles
+    8:
       item:
         material: CROSSBOW
         quantity: 1
-        name: "&c&lBallesta Mortal"
+        name: '&6Ballesta Cargada'
         lore:
-          - "&7Ballesta precargada con"
-          - "&7flecha de daño instantáneo"
+          - '&7Dispara rápido y con precisión'
         enchantments:
           QUICK_CHARGE: 3
+          PIERCING: 2
         loaded_projectiles:
           1:
             material: TIPPED_ARROW
@@ -159,17 +190,141 @@ tools:
               type: INSTANT_DAMAGE
               extended: false
               upgraded: true
+      slot: 22
+      page: 1
+      economy: VAULT
+      buyPrice: 1800
+      sellPrice: 900
 
-    8:
+    # Leather armor with color
+    9:
+      item:
+        material: LEATHER_CHESTPLATE
+        quantity: 1
+        name: '&cPechera de Cuero Roja'
+        lore:
+          - '&7Protección con estilo'
+        armor_color: "200,40,40"
+        enchantments:
+          PROTECTION_ENVIRONMENTAL: 4
+          THORNS: 2
+        flags:
+          - HIDE_ATTRIBUTES
+          - HIDE_ENCHANTS
+      slot: 23
+      page: 1
+      economy: VAULT
+      buyPrice: 1200
+      sellPrice: 600
+
+    # Diamond armor with trim (Minecraft 1.20+)
+    10:
+      item:
+        material: DIAMOND_HELMET
+        quantity: 1
+        name: '&bCasco de Diamante con Ornamento'
+        lore:
+          - '&7Elegancia y protección'
+        enchantments:
+          PROTECTION_ENVIRONMENTAL: 3
+          OXYGEN: 3
+        trim:
+          pattern: SENTRY
+          material: GOLD
+        flags:
+          - HIDE_ATTRIBUTES
+      slot: 24
+      page: 1
+      economy: VAULT
+      buyPrice: 2500
+      sellPrice: 1250
+
+    # Item with NBT data
+    11:
+      item:
+        material: PLAYER_HEAD
+        quantity: 1
+        name: '&6Cabeza Especial'
+        lore:
+          - '&7Un objeto único con propiedades especiales'
+        nbt: '{SkullOwner:{Id:[I;123,456,789,0],Properties:{textures:[{Value:"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTM2ZTk0ZjZjMzRhMzU0NjVmY2U0YTkwZjJlMjU5NzYzODllYjk3MDlhMTIyNzM1NzRmZjcwZmQ0ZGFhNjg1MiJ9fX0="}]}}}'
       slot: 25
       page: 1
-      buyPrice: 300
-      sellPrice: 150
-      item:
-        material: basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTY0ZGRmZTlhNTMxOWNmZTgxY2U4NTZjYTJmYjNiODQ5NWQ3MzVkODMzN2IwMTBiNjk1YjQ2MmU2ZGRmNjk5OSJ9fX0
-        quantity: 1
-        name: "&8Player Head (Heart)"
-        lore: []
+      economy: VAULT
+      buyPrice: 5000
+      sellPrice: -1
+      hidden: false
 
+    # Item with custom buy/sell commands
+    12:
+      item:
+        material: NETHER_STAR
+        quantity: 1
+        name: '&eRecompensa Especial'
+        lore:
+          - '&7Compra para recibir una recompensa especial'
+          - '&7que se ejecutará mediante comandos'
+      slot: 30
+      page: 1
+      economy: VAULT
+      buyPrice: 10000
+      sellPrice: -1
+      buy_commands:
+        - "give {player} diamond 5"
+        - "xp add {player} 100"
+        - "effect give {player} regeneration 60 1"
+        - "broadcast &e{player} ha comprado una recompensa especial!"
+
+    # Multi-page item (will appear on page 2)
+    13:
+      item:
+        material: DRAGON_EGG
+        quantity: 1
+        name: '&5Huevo de Dragón'
+        lore:
+          - '&7¡Un objeto extremadamente raro!'
+        enchantments:
+          PROTECTION_ENVIRONMENTAL: 10
+        flags:
+          - HIDE_ENCHANTS
+          - HIDE_ATTRIBUTES
+      slot: 13
+      page: 2
+      economy: VAULT
+      buyPrice: 50000
+      sellPrice: -1
+
+    # Item with slots in list format
+    14:
+      item:
+        material: ENCHANTED_GOLDEN_APPLE
+        quantity: 1
+        name: '&6Manzana Dorada Encantada'
+        lore:
+          - '&7El alimento definitivo'
+        flags:
+          - HIDE_ENCHANTS
+      slots:
+        - "31"
+        - "32"
+        - "33"
+      page: 1
+      economy: VAULT
+      buyPrice: 5000
+      sellPrice: 2500
+
+    # Item with a range of slots
+    15:
+      item:
+        material: CAKE
+        quantity: 1
+        name: '&fPastel'
+        lore:
+          - '&7¡Perfecto para celebraciones!'
+      slots: "40-42"
+      page: 1
+      economy: VAULT
+      buyPrice: 150
+      sellPrice: 75
 
 file-version: 1

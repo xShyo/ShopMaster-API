@@ -5,7 +5,11 @@ import lombok.Setter;
 import org.bukkit.FireworkEffect;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Axolotl;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.trim.ArmorTrim;
+import org.bukkit.inventory.meta.trim.TrimMaterial;
+import org.bukkit.inventory.meta.trim.TrimPattern;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
@@ -15,8 +19,10 @@ import xshyo.us.theAPI.utilities.item.ItemBuilder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -24,6 +30,7 @@ public class ShopItem {
 
     private String material;
     private final int amount;
+    private final int modelData;
     private final List<Integer> slots;
     private final int page;
     private final String economy;
@@ -46,12 +53,23 @@ public class ShopItem {
     private List<PotionEffect> arrowCustomEffects;
     private List<ItemStack> loadedProjectiles;
 
+    // Nuevos campos según los comentarios
+    private String armorColor; // RGB format: "rrr,ggg,bbb"
+    private TrimPattern armorTrimPattern;
+    private TrimMaterial armorTrimMaterial;
+    private boolean hidden;
+    private String nbtData;
+    private List<String> buyCommands;
+    private List<String> sellCommands;
+    private Set<String> itemFlags;
+
     /**
      * Constructor para un único slot
      */
     public ShopItem(String material, int amount, int slot, int page, String economy, int buyPrice, int sellPrice) {
         this.material = material;
         this.amount = amount;
+        this.modelData = 0;
         this.economy = economy;
         this.slots = new ArrayList<>();
         this.slots.add(slot);
@@ -67,6 +85,14 @@ public class ShopItem {
         this.fireworkEffects = new ArrayList<>();
         this.arrowCustomEffects = new ArrayList<>();
         this.loadedProjectiles = new ArrayList<>();
+
+        // Inicializar nuevas colecciones
+        this.buyCommands = new ArrayList<>();
+        this.sellCommands = new ArrayList<>();
+        this.itemFlags = new HashSet<>();
+
+        // Valores por defecto para nuevos campos
+        this.hidden = false;
     }
 
     /**
@@ -75,6 +101,7 @@ public class ShopItem {
     public ShopItem(String material, int amount, List<Integer> slots, int page, String economy, int buyPrice, int sellPrice) {
         this.material = material;
         this.amount = amount;
+        this.modelData = 0;
         this.slots = slots;
         this.page = page;
         this.economy = economy;
@@ -89,6 +116,14 @@ public class ShopItem {
         this.fireworkEffects = new ArrayList<>();
         this.arrowCustomEffects = new ArrayList<>();
         this.loadedProjectiles = new ArrayList<>();
+
+        // Inicializar nuevas colecciones
+        this.buyCommands = new ArrayList<>();
+        this.sellCommands = new ArrayList<>();
+        this.itemFlags = new HashSet<>();
+
+        // Valores por defecto para nuevos campos
+        this.hidden = false;
     }
 
     /**
@@ -97,6 +132,7 @@ public class ShopItem {
     public ShopItem(String material, int amount, int startSlot, int endSlot, int page, String economy, int buyPrice, int sellPrice) {
         this.material = material;
         this.amount = amount;
+        this.modelData = 0;
         this.economy = economy;
         this.slots = new ArrayList<>();
         for (int i = startSlot; i <= endSlot; i++) {
@@ -114,8 +150,15 @@ public class ShopItem {
         this.fireworkEffects = new ArrayList<>();
         this.arrowCustomEffects = new ArrayList<>();
         this.loadedProjectiles = new ArrayList<>();
-    }
 
+        // Inicializar nuevas colecciones
+        this.buyCommands = new ArrayList<>();
+        this.sellCommands = new ArrayList<>();
+        this.itemFlags = new HashSet<>();
+
+        // Valores por defecto para nuevos campos
+        this.hidden = false;
+    }
 
     /**
      * Método para crear un ItemStack con todos los metadatos configurados
@@ -131,6 +174,10 @@ public class ShopItem {
             builder.setAmount(amount);
         }
 
+        if (modelData > 0) {
+            builder.setCustomModelData(modelData);
+        }
+
         // Aplicar nombre y lore
         if (displayName != null) {
             builder.setName(displayName);
@@ -138,6 +185,12 @@ public class ShopItem {
 
         if (!lore.isEmpty()) {
             builder.setLore(lore);
+        }
+
+        // Aplicar flags de item
+        if (!itemFlags.isEmpty()) {
+            builder.addFlagsFromConfig(itemFlags);
+
         }
 
         // Aplicar metadatos específicos según el tipo de ítem
@@ -155,7 +208,16 @@ public class ShopItem {
             applyArrowMetadata(builder);
         } else if (material.equalsIgnoreCase("CROSSBOW")) {
             applyCrossbowMetadata(builder);
+        } else if (material.contains("_HELMET") || material.contains("_CHESTPLATE") ||
+                material.contains("_LEGGINGS") || material.contains("_BOOTS")) {
+            applyArmorMetadata(builder);
         }
+
+        // Aplicar datos NBT si están disponibles
+        if (nbtData != null && !nbtData.isEmpty()) {
+            builder.setNBTData(nbtData);
+        }
+
 
         // Aplicar encantamientos al final
         for (Map.Entry<Enchantment, Integer> entry : enchantments.entrySet()) {
@@ -163,6 +225,22 @@ public class ShopItem {
         }
 
         return builder.build();
+    }
+
+    /**
+     * Aplicar metadatos de armadura al ItemBuilder
+     */
+    private void applyArmorMetadata(ItemBuilder builder) {
+        // Aplicar color de armadura si está disponible y es armadura de cuero
+        if (armorColor != null && !armorColor.isEmpty() && material.startsWith("LEATHER_")) {
+            builder.setLeatherArmorColor(armorColor);
+
+        }
+
+        // Aplicar trim de armadura si está disponible (para versiones que lo soporten)
+        if (Utils.getCurrentVersion() >= 1200 && armorTrimPattern != null && armorTrimMaterial != null) {
+            builder.setArmorTrim(new ArmorTrim(armorTrimMaterial, armorTrimPattern));
+        }
     }
 
     /**
@@ -272,4 +350,6 @@ public class ShopItem {
     public boolean containsSlot(int slot) {
         return slots.contains(slot);
     }
+
+
 }

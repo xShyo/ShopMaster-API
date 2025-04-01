@@ -3,16 +3,15 @@ package xshyo.us.shopMaster.shop;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import lombok.Getter;
-import org.bukkit.Color;
-import org.bukkit.DyeColor;
-import org.bukkit.FireworkEffect;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Axolotl;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.inventory.meta.trim.TrimMaterial;
+import org.bukkit.inventory.meta.trim.TrimPattern;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -35,8 +34,6 @@ public class Shop {
     private final ShopCategory category;
     private final Map<String, ShopButton> buttons;
 
-    // Cambiamos la estructura para manejar múltiples slots
-    // Ahora la clave es el índice del ítem, no el slot
     private final Map<Integer, ShopItem> items;
 
     // Mapa auxiliar para buscar ítems por slot rápidamente
@@ -72,7 +69,6 @@ public class Shop {
         }
 
 
-// Cargar Ítems
         if (config.contains(name + ".items")) {
             for (String key : config.getSection(name + ".items").getRoutesAsStrings(false)) {
                 String path = name + ".items." + key;
@@ -92,11 +88,11 @@ public class Shop {
                 if (config.contains(path + ".slot") && config.isInt(path + ".slot")) {
                     int slot = config.getInt(path + ".slot");
                     item = new ShopItem(material, quantity, Collections.singletonList(slot), page, economy, buyPrice, sellPrice);
-                }else if (config.contains(path + ".slot") && config.isString(path + ".slot")) {
+                } else if (config.contains(path + ".slot") && config.isString(path + ".slot")) {
                     String slotConfig = config.getString(path + ".slot");
                     List<Integer> slots = ShopItem.parseSlots(slotConfig);
                     item = new ShopItem(material, quantity, slots, page, economy, buyPrice, sellPrice);
-                }else {
+                } else {
                     List<Integer> slots = new ArrayList<>();
 
                     // Si es una lista en el config
@@ -106,7 +102,7 @@ public class Shop {
                             // Procesar cada entrada que podría ser un número o un rango "10 - 15"
                             slots.addAll(ShopItem.parseSlots(slotString));
                         }
-                    }else if (config.isString(path + ".slots")) {
+                    } else if (config.isString(path + ".slots")) {
                         String slotsConfig = config.getString(path + ".slots");
                         slots.addAll(ShopItem.parseSlots(slotsConfig));
                     }
@@ -340,6 +336,61 @@ public class Shop {
                     }
                 }
 
+                if (material.startsWith("LEATHER_") && config.contains(path + ".item.armor_color")) {
+                    String colorStr = config.getString(path + ".item.armor_color");
+                    item.setArmorColor(colorStr);
+                }
+
+                if ((material.contains("_HELMET") || material.contains("_CHESTPLATE") ||
+                        material.contains("_LEGGINGS") || material.contains("_BOOTS")) &&
+                        config.contains(path + ".item.trim")) {
+
+                    String trimPatternStr = config.getString(path + ".item.trim.pattern");
+                    String trimMaterialStr = config.getString(path + ".item.trim.material");
+
+                    try {
+                        TrimMaterial trimMaterial = Registry.TRIM_MATERIAL.get(NamespacedKey.minecraft(trimMaterialStr.toLowerCase()));
+                        TrimPattern pattern = Registry.TRIM_PATTERN.match("minecraft:" + trimPatternStr.toLowerCase());
+
+                        item.setArmorTrimPattern(pattern);
+                        item.setArmorTrimMaterial(trimMaterial);
+                    } catch (IllegalArgumentException e) {
+                        ShopMaster.getInstance().getLogger().warning("Invalid armor trim configuration in shop " + name + ", item " + key);
+                    }
+                }
+
+// Process item flags
+                if (config.contains(path + ".item.flags")) {
+                    if (config.isList(path + ".item.flags")) {
+                        List<String> flagStrings = config.getStringList(path + ".item.flags");
+                        item.setItemFlags(new HashSet<>(flagStrings));
+                    }
+                }
+
+// Process hidden property
+                item.setHidden(config.getBoolean(path + ".hidden", false));
+
+// Process NBT data
+                if (config.contains(path + ".item.nbt")) {
+                    String nbtData = config.getString(path + ".item.nbt");
+                    item.setNbtData(nbtData);
+                }
+
+// Process buy commands
+                if (config.contains(path + ".buy_commands")) {
+                    if (config.isList(path + ".buy_commands")) {
+                        List<String> commands = config.getStringList(path + ".buy_commands");
+                        item.setBuyCommands(commands);
+                    }
+                }
+
+// Process sell commands
+                if (config.contains(path + ".sell_commands")) {
+                    if (config.isList(path + ".sell_commands")) {
+                        List<String> commands = config.getStringList(path + ".sell_commands");
+                        item.setSellCommands(commands);
+                    }
+                }
 
                 // Guardar el ítem en el mapa principal
                 items.put(itemId, item);
@@ -350,6 +401,7 @@ public class Shop {
                 }
             }
         }
+
     }
 
     /**

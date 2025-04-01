@@ -119,6 +119,8 @@ public class ShopMigrator {
                     String itemSkin = itemConfig.getString("skin", "");
 
                     int quantity = itemConfig.getInt("quantity", 1);
+                    int itemModel = itemConfig.getInt("model", 1);
+
                     String itemName = itemConfig.getString("name", "");
                     List<String> itemLore = itemConfig.getStringList("lore");
 
@@ -147,6 +149,7 @@ public class ShopMigrator {
 
                     shopConfig.set(itemPath + ".item.material", itemMaterial);
                     shopConfig.set(itemPath + ".item.quantity", quantity);
+                    shopConfig.set(itemPath + ".item.model_data", itemModel);
 
                     // Migrar pociones
                     if (isPotionMaterial(itemMaterial)) {

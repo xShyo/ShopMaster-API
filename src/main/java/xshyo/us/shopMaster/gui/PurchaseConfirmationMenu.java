@@ -9,12 +9,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import xshyo.us.shopMaster.ShopMaster;
 import xshyo.us.shopMaster.enums.TypeService;
-import xshyo.us.shopMaster.services.PurchaseService;
 import xshyo.us.shopMaster.shop.data.ShopItem;
 import xshyo.us.shopMaster.shop.Shop;
 import xshyo.us.shopMaster.utilities.PluginUtils;
 import xshyo.us.shopMaster.utilities.menu.Controls;
-import xshyo.us.shopMaster.utilities.menu.controls.CategoryControls;
 import xshyo.us.shopMaster.utilities.menu.controls.categories.ConfirmControls;
 import xshyo.us.shopMaster.utilities.menu.controls.categories.InformationControls;
 import xshyo.us.shopMaster.utilities.menu.controls.purchase.StackSelectorControls;
@@ -56,6 +54,7 @@ public class PurchaseConfirmationMenu {
         Section quantityControlsSection = plugin.getLayouts().getSection(MENU_PATH + ".items.quantity-controls");
 
         if (quantityControlsSection == null) return;
+        int maxStackSize = item.createItemStack().getMaxStackSize();
 
         for (Object key : quantityControlsSection.getKeys()) {
             String controlKey = key.toString();
@@ -69,7 +68,6 @@ public class PurchaseConfirmationMenu {
             boolean isAbsolute = !(setAmountStr.startsWith("+") || setAmountStr.startsWith("-"));
             int changeValue = Integer.parseInt(setAmountStr.startsWith("+") ? setAmountStr.substring(1) : setAmountStr);
 
-            int maxStackSize = item.createItemStack().getMaxStackSize();
 
             boolean shouldDisplay = isValidQuantityChange(changeValue, isAbsolute, maxStackSize);
             if (shouldDisplay) {

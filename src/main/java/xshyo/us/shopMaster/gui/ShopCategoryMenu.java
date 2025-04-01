@@ -11,7 +11,6 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import xshyo.us.shopMaster.ShopMaster;
-import xshyo.us.shopMaster.services.PurchaseService;
 import xshyo.us.shopMaster.shop.Shop;
 import xshyo.us.shopMaster.shop.data.ShopButton;
 import xshyo.us.shopMaster.shop.data.ShopItem;
@@ -100,7 +99,10 @@ public class ShopCategoryMenu {
         // Mostrar los items de la página actual
         pageItems.forEach((itemId, shopItem) -> {
             for (int slot : shopItem.getSlots()) {
-                if (slot < categoryMenu.getRows() * 9) { // Verificar que el slot está dentro del menú
+                if (slot < categoryMenu.getRows() * 9) {
+                    if(shopItem.isHidden()){
+                        continue;// Verificar que el slot está dentro del menú
+                    }
                     categoryMenu.setItem(slot, new GuiItem(new DisplayControls("inventories.categories", shopItem).getButtonItem(viewer), event -> {
                         // Obtener el tipo de click actual
                         String clickType = getClickTypeString(event);
@@ -114,9 +116,13 @@ public class ShopCategoryMenu {
                                 new PurchaseConfirmationMenu(viewer, shopItem, shop, currentPage).openMenu();
                             } else {
                                 plugin.getPurchaseService().processPurchase(viewer, shopItem, 1); // Comprar 1 unidad directamente
-                          }
+                            }
                         } else if (clickType.equals(sellButton)) {
-                            new SellAllConfirmationMenu(viewer, shopItem, shop, currentPage).openMenu();
+                            if (shopItem.getSellPrice() > 0) {
+                                new SellAllConfirmationMenu(viewer, shopItem, shop, currentPage).openMenu();
+                            } else {
+                                PluginUtils.sendMessage(viewer, "MESSAGES.GUI.SELL.NOT_SELLABLE");
+                            }
                         }
                     }));
 

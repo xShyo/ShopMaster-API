@@ -109,10 +109,13 @@ public class ConfirmControls extends Controls {
 
     @Override
     public void clicked(Player player, int slot, ClickType clickType, int hotbarButton) {
+
         if (typeService == TypeService.BUY) {
             plugin.getPurchaseService().processPurchase(player, shopItem, amount);
-
-        }else{
+            if (!shopItem.getBuyCommands().isEmpty()) {
+                executeActions(shopItem.getBuyCommands(), player);
+            }
+        } else {
 
             SellService.SellResult result = sellService.sellItem(player, shopItem.createItemStack(), amount, true);
 
@@ -137,9 +140,33 @@ public class ConfirmControls extends Controls {
                     break;
 
             }
+            if (!shopItem.getSellCommands().isEmpty()) {
+                executeActions(shopItem.getSellCommands(), player);
+            }
 
         }
+
+
     }
 
+
+    private void executeActions(List<String> actions, Player player) {
+        for (String action : actions) {
+            action = action.trim();
+            action = replacePlaceholders(action);
+            String[] parts = action.split("\\s+", 2);  // Dividir en dos partes, el tipo de acción y el resto
+            String actionType = parts[0].toLowerCase();
+            String actionData = (parts.length > 1) ? parts[1] : "";
+
+            if (actionType.startsWith("[chance=")) {  // Verificar si la acción tiene probabilidad definida
+                if (Utils.shouldExecuteAction(actionType)) {
+                    plugin.getActionExecutor().executeAction(player, actionData);
+                }
+            } else {
+                plugin.getActionExecutor().executeAction(player, action);
+            }
+        }
+
+    }
 
 }
