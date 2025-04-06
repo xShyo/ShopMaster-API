@@ -442,7 +442,7 @@ inventories:
           item_flags:
             - HIDE_ATTRIBUTES
           lore:
-            - '&8AJustes de Compra'
+            - '&8AJustes de Venta'
             - ''
             - '&8 ● &fEsto eliminará #FB08081'
             - '   &fitems de la cantidad'
@@ -460,7 +460,7 @@ inventories:
           item_flags:
             - HIDE_ATTRIBUTES
           lore:
-            - '&8AJustes de Compra'
+            - '&8AJustes de Venta'
             - ''
             - '&8 ● &fEsto eliminará #FB08085'
             - '   &fitems de la cantidad'
@@ -478,7 +478,7 @@ inventories:
           item_flags:
             - HIDE_ATTRIBUTES
           lore:
-            - '&8AJustes de Compra'
+            - '&8AJustes de Venta'
             - ''
             - '&8 ● &fEsto eliminará #FB08085'
             - '   &fitems de la cantidad'
@@ -496,7 +496,7 @@ inventories:
           item_flags:
             - HIDE_ATTRIBUTES
           lore:
-            - '&8AJustes de Compra'
+            - '&8AJustes de Venta'
             - ''
             - '&8 ● &fEsto eliminará #FB08085'
             - '   &fitems de la cantidad'
@@ -515,7 +515,7 @@ inventories:
           item_flags:
             - HIDE_ATTRIBUTES
           lore:
-            - '&8AJustes de Compra'
+            - '&8AJustes de Venta'
             - ''
             - '&8 ● &fEsto agregará #FBD0081'
             - '   &fitems a la cantidad'
@@ -533,7 +533,7 @@ inventories:
           item_flags:
             - HIDE_ATTRIBUTES
           lore:
-            - '&8AJustes de Compra'
+            - '&8AJustes de Venta'
             - ''
             - '&8 ● &fEsto agregará #FBD0085'
             - '   &fitems a la cantidad'
@@ -551,7 +551,7 @@ inventories:
           item_flags:
             - HIDE_ATTRIBUTES
           lore:
-            - '&8AJustes de Compra'
+            - '&8AJustes de Venta'
             - ''
             - '&8 ● &fEsto agregará #FBD0085'
             - '   &fitems a la cantidad'
@@ -569,7 +569,7 @@ inventories:
           item_flags:
             - HIDE_ATTRIBUTES
           lore:
-            - '&8AJustes de Compra'
+            - '&8AJustes de Venta'
             - ''
             - '&8 ● &fEsto agregará #FBD0085'
             - '   &fitems a la cantidad'
@@ -578,37 +578,36 @@ inventories:
 
       sell-inventory:
         slot: 28
-        material: ENDER_CHEST
+        material: CHEST
         amount: 1
         model_data: 0
-        display_name: '#FBD008Seleccionar Stacks'
+        display_name: '#FBD008Vender Todo'
         glowing: true
         item_flags:
           - HIDE_ATTRIBUTES
         lore:
-          - '&8AJustes de Compra'
+          - '&8Venta Rápida'
           - ''
-          - '&8 ● &fAbre un menú para seleccionar'
-          - '   &fentre 1 a 12 stacks completos'
+          - '&8 ● &fVende todo por: {totalPrice}'
           - ''
-          - '#FBD008► Click para abrir selector.'
+          - '#FBD008► Haga click para vender todo.'
 
       confirm:
         slot: 41
         material: LIME_CONCRETE
         amount: 1
         model_data: 0
-        display_name: '#FBD008Confirmar Compra'
+        display_name: '#FBD008Confirmar Venta'
         glowing: false
         item_flags:
           - HIDE_ATTRIBUTES
         lore:
-          - '&8AJustes de Compra'
+          - '&8AJustes de Venta'
           - ''
           - '&8 ● &fSi todo esta correctamente'
-          - '   &fconfigurado haga click para comprar'
+          - '   &fconfigurado haga click para vender'
           - ''
-          - '&a► Click para comprar.'
+          - '&a► Haga click para vender.'
 
 
       information:
@@ -667,7 +666,6 @@ inventories:
   #      - "[command] dm open Menu {player}"
 
 
-
   stack-selector:
     # The title of the inventory.
     title: '&8☀ Seleccionar Cantidad de Stacks'
@@ -681,7 +679,7 @@ inventories:
       stack-controls:
         # Stack options (1-12)
         stack_1:
-          slot: 10
+          slot: 11
           material: GRAY_STAINED_GLASS_PANE
           amount: 1
           model_data: 0
@@ -700,7 +698,7 @@ inventories:
 
         # Puedes agregar más opciones de stacks así
         stack_2:
-          slot: 11
+          slot: 20
           material: GRAY_STAINED_GLASS_PANE
           amount: 2
           model_data: 0
@@ -717,8 +715,28 @@ inventories:
             - ''
             - '#FBD008► Click para seleccionar.'
 
+        # Puedes agregar más opciones de stacks así
+        stack_3:
+          slot: 29
+          material: GRAY_STAINED_GLASS_PANE
+          amount: 3
+          model_data: 0
+          display_name: '#FBD0083 Stacks'
+          stack_amount: 3
+          glowing: false
+          item_flags:
+            - HIDE_ATTRIBUTES
+          lore:
+            - '&8Selector de Stacks'
+            - ''
+            - '&8 ● &fSeleccionar #FBD0083 stacks'
+            - '   &f(192 items)'
+            - ''
+            - '#FBD008► Click para seleccionar.'
+
+        # Puedes agregar más opciones de stacks así
         stack_4:
-          slot: 12
+          slot: 13
           material: GRAY_STAINED_GLASS_PANE
           amount: 4
           model_data: 0
@@ -735,8 +753,66 @@ inventories:
             - ''
             - '#FBD008► Click para seleccionar.'
 
+        # Puedes agregar más opciones de stacks así
+        stack_5:
+          slot: 22
+          material: GRAY_STAINED_GLASS_PANE
+          amount: 5
+          model_data: 0
+          display_name: '#FBD0085 Stacks'
+          stack_amount: 5
+          glowing: false
+          item_flags:
+            - HIDE_ATTRIBUTES
+          lore:
+            - '&8Selector de Stacks'
+            - ''
+            - '&8 ● &fSeleccionar #FBD0085 stacks'
+            - '   &f(320 items)'
+            - ''
+            - '#FBD008► Click para seleccionar.'
+
+        # Puedes agregar más opciones de stacks así
+        stack_6:
+          slot: 31
+          material: GRAY_STAINED_GLASS_PANE
+          amount: 6
+          model_data: 0
+          display_name: '#FBD0086 Stacks'
+          stack_amount: 6
+          glowing: false
+          item_flags:
+            - HIDE_ATTRIBUTES
+          lore:
+            - '&8Selector de Stacks'
+            - ''
+            - '&8 ● &fSeleccionar #FBD0086 stacks'
+            - '   &f(384 items)'
+            - ''
+            - '#FBD008► Click para seleccionar.'
+
+        # Puedes agregar más opciones de stacks así
+        stack_7:
+          slot: 40
+          material: GRAY_STAINED_GLASS_PANE
+          amount: 7
+          model_data: 0
+          display_name: '#FBD0087 Stacks'
+          stack_amount: 7
+          glowing: false
+          item_flags:
+            - HIDE_ATTRIBUTES
+          lore:
+            - '&8Selector de Stacks'
+            - ''
+            - '&8 ● &fSeleccionar #FBD0087 stacks'
+            - '   &f(448 items)'
+            - ''
+            - '#FBD008► Click para seleccionar.'
+
+        # Puedes agregar más opciones de stacks así
         stack_8:
-          slot: 13
+          slot: 15
           material: GRAY_STAINED_GLASS_PANE
           amount: 8
           model_data: 0
@@ -749,56 +825,46 @@ inventories:
             - '&8Selector de Stacks'
             - ''
             - '&8 ● &fSeleccionar #FBD0088 stacks'
-            - '   &f(512 items)'
+            - '   &f(515 items)'
             - ''
             - '#FBD008► Click para seleccionar.'
 
-        stack_16:
-          slot: 14
+        # Puedes agregar más opciones de stacks así
+        stack_9:
+          slot: 24
           material: GRAY_STAINED_GLASS_PANE
-          amount: 16
+          amount: 9
           model_data: 0
-          display_name: '#FBD00816 Stacks'
-          stack_amount: 16
+          display_name: '#FBD0089 Stacks'
+          stack_amount: 9
           glowing: false
           item_flags:
             - HIDE_ATTRIBUTES
           lore:
             - '&8Selector de Stacks'
             - ''
-            - '&8 ● &fSeleccionar #FBD00816 stacks'
-            - '   &f(1024 items)'
+            - '&8 ● &fSeleccionar #FBD0089 stacks'
+            - '   &f(576 items)'
             - ''
             - '#FBD008► Click para seleccionar.'
 
-        stack_32:
-          slot: 15
+        stack_36:
+          slot: 33
           material: GRAY_STAINED_GLASS_PANE
-          amount: 32
+          amount: 36
           model_data: 0
-          display_name: '#FBD00832 Stacks'
-          stack_amount: 32
+          display_name: '#FBD00836 Stacks'
+          stack_amount: 36
           glowing: false
           item_flags:
             - HIDE_ATTRIBUTES
           lore:
             - '&8Selector de Stacks'
             - ''
-            - '&8 ● &fSeleccionar #FBD00832 stacks'
-            - '   &f(2048 items)'
+            - '&8 ● &fSeleccionar #FBD00836 stacks'
+            - '   &f(2,304 items)'
             - ''
             - '#FBD008► Click para seleccionar.'
-
-      # Puedes añadir más items personalizados aquí
-      custom-items:
-        info:
-          slot: 4
-          material: "BOOK"
-          name: "&6Información"
-          lore:
-            - "&7Selecciona la cantidad de stacks"
-            - "&7que deseas comprar"
-
 
     # Here you find the fixed buttons (You can disable it if you don't need it)
     # In this section you will not be able to add new items to the menu, only edit the current ones.

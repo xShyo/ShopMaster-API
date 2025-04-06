@@ -7,5 +7,10 @@ softdepend:
   - TokenManager
   - PlayerPoints
   - Vault
+  - BreweryX
   - PlaceholderAPI
+  - ExecutableItems
+  - ExecutableBlocks
+  - SCore
+  - MMOItems
 api-version: '1.16'

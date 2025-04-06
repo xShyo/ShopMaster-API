@@ -7,9 +7,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import xshyo.us.shopMaster.ShopMaster;
 import dev.dejvokep.boostedyaml.YamlDocument;
+import xshyo.us.shopMaster.gui.SellMenu;
 import xshyo.us.shopMaster.services.SellService;
+import xshyo.us.shopMaster.services.records.SellAllResult;
+import xshyo.us.shopMaster.services.records.SellResult;
 import xshyo.us.shopMaster.superclass.AbstractCommand;
 import xshyo.us.shopMaster.utilities.PluginUtils;
+import xshyo.us.theAPI.utilities.Utils;
 
 public class SellCommand extends AbstractCommand {
 
@@ -17,11 +21,10 @@ public class SellCommand extends AbstractCommand {
     private final SellService sellService;
 
     public SellCommand(ShopMaster plugin, SellService sellService) {
-        super("sell", "/sell [all/hand]", "Vende automaticamente");
+        super("sell", "/sell [all/hand/gui]", "Vende automaticamente");
         this.plugin = plugin;
         this.sellService = sellService;
     }
-
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -48,7 +51,12 @@ public class SellCommand extends AbstractCommand {
         }
 
         if (args.length == 0) {
-            PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.SELL.USAGE");
+            // Default to GUI if no args provided
+            if (config.getBoolean("config.command.sell.subcommands.gui.default", true)) {
+                openSellGUI(player);
+            } else {
+                PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.SELL.USAGE");
+            }
             return true;
         }
 
@@ -91,12 +99,34 @@ public class SellCommand extends AbstractCommand {
                 sellAllItems(player);
                 break;
 
+            case "gui":
+                // Check if GUI subcommand is enabled
+                if (!config.getBoolean("config.command.sell.subcommands.gui.enabled", true)) {
+                    PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.SELL.GUI.DISABLED");
+                    return true;
+                }
+
+                // Check GUI subcommand permission
+                boolean needGUIPermission = config.getBoolean("config.command.sell.subcommands.gui.need-permissions", true);
+                String guiPermission = config.getString("config.command.sell.subcommands.gui.permission", "shopmaster.sell.gui");
+
+                if (needGUIPermission && !PluginUtils.hasPermission(player, guiPermission)) {
+                    return true;
+                }
+
+                openSellGUI(player);
+                break;
+
             default:
                 PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.SELL.USAGE");
                 break;
         }
 
         return true;
+    }
+
+    private void openSellGUI(Player player) {
+        new SellMenu(sellService).open(player);
     }
 
     private void sellItemInHand(Player player) {
@@ -107,11 +137,16 @@ public class SellCommand extends AbstractCommand {
             return;
         }
 
-        SellService.SellResult result = sellService.sellItem(player, itemInHand, itemInHand.getAmount(), false);
+        SellResult result = sellService.sellItem(player, itemInHand, itemInHand.getAmount(), false);
 
         switch (result.status()) {
             case SUCCESS:
-                PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.SELL.HAND.SUCCESS", itemInHand.getAmount(), PluginUtils.formatItemName(itemInHand.getType()), result.price());
+                String message = plugin.getConf().getString("config.command.sell.messages.simple");
+                message = message.replace("{amount}", "" + itemInHand.getAmount());
+                message = message.replace("{item}", PluginUtils.formatItemName(itemInHand.getType()));
+                message = message.replace("{earnings}", "" + result.price());
+                message = Utils.translate(message);
+                player.sendMessage(message);
                 player.getInventory().setItemInMainHand(null);
                 break;
             case WORLD_BLACKLISTED:
@@ -129,17 +164,12 @@ public class SellCommand extends AbstractCommand {
             case ERROR:
                 PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.SELL.HAND.ERROR");
                 break;
-
         }
     }
 
-
     private void sellAllItems(Player player) {
         // Llamar al método optimizado en SellManager
-        SellService.SellAllResult result = sellService.sellAllItems(player);
+        SellAllResult result = sellService.sellAllItems(player);
         result.generateSummaryMessages(player);
-
     }
-
-
 }

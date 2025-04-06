@@ -7,6 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import xshyo.us.shopMaster.ShopMaster;
 import xshyo.us.shopMaster.shop.data.ShopItem;
+import xshyo.us.shopMaster.utilities.CurrencyFormatter;
 import xshyo.us.shopMaster.utilities.menu.Controls;
 import xshyo.us.theAPI.utilities.Utils;
 
@@ -42,20 +43,20 @@ public class DisplayControls extends Controls {
             // Si ambos precios son mayores que 0, usamos el formato 'both'
             additionalLore.addAll(itemConfig.getStringList("items.loreFormat.both"));
             additionalLore = additionalLore.stream()
-                    .map(line -> line.replace("{buy}", String.valueOf(buyPrice))
-                            .replace("{sell}", String.valueOf(sellPrice)))
+                    .map(line -> line.replace("{buy}", CurrencyFormatter.formatCurrency(buyPrice, shopItem.getEconomy()))
+                            .replace("{sell}", CurrencyFormatter.formatCurrency(sellPrice, shopItem.getEconomy())))
                     .collect(Collectors.toList());
         } else if (buyPrice > 0) {
             // Si solo se puede comprar, usamos el formato 'only-buy'
             additionalLore.addAll(itemConfig.getStringList("items.loreFormat.only-buy"));
             additionalLore = additionalLore.stream()
-                    .map(line -> line.replace("{buy}", String.valueOf(buyPrice)))
+                    .map(line -> line.replace("{buy}", CurrencyFormatter.formatCurrency(buyPrice, shopItem.getEconomy())))
                     .collect(Collectors.toList());
         } else if (sellPrice > 0) {
             // Si solo se puede vender, usamos el formato 'only-sell'
             additionalLore.addAll(itemConfig.getStringList("items.loreFormat.only-sell"));
             additionalLore = additionalLore.stream()
-                    .map(line -> line.replace("{sell}", String.valueOf(sellPrice)))
+                    .map(line -> line.replace("{sell}", CurrencyFormatter.formatCurrency(sellPrice, shopItem.getEconomy())))
                     .collect(Collectors.toList());
         }
 

@@ -3,6 +3,9 @@ package xshyo.us.shopMaster.utilities;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import lombok.experimental.UtilityClass;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -12,13 +15,16 @@ import xshyo.us.shopMaster.utilities.menu.controls.CustomControls;
 import xshyo.us.theAPI.utilities.Utils;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 
 @UtilityClass
 public class PluginUtils {
+
 
     public String formatItemName(Material material) {
         String name = material.toString();

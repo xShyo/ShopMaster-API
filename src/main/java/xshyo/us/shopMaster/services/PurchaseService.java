@@ -6,6 +6,7 @@ import xshyo.us.shopMaster.ShopMaster;
 import xshyo.us.shopMaster.enums.CurrencyType;
 import xshyo.us.shopMaster.shop.data.ShopItem;
 import xshyo.us.shopMaster.managers.CurrencyManager;
+import xshyo.us.shopMaster.utilities.CurrencyFormatter;
 import xshyo.us.shopMaster.utilities.PluginUtils;
 
 import java.util.HashMap;
@@ -34,7 +35,7 @@ public class PurchaseService {
 
         if (!currencyManager.hasEnough(player, totalPrice)) {
             player.closeInventory();
-            String formattedPrice = ShopMaster.getInstance().getNumberFormatter().format(totalPrice);
+            String formattedPrice = CurrencyFormatter.formatCurrency(totalPrice, item.getEconomy());
             PluginUtils.sendMessage(player, "MESSAGES.GUI.PURCHASE.NOT_ENOUGH", formattedPrice);
             return;
         }
@@ -71,8 +72,8 @@ public class PurchaseService {
         }
         String displayName = item.getDisplayName() != null ? item.getDisplayName() : item.createItemStack().getType().toString();
 
-        String formattedPrice = ShopMaster.getInstance().getNumberFormatter().format(totalPrice);
-        PluginUtils.sendMessage(player, "MESSAGES.GUI.PURCHASE.SUCCESS", quantity, displayName, formattedPrice);
+        String precio = CurrencyFormatter.formatCurrency(totalPrice, item.getEconomy());
+        PluginUtils.sendMessage(player, "MESSAGES.GUI.PURCHASE.SUCCESS", quantity, displayName, precio);
         player.closeInventory();
     }
 

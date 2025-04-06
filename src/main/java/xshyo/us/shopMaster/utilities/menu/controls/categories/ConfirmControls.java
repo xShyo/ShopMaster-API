@@ -10,7 +10,9 @@ import xshyo.us.shopMaster.ShopMaster;
 import xshyo.us.shopMaster.enums.TypeService;
 import xshyo.us.shopMaster.services.PurchaseService;
 import xshyo.us.shopMaster.services.SellService;
+import xshyo.us.shopMaster.services.records.SellResult;
 import xshyo.us.shopMaster.shop.data.ShopItem;
+import xshyo.us.shopMaster.utilities.CurrencyFormatter;
 import xshyo.us.shopMaster.utilities.PluginUtils;
 import xshyo.us.shopMaster.utilities.menu.Controls;
 import xshyo.us.theAPI.utilities.Utils;
@@ -90,8 +92,8 @@ public class ConfirmControls extends Controls {
 
         // Asegurarse de que ningún valor de reemplazo sea null
         String amountStr = String.valueOf(amount);
-        String priceStr = String.valueOf(pricePerUnit);
-        String totalPriceStr = String.valueOf(totalPrice);
+        String priceStr =  CurrencyFormatter.formatCurrency(pricePerUnit, shopItem.getEconomy());
+        String totalPriceStr = CurrencyFormatter.formatCurrency(totalPrice, shopItem.getEconomy());
 
         // Garantizar que item no sea null (aunque ya debería estar cubierto arriba)
         if (item == null) item = "Unknown Item";
@@ -102,6 +104,7 @@ public class ConfirmControls extends Controls {
         return text.replace("{amount}", amountStr)
                 .replace("{price}", priceStr)
                 .replace("{totalPrice}", totalPriceStr)
+                .replace("{currency}", shopItem.getEconomy())
                 .replace("{item}", item)
                 .replace("{displayName}", display)
                 .replace("{material}", material);
@@ -117,7 +120,7 @@ public class ConfirmControls extends Controls {
             }
         } else {
 
-            SellService.SellResult result = sellService.sellItem(player, shopItem.createItemStack(), amount, true);
+            SellResult result = sellService.sellItem(player, shopItem.createItemStack(), amount, true);
 
             switch (result.status()) {
                 case SUCCESS:

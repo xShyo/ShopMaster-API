@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import xshyo.us.shopMaster.ShopMaster;
 import xshyo.us.shopMaster.shop.data.ShopItem;
+import xshyo.us.shopMaster.utilities.CurrencyFormatter;
 import xshyo.us.shopMaster.utilities.menu.Controls;
 import xshyo.us.theAPI.utilities.Utils;
 import xshyo.us.theAPI.utilities.item.ItemBuilder;
@@ -63,7 +64,6 @@ public class SellInventoryControls extends Controls {
     }
 
 
-
     private String replacePlaceholders(String text) {
         // Ajuste el precio por unidad
         double pricePerUnit = (double) shopItem.getBuyPrice() / shopItem.getAmount();
@@ -82,8 +82,8 @@ public class SellInventoryControls extends Controls {
 
         // Asegurarse de que ningún valor de reemplazo sea null
         String amountStr = String.valueOf(amount);
-        String priceStr = String.valueOf(pricePerUnit);
-        String totalPriceStr = String.valueOf(totalPrice);
+        String priceStr =  CurrencyFormatter.formatCurrency(pricePerUnit, shopItem.getEconomy());
+        String totalPriceStr = CurrencyFormatter.formatCurrency(totalPrice, shopItem.getEconomy());
 
         // Garantizar que item no sea null (aunque ya debería estar cubierto arriba)
         if (item == null) item = "Unknown Item";
@@ -94,6 +94,7 @@ public class SellInventoryControls extends Controls {
         return text.replace("{amount}", amountStr)
                 .replace("{price}", priceStr)
                 .replace("{totalPrice}", totalPriceStr)
+                .replace("{currency}", shopItem.getEconomy())
                 .replace("{item}", item)
                 .replace("{displayName}", display)
                 .replace("{material}", material);

@@ -1,107 +1,175 @@
 config:
-  number-format:
-    # SEPARADORES BÁSICOS
-    decimal-separator: "."         # Carácter para separar decimales (ej: 10.5)
-    grouping-separator: ","        # Carácter para separar miles (ej: 1,000)
 
-    # CONFIGURACIÓN DE DÍGITOS ENTEROS
-    minimum-integer-digits: 1       # Mínimo de dígitos para la parte entera (ej: 01 vs 1)
-    maximum-integer-digits: 32      # Máximo de dígitos permitidos para la parte entera
+  economy:
+    # Define el símbolo monetario predeterminado para la economía principal (VAULT)
+    default-symbol: "$"
 
-    # CONFIGURACIÓN DE DECIMALES
-    minimum-fraction-digits: 0      # Mínimo de decimales a mostrar
-    maximum-fraction-digits: 8      # Máximo de decimales a mostrar
+    # Posición del símbolo monetario
+    # true = el símbolo aparece antes del valor ($100)
+    # false = el símbolo aparece después del valor (100$)
+    symbol-before: true
 
-    hide-fraction: true            # Si es true, oculta decimales innecesarios (100.00 → 100)
-
-    # NOTACIÓN ABREVIADA (MILLONES, BILLONES, ETC.)
-    short-scale:
-      enable-numbering: false   # Activar notación abreviada (ej: 1 millón en vez de 1,000,000)
-      limit: 1000000           # Número a partir del cual se usa notación abreviada
-      hand-decimal-limit: 2           # Decimales máximos en notación abreviada
-      hand-number-limit: 32           # Dígitos máximos en notación abreviada
-
-      # Lista de sufijos para cada rango numérico.
-      # IMPORTANTE: El orden determina qué sufijo se usa para cada magnitud:
-      # - El 1er elemento (índice 0) se usa para números entre 0 y 999
-      # - El 2do elemento (índice 1) se usa para números entre 1,000 y 999,999
-      # - El 3er elemento (índice 2) se usa para números entre 1,000,000 y 999,999,999
-      # - Y así sucesivamente, multiplicando por 1000 en cada nivel
-      suffixes:
-        - ""    # Unidades: 0-999 (sin sufijo)
-        - "K"   # Miles: 1,000-999,999 (Kilo)
-        - "M"   # Millones: 1,000,000-999,999,999 (Mega)
-        - "B"   # Billones: 1,000,000,000-999,999,999,999 (Billion)
-        - "T"   # Trillones: 1,000,000,000,000-999,999,999,999,999 (Trillion)
-        - "Q"   # Cuatrillones: 1,000,000,000,000,000+ (Quadrillion)
-        # Puedes agregar más sufijos según necesites
+    # Símbolos personalizados para las diferentes economías del servidor
+    symbols:
+      vault: "$"      # Moneda principal del servidor
+      tokens: "✦"     # Tokens especiales para eventos o recompensas
+      gems: "💎"       # Gemas para compras premium
+      crystals: "✧"   # Cristales para mejoras especiales
+      points: "Pts"   # Puntos para sistemas de rangos o logros
 
 
   gui:
-
+    # Configuración de botones para interactuar con la tienda
     buttons:
-      buy: "LEFT" # Opciones: LEFT, RIGHT, SHIFT_LEFT, SHIFT_RIGHT, MIDDLE
-      sell: "RIGHT"
+      # Botones del ratón para comprar y vender en la GUI
+      # Opciones disponibles: LEFT, RIGHT, SHIFT_LEFT, SHIFT_RIGHT, MIDDLE
+      buy: "LEFT"     # Botón para comprar items
+      sell: "RIGHT"   # Botón para vender items
 
+    # Confirmación de compra/venta
+    # ¿Debe abrirse un menú de confirmación antes de completar la transacción?
     purchase-confirmation:
-      enabled: true
+      enabled: true   # true = solicitar confirmación, false = transacción instantánea
 
-    truncate-titles: true  # Set to true to enable truncation
-    max-title-length: 37    # Maximum title length before truncation
+    # Gestión de títulos largos en la GUI
+    truncate-titles: true     # ¿Acortar títulos que exceden la longitud máxima?
+    max-title-length: 36      # Longitud máxima de títulos antes de acortarlos con (...)
 
   command:
 
     admin:
-      # Enable or disable the base command, this requires a server restart.
+      # Activación del comando de administración
+      # Requiere reinicio del servidor para aplicar cambios
       enabled: true
-      #Base command name, requires a server restart
+      # Nombre del comando base para administradores
       name: adminshop
-      #Aliases for the command
+      # Comandos alternativos que funcionan igual que el comando principal
       aliases:
         - jashop
 
+    # Comando para abrir el menú principal de la tienda
     shop:
+      # Activación del comando (requiere reinicio del servidor)
       enabled: true
-      need-permissions: true
-      permission: shopmaster.open
-      name: shop
-      aliases: []
+      # Control de permisos
+      need-permissions: true             # ¿Se requiere permiso específico para usar este comando?
+      permission: shopmaster.open        # Permiso necesario si need-permissions es true
+      # Configuración del comando
+      name: shop                         # Nombre del comando
+      aliases: []                        # Comandos alternativos (lista vacía = sin aliases)
 
+    # Comando para vender items rápidamente
     sell:
-      enabled: true  # Asegúrate de que el plugin soporte esta opción
-      need-permissions: true
-      permission: shopmaster.sell
-      name: sell
-      aliases: []
+      # Activación del sistema de venta
+      enabled: true                      # false = desactiva completamente el comando /sell
+      # Control de permisos
+      need-permissions: true             # ¿Se requiere permiso para usar este comando?
+      permission: shopmaster.sell        # Permiso necesario si need-permissions es true
+      # Configuración del comando
+      name: sell                         # Nombre del comando
+      aliases: []                        # Comandos alternativos (lista vacía = sin aliases)
 
-      enable-summary: true
 
-      summary:
-        show-total-items: true
-        show-total-earnings: true
-        show-currency-breakdown: true
-        show-item-breakdown: true
-        max-items-to-show: 5
-        show-skipped-items: true
+      messages:
+        # Registro de transacciones en la consola del servidor
+        log:
+          enabled: true                  # Activar/desactivar el registro de transacciones
+          # Variables: {player}, {action} (bought/sold), {amount}, {item}, {money}, {shopName}
+          message: "[ShopMaster] {player} {action} {amount} x {item} for ${money} from {shopName} shop"
 
+        # Mensaje para venta simple (con /sell hand)
+        # Variables: {amount}, {item}, {earnings}
+        simple: "&aHas vendido &e{amount} x {item} &aítems por un total de &e${earnings}"
+
+        # Configuración de mensajes detallados para ventas múltiples
+        summary:
+          enabled: true                  # true = usara formato detallado, false = usar formato simple
+          show-itemized: true            # Mostrar detalles de cada item vendido
+          # Texto que se mostrará como enlace para ver el resumen detallado
+          summary-text: "(resumen)"
+          # Formato para cada línea de item en el resumen detallado
+          # Variables: {amount}, {item}, {earnings}, {percent}, {currency}
+          format-items: "{amount}x {item} <gray>por <green>{earnings} <gray>(<aqua>{percent}%<gray>)"
+          # Texto que aparece al pasar el cursor sobre el enlace de resumen
+          hover-lines:
+            - "<yellow>Resumen de la venta:"
+            - ""
+            - "{format-items}"           # Esta línea se repetirá por cada item vendido
+            - ""
+            - "<gray>Gracias por vender!"
+          # Mensaje principal que verá el jugador
+          # Variables: {total} (cantidad de items), {earnings} (dinero ganado), {summary} (enlace al resumen), {currencies} (Cantidad de economias)
+          message: "<green>Has vendido <yellow>{total} <green>ítems por un total de <yellow>${earnings} {summary}"
+
+      # Restricciones para el comando sell
       black-list:
+        # Mundos donde el comando sell está deshabilitado
         world:
-          - ExampleWorld
+          - ExampleWorld                 # Ejemplo (reemplazar con nombres reales de mundos)
+        # Modos de juego donde el comando sell está deshabilitado
         gameModes:
           - ADVENTURE
           - CREATIVE
           - SPECTATOR
 
+      # Subcomandos del comando sell
+      # Cada subcomando puede habilitarse/deshabilitarse individualmente
       subcommands:
+        # /sell all - Vende todos los items vendibles del inventario
         all:
-          enabled: true
-          need-permissions: true
-          permission: shopmaster.sell.all
+          enabled: true                  # Activar/desactivar este subcomando
+          need-permissions: true         # ¿Se requiere permiso específico?
+          permission: shopmaster.sell.all # Permiso necesario si need-permissions es true
+
+        # /sell hand - Vende el item que el jugador tiene en la mano
         hand:
-          enabled: true
-          need-permissions: true
-          permission: shopmaster.sell.hand
+          enabled: true                  # Activar/desactivar este subcomando
+          need-permissions: true         # ¿Se requiere permiso específico?
+          permission: shopmaster.sell.hand # Permiso necesario si need-permissions es true
+
+        # /sell gui - Abre una GUI donde podras añadir tus items una vez el menu se cierre se venderan todos los aritulos dentro de ella
+        gui:
+          enabled: true                  # Activar/desactivar este subcomando
+          show-itemized: true            # Mostrar detalles de cada item en la GUI
+          need-permissions: true         # ¿Se requiere permiso específico?
+          permission: "shopmaster.sell.gui" # Permiso necesario si need-permissions es true
+          default: true                  # Si es true, ejecutar /sell sin argumentos abrirá la GUI
 
 
+  # Configuración del formato de números y precios
+  number-format:
+    # Separadores básicos para la presentación de números
+    decimal-separator: "."              # Carácter para separar decimales (ej: 10.5)
+    grouping-separator: ","             # Carácter para separar miles (ej: 1,000)
 
+    # Configuración de la parte entera de los números
+    minimum-integer-digits: 1           # Mínimo de dígitos para la parte entera (ej: 01 vs 1)
+    maximum-integer-digits: 32          # Máximo de dígitos permitidos para la parte entera
+
+    # Configuración de la parte decimal de los números
+    minimum-fraction-digits: 0          # Mínimo de decimales a mostrar (ej: 10 vs 10.0)
+    maximum-fraction-digits: 8          # Máximo de decimales a mostrar (ej: 10.12345678)
+
+    hide-fraction: true                 # Si es true, oculta decimales si son todos ceros (100.00 → 100)
+
+    # Sistema de notación abreviada para números grandes
+    short-scale:
+      enable-numbering: false           # Activar notación abreviada (ej: 1M en vez de 1,000,000)
+      limit: 1000000                    # Número a partir del cual se usa notación abreviada
+      hand-decimal-limit: 2             # Decimales máximos en notación abreviada
+      hand-number-limit: 32             # Dígitos máximos en notación abreviada
+
+      # Lista de sufijos para cada rango numérico.
+      # Cada sufijo se aplica multiplicando por 1000 en cada nivel:
+      suffixes:
+        - ""    # 0-999: Sin sufijo
+        - "K"   # 1,000-999,999: Kilo (mil)
+        - "M"   # 1,000,000-999,999,999: Mega (millón)
+        - "B"   # 1,000,000,000-999,999,999,999: Billion (mil millones)
+        - "T"   # 1,000,000,000,000-999,999,999,999,999: Trillion (billón)
+        - "Q"   # 1,000,000,000,000,000+: Quadrillion (mil billones)
+        # Se pueden agregar más sufijos según necesidad
+
+
+# Versión del archivo de configuración (No modificar)
 file-version: 1
