@@ -5,7 +5,6 @@ import lombok.Setter;
 import org.bukkit.FireworkEffect;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Axolotl;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.trim.ArmorTrim;
 import org.bukkit.inventory.meta.trim.TrimMaterial;
@@ -52,6 +51,8 @@ public class ShopItem {
     private boolean arrowUpgraded;
     private List<PotionEffect> arrowCustomEffects;
     private List<ItemStack> loadedProjectiles;
+    private String spawnerMobType; // Para almacenar el tipo de entidad (como "ZOMBIE", "SKELETON", etc.)
+
 
     // Nuevos campos según los comentarios
     private String armorColor; // RGB format: "rrr,ggg,bbb"
@@ -211,6 +212,8 @@ public class ShopItem {
         } else if (material.contains("_HELMET") || material.contains("_CHESTPLATE") ||
                 material.contains("_LEGGINGS") || material.contains("_BOOTS")) {
             applyArmorMetadata(builder);
+        }else if (material.equalsIgnoreCase("SPAWNER")) {
+            applySpawnerMetadata(builder);
         }
 
         // Aplicar datos NBT si están disponibles
@@ -304,6 +307,12 @@ public class ShopItem {
     private void applyCrossbowMetadata(ItemBuilder builder) {
         if (!loadedProjectiles.isEmpty()) {
             builder.setChargedProjectiles(loadedProjectiles);
+        }
+    }
+
+    private void applySpawnerMetadata(ItemBuilder builder) {
+        if (spawnerMobType != null && !spawnerMobType.isEmpty()) {
+            builder.setSpawnerType(spawnerMobType);
         }
     }
 

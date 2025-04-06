@@ -107,7 +107,7 @@ public class StackSelectorMenu {
 
             final int finalTotalItems = stackAmount * maxStackSize;
 
-            selectorMenu.setItem(slot, new GuiItem(new StackPurchaseControls(stackSection).getButtonItem(viewer), event -> {
+            selectorMenu.setItem(slot, new GuiItem(new StackPurchaseControls(stackSection, item, finalTotalItems).getButtonItem(viewer), event -> {
                 event.setCancelled(true);
                 viewer.closeInventory();
                 ShopMaster.getInstance().getPurchaseService().processPurchase(viewer, item, finalTotalItems);

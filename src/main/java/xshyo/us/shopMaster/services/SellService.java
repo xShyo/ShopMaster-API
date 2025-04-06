@@ -11,11 +11,11 @@ import xshyo.us.shopMaster.ShopMaster;
 import xshyo.us.shopMaster.enums.CurrencyType;
 import xshyo.us.shopMaster.enums.SellStatus;
 import xshyo.us.shopMaster.managers.ShopManager;
+import xshyo.us.shopMaster.services.records.SellAllResult;
+import xshyo.us.shopMaster.services.records.SellResult;
 import xshyo.us.shopMaster.shop.Shop;
 import xshyo.us.shopMaster.shop.data.ShopItem;
 import xshyo.us.shopMaster.managers.CurrencyManager;
-import xshyo.us.shopMaster.utilities.PluginUtils;
-import xshyo.us.theAPI.utilities.Utils;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -109,169 +109,12 @@ public class SellService {
     public record SellableItemInfo(Shop shop, ShopItem shopItem, ItemStack itemStack) {
     }
 
-    /**
-     * Resultado de la venta de un ítem individual
-     */
-    public record SellResult(SellStatus status, double price) {
-    }
-
-    /**
-     * Resultado detallado de la operación de venta masiva
-     */
-    public record SellAllResult(
-            SellStatus status,
-            double totalEarnings,
-            Map<String, Double> earningsByCurrency,
-            Map<Material, Integer> soldItems,
-            List<ItemStack> skippedItems,
-            int totalItemsSold
-    ) {
-        /**
-         * Genera un mensaje de resumen de venta formateado
-         */
-        public void generateSummaryMessages(Player player) {
-            if (status != SellStatus.SUCCESS) {
-                switch (status) {
-                    case WORLD_BLACKLISTED:
-                        PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.SELL.ALL.WORLD_BLACKLISTED");
-                        break;
-                    case GAMEMODE_BLACKLISTED:
-                        PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.SELL.ALL.GAMEMODE_BLACKLISTED");
-                        break;
-                    case NO_SELLABLE_ITEMS:
-                        PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.SELL.ALL.NO_SELLABLE_ITEMS");
-                        break;
-                    case INVALID_ECONOMY:
-                        PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.SELL.ALL.INVALID_ECONOMY");
-                        break;
-                    case ERROR:
-                        PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.SELL.ALL.ERROR");
-                        break;
-
-                }
-                return;
-            }
-            if (ShopMaster.getInstance().getConf().getBoolean("config.command.sell.enable-summary")) {
-                List<String> messages = new ArrayList<>();
-
-                // Recuperar configuraciones de mensajes
-                String headerMessage = ShopMaster.getInstance().getLang().getString(
-                        "MESSAGES.COMMANDS.SHOP.SELL.ALL.SUMMARY_MESSAGES.HEADER",
-                        "&a---------- Resumen de Venta ----------"
-                );
-                String totalItemsMessage = ShopMaster.getInstance().getLang().getString(
-                        "MESSAGES.COMMANDS.SHOP.SELL.ALL.SUMMARY_MESSAGES.TOTAL_ITEMS",
-                        "&aHas vendido &e{total_items} &aítems"
-                );
-                String totalEarningsMessage = ShopMaster.getInstance().getLang().getString(
-                        "MESSAGES.COMMANDS.SHOP.SELL.ALL.SUMMARY_MESSAGES.TOTAL_EARNINGS",
-                        "&aPor un total de &e${total_earnings}"
-                );
-                String currencyBreakdownHeader = ShopMaster.getInstance().getLang().getString(
-                        "MESSAGES.COMMANDS.SHOP.SELL.ALL.SUMMARY_MESSAGES.CURRENCY_BREAKDOWN_HEADER",
-                        "&aDesglose por moneda:"
-                );
-                String currencyBreakdownFormat = ShopMaster.getInstance().getLang().getString(
-                        "MESSAGES.COMMANDS.SHOP.SELL.ALL.SUMMARY_MESSAGES.CURRENCY_BREAKDOWN_FORMAT",
-                        "&7- &e{currency}: ${amount}"
-                );
-                String itemBreakdownFormat = ShopMaster.getInstance().getLang().getString(
-                        "MESSAGES.COMMANDS.SHOP.SELL.ALL.SUMMARY_MESSAGES.ITEM_BREAKDOWN_FORMAT",
-                        "&7- &e{amount}x {item_name}"
-                );
-                String skippedItemsMessage = ShopMaster.getInstance().getLang().getString(
-                        "MESSAGES.COMMANDS.SHOP.SELL.ALL.SUMMARY_MESSAGES.SKIPPED_ITEMS",
-                        "&e{skipped_count} &6ítems no se vendieron porque no tienen una economía válida configurada."
-                );
-                String footerMessage = ShopMaster.getInstance().getLang().getString(
-                        "MESSAGES.COMMANDS.SHOP.SELL.ALL.SUMMARY_MESSAGES.FOOTER",
-                        "&a---------------------------------------"
-                );
-
-                // Configuración de elementos del summary
-                boolean showTotalItems = ShopMaster.getInstance().getConf().getBoolean("config.command.sell.summary.show-total-items", true);
-                boolean showTotalEarnings = ShopMaster.getInstance().getConf().getBoolean("config.command.sell.summary.show-total-earnings", true);
-                boolean showCurrencyBreakdown = ShopMaster.getInstance().getConf().getBoolean("config.command.sell.summary.show-currency-breakdown", true);
-                boolean showItemBreakdown = ShopMaster.getInstance().getConf().getBoolean("config.command.sell.summary.show-item-breakdown", true);
-                int maxItemsToShow = ShopMaster.getInstance().getConf().getInt("config.command.sell.summary.max-items-to-show", 5);
-                boolean showSkippedItems = ShopMaster.getInstance().getConf().getBoolean("config.command.sell.summary.show-skipped-items", true);
-
-                // Añadir mensajes al resumen
-                messages.add(headerMessage);
-
-                // Mostrar total de ítems vendidos
-                if (showTotalItems) {
-                    messages.add(totalItemsMessage
-                            .replace("{total_items}", String.valueOf(totalItemsSold))
-                    );
-                }
-
-                if (showTotalEarnings) {
-                    messages.add(totalEarningsMessage
-                            .replace("{total_earnings}", String.format("%.2f", totalEarnings))
-                    );
-                }
-
-
-                // Mostrar desglose por moneda si hay más de una y está habilitado
-                if (showCurrencyBreakdown && earningsByCurrency.size() > 1) {
-                    messages.add(currencyBreakdownHeader);
-                    for (Map.Entry<String, Double> entry : earningsByCurrency.entrySet()) {
-                        messages.add(currencyBreakdownFormat
-                                .replace("{currency}", entry.getKey())
-                                .replace("{amount}", String.format("%.2f", entry.getValue()))
-                        );
-                    }
-                }
-
-
-                if (showItemBreakdown && soldItems.size() <= maxItemsToShow) {
-                    for (Map.Entry<Material, Integer> entry : soldItems.entrySet()) {
-                        messages.add(itemBreakdownFormat
-                                .replace("{amount}", String.valueOf(entry.getValue()))
-                                .replace("{item_name}", PluginUtils.formatItemName(entry.getKey()))
-                        );
-                    }
-                }
-
-
-                // Informar sobre ítems omitidos
-                if (showSkippedItems && !skippedItems.isEmpty()) {
-                    int skippedCount = skippedItems.size();
-                    messages.add(skippedItemsMessage
-                            .replace("{skipped_count}", String.valueOf(skippedCount))
-                    );
-                }
-
-                messages.add(footerMessage);
-
-                // Enviar los mensajes del resumen
-                for (String message : messages) {
-                    player.sendMessage(Utils.translate(message));
-                }
-            } else {
-                // Si el summary está desactivado, solo enviar mensaje de venta básico
-                String defaultSimpleMessage = ShopMaster.getInstance().getConf().getString(
-                        "MESSAGES.COMMANDS.SHOP.SELL.ALL.SIMPLE_MESSAGE",
-                        "&aHas vendido &e{total_items} &aítems por un total de &e${total_earnings}"
-                );
-
-                player.sendMessage(Utils.translate(
-                        defaultSimpleMessage
-                                .replace("{total_items}", String.valueOf(totalItemsSold))
-                                .replace("{total_earnings}", String.format("%.2f", totalEarnings))
-                ));
-            }
-
-        }
-
-    }
 
     /**
      * Verifica rápidamente si un ItemStack es vendible
      *
      * @param player El jugador que intenta vender el ítem
-     * @param item El ItemStack a verificar
+     * @param item   El ItemStack a verificar
      * @return true si el ítem puede ser vendido, false en caso contrario
      */
     public boolean isSellable(Player player, ItemStack item) {
@@ -438,22 +281,65 @@ public class SellService {
     }
 
 
+    // En SellService, añade un nuevo método
+    public SellResult sellGuiItem(Player player, ItemStack item, int amount) {
+        if (isWorldBlacklisted(player.getWorld().getName())) {
+            return new SellResult(SellStatus.WORLD_BLACKLISTED, 0, "");
+        }
+
+        if (isGameModeBlacklisted(player.getGameMode().toString())) {
+            return new SellResult(SellStatus.GAMEMODE_BLACKLISTED, 0, "");
+        }
+
+        SellableItemInfo info = getSellableShopItem(player, item);
+        if (info == null || info.shopItem().getSellPrice() <= 0) {
+            return new SellResult(SellStatus.NOT_SELLABLE, 0, "");
+        }
+
+        // No necesitamos verificar el inventario ni remover ítems, ya que los ítems están en la GUI
+        // y serán eliminados por separado
+
+        double unitPrice = info.shopItem().getSellPrice();
+        double baseAmount = info.shopItem().getAmount(); // Cantidad mínima del shop
+        if (baseAmount > 1) {
+            unitPrice = unitPrice / baseAmount; // Ajustar precio por unidad
+        }
+
+        double totalPrice = unitPrice * amount;
+
+        // Verificaciones de economía
+        CurrencyManager currencyManager = getCurrencyManager(info);
+        if (currencyManager == null) {
+            return new SellResult(SellStatus.INVALID_ECONOMY, 0, "");
+        }
+        String currency = info.shopItem().getEconomy();
+
+        // Dar dinero
+        boolean success = currencyManager.add(player, totalPrice);
+        if (!success) {
+            return new SellResult(SellStatus.ERROR, 0, "");
+        }
+
+        return new SellResult(SellStatus.SUCCESS, totalPrice, currency);
+    }
+
+
     /**
      * Vende un ítem y retorna el resultado
      */
     public SellResult sellItem(Player player, ItemStack item, int amount, boolean searchEntireInventory) {
 
         if (isWorldBlacklisted(player.getWorld().getName())) {
-            return new SellResult(SellStatus.WORLD_BLACKLISTED, 0);
+            return new SellResult(SellStatus.WORLD_BLACKLISTED, 0, "");
         }
 
         if (isGameModeBlacklisted(player.getGameMode().toString())) {
-            return new SellResult(SellStatus.GAMEMODE_BLACKLISTED, 0);
+            return new SellResult(SellStatus.GAMEMODE_BLACKLISTED, 0, "");
         }
 
         SellableItemInfo info = getSellableShopItem(player, item);
         if (info == null || info.shopItem().getSellPrice() <= 0) {  // Verifica que el precio sea mayor que 0
-            return new SellResult(SellStatus.NOT_SELLABLE, 0);
+            return new SellResult(SellStatus.NOT_SELLABLE, 0, "");
         }
 
         PlayerInventory inventory = player.getInventory();
@@ -464,7 +350,7 @@ public class SellService {
                 : countItemsInHand(inventory, item);
 
         if (availableAmount == 0) {
-            return new SellResult(SellStatus.INSUFFICIENT_ITEMS, 0);
+            return new SellResult(SellStatus.INSUFFICIENT_ITEMS, 0, "");
         }
 
         // Limitar la cantidad a vender según lo solicitado
@@ -478,11 +364,12 @@ public class SellService {
 
         double totalPrice = unitPrice * amountToSell;
 
+        String currency = info.shopItem().getEconomy();
 
         // Verificaciones de economía
         CurrencyManager currencyManager = getCurrencyManager(info);
         if (currencyManager == null) {
-            return new SellResult(SellStatus.INVALID_ECONOMY, 0);
+            return new SellResult(SellStatus.INVALID_ECONOMY, 0, "");
         }
 
         // Remover ítems del inventario
@@ -491,10 +378,10 @@ public class SellService {
         // Dar dinero
         boolean success = currencyManager.add(player, totalPrice);
         if (!success) {
-            return new SellResult(SellStatus.ERROR, 0);
+            return new SellResult(SellStatus.ERROR, 0, "");
         }
 
-        return new SellResult(SellStatus.SUCCESS, totalPrice);
+        return new SellResult(SellStatus.SUCCESS, totalPrice, currency);
     }
 
     // Método para contar ítems en la mano
@@ -584,6 +471,8 @@ public class SellService {
         private final Map<Material, Integer> soldItems = new HashMap<>();
         private final Map<String, Double> earningsByCurrency = new HashMap<>();
         private final List<ItemStack> skippedItems = new ArrayList<>();
+        private final Map<Material, Double> earningsByMaterial = new HashMap<>();
+
         private double totalEarnings = 0.0;
         private int totalItemsSold = 0;
 
@@ -651,15 +540,18 @@ public class SellService {
         }
 
 
+
         private void updateSalesTracking(String currency, Material material, int amount, double itemTotal) {
             itemsByCurrency.computeIfAbsent(currency, k -> new HashMap<>())
                     .merge(material, amount, Integer::sum);
 
             soldItems.merge(material, amount, Integer::sum);
+            earningsByMaterial.merge(material, itemTotal, Double::sum); // Añadir esto
             totalItemsSold += amount;
             totalEarnings += itemTotal;
             earningsByCurrency.merge(currency, itemTotal, Double::sum);
         }
+
 
         private SellAllResult finalizeSale() {
             if (totalItemsSold == 0) {
@@ -675,6 +567,8 @@ public class SellService {
                     totalEarnings,
                     earningsByCurrency,
                     soldItems,
+                    itemsByCurrency,
+                    earningsByMaterial, // Añadir esto
                     skippedItems,
                     totalItemsSold
             );
@@ -701,6 +595,8 @@ public class SellService {
         return new SellAllResult(status, 0,
                 Collections.emptyMap(),
                 Collections.emptyMap(),
+                Collections.emptyMap(),
+                Collections.emptyMap(), // Añadir esto
                 Collections.emptyList(),
                 0
         );

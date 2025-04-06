@@ -21,7 +21,7 @@ import xshyo.us.shopMaster.enums.CurrencyType;
 import xshyo.us.shopMaster.placeholders.JPlaceholderAPI;
 import xshyo.us.shopMaster.managers.ShopManager;
 import xshyo.us.shopMaster.managers.CurrencyManager;
-import xshyo.us.shopMaster.utilities.NumberFormatter;
+import xshyo.us.shopMaster.utilities.CurrencyFormatter;
 import xshyo.us.theAPI.TheAPI;
 import xshyo.us.theAPI.utilities.Utils;
 
@@ -29,6 +29,8 @@ import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 
 @Getter
@@ -40,7 +42,6 @@ public final class ShopMaster extends TheAPI {
     private ShopManager shopManager;
     private SellService sellService;
     private PurchaseService purchaseService;
-    private NumberFormatter numberFormatter;
 
     private final HashMap<CurrencyType, CurrencyManager> currencyMap;
     private Economy economy;
@@ -89,7 +90,8 @@ public final class ShopMaster extends TheAPI {
         this.shopManager.load();
         this.purchaseService = new PurchaseService();
         this.sellService = new SellService(this, shopManager);
-        this.numberFormatter = new NumberFormatter();
+
+        CurrencyFormatter.initialize();
 
         new SellCommand(this, sellService).register(); // Registrar el comando
 
@@ -125,9 +127,10 @@ public final class ShopMaster extends TheAPI {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        CurrencyFormatter.reload();
+
         shopManager.load();
         sellService.reload();
-        numberFormatter.reload();
         reloadConfig();
     }
 
@@ -217,14 +220,34 @@ public final class ShopMaster extends TheAPI {
     public void setupFiles() {
         getLogger().log(Level.INFO, "Registering files...");
         try {
+
+            Set<String> routesForConfig = new HashSet<>();
+
             conf = YamlDocument.create(new File(getDataFolder(), "config.yml"), getResource("config.yml"),
-                    GeneralSettings.DEFAULT, LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setVersioning(new BasicVersioning("file-version")).build());
+                    GeneralSettings.builder().setUseDefaults(false).build(), LoaderSettings.builder().setAutoUpdate(true).build(),
+                    DumperSettings.DEFAULT, UpdaterSettings.builder().addIgnoredRoutes("1", routesForConfig, '.')
+                            .setKeepAll(true).setVersioning(new BasicVersioning("file-version")).build());
+
+
             lang = YamlDocument.create(new File(getDataFolder(), "lang.yml"), getResource("lang.yml"),
                     GeneralSettings.DEFAULT, LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setVersioning(new BasicVersioning("file-version")).build());
-            layouts = YamlDocument.create(new File(getDataFolder(), "layouts.yml"), getResource("layouts.yml"),
-                    GeneralSettings.DEFAULT, LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setVersioning(new BasicVersioning("file-version")).build());
 
-       } catch (IOException ex) {
+            Set<String> routesForLayouts = new HashSet<>();
+            routesForLayouts.add("inventories.main.custom-items");
+            routesForLayouts.add("inventories.categories.custom-items");
+            routesForLayouts.add("inventories.purchase-confirmation.items.quantity-controls");
+            routesForLayouts.add("inventories.purchase-confirmation.custom-items");
+
+            routesForLayouts.add("inventories.stack-selector.items.stack-controls");
+            routesForLayouts.add("inventories.stack-selector.custom-items");
+
+            layouts = YamlDocument.create(new File(getDataFolder(), "layouts.yml"), getResource("layouts.yml"),
+                    GeneralSettings.builder().setUseDefaults(false).build(), LoaderSettings.builder().setAutoUpdate(true).build(),
+                    DumperSettings.DEFAULT, UpdaterSettings.builder().addIgnoredRoutes("1", routesForLayouts, '.')
+                            .setKeepAll(true).setVersioning(new BasicVersioning("file-version")).build());
+
+
+        } catch (IOException ex) {
             ex.printStackTrace();
         }
     }

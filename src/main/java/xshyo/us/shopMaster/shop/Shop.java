@@ -75,6 +75,8 @@ public class Shop {
                 int itemId = Integer.parseInt(key);
 
                 String material = config.getString(path + ".item.material", "BARRIER");
+                String mob = config.getString(path + ".item.mob", "ZOMBIE");
+
                 int quantity = config.getInt(path + ".item.quantity", 1);
                 int page = config.getInt(path + ".page", 1);
                 String economy = config.getString(path + ".economy", "VAULT");
@@ -173,7 +175,11 @@ public class Shop {
                     }
                 }
 
-                // Procesar configuración específica para banners
+                if (material.contains("SPAWNER")) {
+                    item.setSpawnerMobType(mob);
+                }
+
+                    // Procesar configuración específica para banners
                 if (material.endsWith("_BANNER")) {
                     if (config.contains(path + ".item.banner")) {
 
