@@ -7,7 +7,6 @@ import org.bukkit.*;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Axolotl;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.trim.TrimMaterial;
@@ -20,8 +19,10 @@ import xshyo.us.shopMaster.ShopMaster;
 import xshyo.us.shopMaster.shop.data.ShopButton;
 import xshyo.us.shopMaster.shop.data.ShopCategory;
 import xshyo.us.shopMaster.shop.data.ShopItem;
+import xshyo.us.theAPI.utilities.Utils;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.*;
 
 @Getter
@@ -256,15 +257,17 @@ public class Shop {
                     }
                 }
 
-                // Procesar configuración específica para cubetas de ajolote
-                if (material.equalsIgnoreCase("AXOLOTL_BUCKET")) {
+                if (Utils.getCurrentVersion() >= 1170 && material.equalsIgnoreCase("AXOLOTL_BUCKET")) {
                     if (config.contains(path + ".item.axolotl")) {
                         String variantStr = config.getString(path + ".item.axolotl.variant", "LUCY");
                         try {
-                            Axolotl.Variant variant = Axolotl.Variant.valueOf(variantStr.toUpperCase());
-                            item.setAxolotlVariant(variant);
-                        } catch (IllegalArgumentException e) {
-                            ShopMaster.getInstance().getLogger().warning("Variante de ajolote inválida en la tienda " + name + ", ítem " + key + ": " + variantStr);
+                            Class<?> axolotlClass = Class.forName("org.bukkit.entity.Axolotl$Variant");
+                            Object variant = Enum.valueOf((Class<Enum>) axolotlClass, variantStr.toUpperCase());
+
+                            Method setVariant = item.getClass().getMethod("setAxolotlVariant", axolotlClass);
+                            setVariant.invoke(item, variant);
+                        } catch (Exception e) {
+                            ShopMaster.getInstance().getLogger().warning("No se pudo asignar el tipo de ajolote en la tienda " + name + ", ítem " + key + ": " + e.getMessage());
                         }
                     }
                 }
@@ -347,24 +350,26 @@ public class Shop {
                     item.setArmorColor(colorStr);
                 }
 
-                if ((material.contains("_HELMET") || material.contains("_CHESTPLATE") ||
-                        material.contains("_LEGGINGS") || material.contains("_BOOTS")) &&
-                        config.contains(path + ".item.trim")) {
+                if (Utils.getCurrentVersion() >= 1200) {
 
-                    String trimPatternStr = config.getString(path + ".item.trim.pattern");
-                    String trimMaterialStr = config.getString(path + ".item.trim.material");
+                    if ((material.contains("_HELMET") || material.contains("_CHESTPLATE") ||
+                            material.contains("_LEGGINGS") || material.contains("_BOOTS")) &&
+                            config.contains(path + ".item.trim")) {
 
-                    try {
-                        TrimMaterial trimMaterial = Registry.TRIM_MATERIAL.get(NamespacedKey.minecraft(trimMaterialStr.toLowerCase()));
-                        TrimPattern pattern = Registry.TRIM_PATTERN.match("minecraft:" + trimPatternStr.toLowerCase());
+                        String trimPatternStr = config.getString(path + ".item.trim.pattern");
+                        String trimMaterialStr = config.getString(path + ".item.trim.material");
 
-                        item.setArmorTrimPattern(pattern);
-                        item.setArmorTrimMaterial(trimMaterial);
-                    } catch (IllegalArgumentException e) {
-                        ShopMaster.getInstance().getLogger().warning("Invalid armor trim configuration in shop " + name + ", item " + key);
+                        try {
+                            TrimMaterial trimMaterial = Registry.TRIM_MATERIAL.get(NamespacedKey.minecraft(trimMaterialStr.toLowerCase()));
+                            TrimPattern pattern = Registry.TRIM_PATTERN.match("minecraft:" + trimPatternStr.toLowerCase());
+
+                            item.setArmorTrimPattern(pattern);
+                            item.setArmorTrimMaterial(trimMaterial);
+                        } catch (IllegalArgumentException e) {
+                            ShopMaster.getInstance().getLogger().warning("Invalid armor trim configuration in shop " + name + ", item " + key);
+                        }
                     }
                 }
-
 // Process item flags
                 if (config.contains(path + ".item.flags")) {
                     if (config.isList(path + ".item.flags")) {

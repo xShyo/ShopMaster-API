@@ -1,7 +1,7 @@
 tools:
 
   enable: true
-  title: '&8☀ Tienda | &lTOOLS'
+  title: '&8☀ Shop | &lTOOLS'
   size: 54
 
   category:
@@ -9,45 +9,41 @@ tools:
     slot: 10
     amount: 1
     model_data: 0
-    display_name: '&cCategoria Tools'
+    display_name: '&cTools Category'
     glowing: false
     item_flags:
       - HIDE_ATTRIBUTES
     lore:
       - '&8ᴄᴀᴛᴇɢᴏʀɪᴇs'
       - ''
-      - '&8 ● &fEsta es una tienda categoria tools'
+      - '&8 ● &fThis is the tools category shop'
       - ''
       - '&e► Click to open the menu!'
 
-
   buttons: []
-  # Shop Master Configuration - Example Shop with Advanced Items
 
   items:
-    # Basic food item
     '1':
       item:
         material: COOKED_BEEF
         quantity: 16
-        name: '&6Carne Asada'
+        name: '&6Grilled Steak'
         lore:
-          - '&7Carne de la mejor calidad'
-          - '&7para satisfacer tu hambre'
+          - '&7Top quality meat'
+          - '&7to satisfy your hunger'
       slot: 10
       page: 1
       economy: VAULT
       buyPrice: 320
       sellPrice: 160
 
-    # Golden apple with enchantments
     '2':
       item:
         material: GOLDEN_APPLE
         quantity: 1
-        name: '&eManzana Dorada'
+        name: '&eGolden Apple'
         lore:
-          - '&7Una manzana con poderes curativos'
+          - '&7An apple with healing powers'
         enchantments:
           UNBREAKING: 1
         flags:
@@ -59,14 +55,13 @@ tools:
       sellPrice: 600
       hidden: false
 
-    # Potion example
     '3':
       item:
         material: POTION
         quantity: 1
-        name: '&bPoción de Velocidad'
+        name: '&bSpeed Potion'
         lore:
-          - '&7¡Corre como el viento!'
+          - '&7Run like the wind!'
         potion:
           type: SPEED
           extended: true
@@ -82,14 +77,13 @@ tools:
       buyPrice: 550
       sellPrice: 275
 
-    # Banner with patterns
     '4':
       item:
         material: WHITE_BANNER
         quantity: 1
-        name: '&fBandera Personalizada'
+        name: '&fCustom Banner'
         lore:
-          - '&7Una bandera única'
+          - '&7A unique banner'
         banner:
           patterns:
             '1':
@@ -104,14 +98,13 @@ tools:
       buyPrice: 850
       sellPrice: 425
 
-    # Firework rocket
     '5':
       item:
         material: FIREWORK_ROCKET
         quantity: 64
-        name: '&dFuegos Artificiales'
+        name: '&dFireworks'
         lore:
-          - '&7¡Ilumina el cielo!'
+          - '&7Light up the sky!'
         firework:
           power: 3
           effects:
@@ -132,14 +125,13 @@ tools:
       buyPrice: 750
       sellPrice: 375
 
-    # Axolotl bucket
     '6':
       item:
         material: AXOLOTL_BUCKET
         quantity: 1
-        name: '&dCubeta con Ajolote'
+        name: '&dAxolotl Bucket'
         lore:
-          - '&7¡Mascota acuática!'
+          - '&7Your aquatic pet!'
         axolotl:
           variant: BLUE
       slot: 16
@@ -148,14 +140,13 @@ tools:
       buyPrice: 1500
       sellPrice: -1
 
-    # Tipped arrow
     '7':
       item:
         material: TIPPED_ARROW
         quantity: 16
-        name: '&dFlechas Venenosas'
+        name: '&dPoison Arrows'
         lore:
-          - '&7Flechas con efectos especiales'
+          - '&7Arrows with special effects'
         arrow_potion:
           type: POISON
           extended: true
@@ -171,14 +162,13 @@ tools:
       buyPrice: 400
       sellPrice: 200
 
-    # Crossbow with loaded projectiles
     '8':
       item:
         material: CROSSBOW
         quantity: 1
-        name: '&6Ballesta Cargada'
+        name: '&6Loaded Crossbow'
         lore:
-          - '&7Dispara rápido y con precisión'
+          - '&7Fast and accurate shooting'
         enchantments:
           QUICK_CHARGE: 3
           PIERCING: 2
@@ -196,14 +186,13 @@ tools:
       buyPrice: 1800
       sellPrice: 900
 
-    # Leather armor with color
     '9':
       item:
         material: LEATHER_CHESTPLATE
         quantity: 1
-        name: '&cPechera de Cuero Roja'
+        name: '&cRed Leather Chestplate'
         lore:
-          - '&7Protección con estilo'
+          - '&7Protection with style'
         armor_color: 200,40,40
         enchantments:
           PROTECTION_ENVIRONMENTAL: 4
@@ -217,14 +206,13 @@ tools:
       buyPrice: 1200
       sellPrice: 600
 
-    # Diamond armor with trim (Minecraft 1.20+)
     '10':
       item:
         material: NETHERITE_HELMET
         quantity: 1
-        name: '&bCasco de Netherite con Ornamento'
+        name: '&bNetherite Helmet with Trim'
         lore:
-          - '&7Elegancia y protección'
+          - '&7Elegance and protection'
         enchantments:
           PROTECTION_ENVIRONMENTAL: 3
           OXYGEN: 3
@@ -239,30 +227,27 @@ tools:
       buyPrice: 2500
       sellPrice: 1250
 
-    # Item with custom buy/sell commands
     '12':
       item:
         material: brewery-wheatbeer
-
       slot: 30
       page: 1
       economy: VAULT
       buyPrice: 10000
       sellPrice: -1
       buy_commands:
-        - give {player} diamond 5
-        - xp add {player} 100
-        - effect give {player} regeneration 60 1
-        - broadcast &e{player} ha comprado una recompensa especial!
+        - "[command] give {player} diamond 5"
+        - "[command] xp add {player} 100"
+        - "[command] effect give {player} regeneration 60 1"
+        - "[command] broadcast &e{player} has purchased a special reward!"
 
-    # Multi-page item (will appear on page 2)
     '13':
       item:
         material: DRAGON_EGG
         quantity: 1
-        name: '&5Huevo de Dragón'
+        name: '&5Dragon Egg'
         lore:
-          - '&7¡Un objeto extremadamente raro!'
+          - '&7An extremely rare item!'
         enchantments:
           PROTECTION_ENVIRONMENTAL: 10
         flags:
@@ -274,14 +259,13 @@ tools:
       buyPrice: 50000
       sellPrice: -1
 
-    # Item with slots in list format
     '14':
       item:
         material: ENCHANTED_GOLDEN_APPLE
         quantity: 1
-        name: '&6Manzana Dorada Encantada'
+        name: '&6Enchanted Golden Apple'
         lore:
-          - '&7El alimento definitivo'
+          - '&7The ultimate food'
         flags:
           - HIDE_ENCHANTS
       slots:
@@ -293,14 +277,13 @@ tools:
       buyPrice: 5000
       sellPrice: 2500
 
-    # Item with a range of slots
     '15':
       item:
         material: CAKE
         quantity: 1
-        name: '&fPastel'
+        name: '&fCake'
         lore:
-          - '&7¡Perfecto para celebraciones!'
+          - '&7Perfect for celebrations!'
       slots: 40-42
       page: 1
       economy: VAULT

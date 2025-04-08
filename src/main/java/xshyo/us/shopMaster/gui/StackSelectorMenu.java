@@ -28,13 +28,43 @@ public class StackSelectorMenu {
     private final ShopMaster plugin;
     private static final String MENU_PATH = "inventories.stack-selector";
     private final Set<Integer> reservedSlots = new HashSet<>();
+    // Añadir campo para almacenar la página de retorno
+    private final int returnPage;
+    // Añadir referencia al menú de confirmación original
+    private final PurchaseConfirmationMenu purchaseMenu;
 
+    // Modificar el constructor para aceptar la página de retorno
+    // Constructor para cuando venimos de un menú de confirmación existente
+    public StackSelectorMenu(Player viewer, ShopItem item, Shop shop, PurchaseConfirmationMenu purchaseMenu) {
+        this.viewer = viewer;
+        this.item = item;
+        this.shop = shop;
+        this.plugin = ShopMaster.getInstance();
+        this.selectorMenu = initializeGui();
+        this.returnPage = purchaseMenu.getReturnPage();
+        this.purchaseMenu = purchaseMenu;
+    }
+
+    // Constructor anterior para compatibilidad
     public StackSelectorMenu(Player viewer, ShopItem item, Shop shop) {
         this.viewer = viewer;
         this.item = item;
         this.shop = shop;
         this.plugin = ShopMaster.getInstance();
         this.selectorMenu = initializeGui();
+        this.returnPage = 1;
+        this.purchaseMenu = null;
+    }
+
+    // Constructor con página de retorno
+    public StackSelectorMenu(Player viewer, ShopItem item, Shop shop, int returnPage) {
+        this.viewer = viewer;
+        this.item = item;
+        this.shop = shop;
+        this.plugin = ShopMaster.getInstance();
+        this.selectorMenu = initializeGui();
+        this.returnPage = returnPage;
+        this.purchaseMenu = null;
     }
 
     public void openMenu() {
@@ -56,34 +86,38 @@ public class StackSelectorMenu {
             }
         });
 
-        // Configurar botones de regresar
+        // Configurar botones de regresar - Modificado para volver al PurchaseConfirmationMenu
         PluginUtils.loadSingleButton(MENU_PATH + ".buttons.back", plugin.getLayouts(),
                 path -> new BackControls(MENU_PATH + ".buttons.back"),
                 selectorMenu.getRows()
         ).forEach((slot, controls) -> {
             if (controls.getButtonItem(viewer).getType() != Material.AIR) {
-                selectorMenu.setItem(slot, new GuiItem(controls.getButtonItem(viewer), event ->
-                        new ShopCategoryMenu(viewer, shop).openMenu(1)));
+                selectorMenu.setItem(slot, new GuiItem(controls.getButtonItem(viewer), event -> {
+                    // Si tenemos una referencia al menú original, usarla
+                    if (purchaseMenu != null) {
+                        // Reabrir el menú original que ya tiene la cantidad configurada
+                        purchaseMenu.openMenu();
+                    } else {
+                        // Fallback al comportamiento anterior
+                        new PurchaseConfirmationMenu(viewer, item, shop, returnPage).openMenu();
+                    }
+                }));
                 reservedSlots.add(slot);
             }
         });
 
-        // Configurar ítems personalizados
+        // Resto del código igual...
         setupCustomItems();
-
-        // Configurar botones de selección de stacks desde la nueva configuración
         setupStackControls();
-
-        // Rellenar slots vacíos
         fillEmptySlots();
 
-        // Actualizar el título del menú
         String title = plugin.getLayouts().getString(MENU_PATH + ".title", "&8☀ Seleccionar Cantidad de Stacks");
         selectorMenu.updateTitle(Utils.translate(title));
 
         selectorMenu.setDefaultClickAction(event -> event.setCancelled(true));
         selectorMenu.open(viewer);
     }
+
 
     private void setupStackControls() {
         Section stackControlsSection = plugin.getLayouts().getSection(MENU_PATH + ".items.stack-controls");
@@ -151,6 +185,4 @@ public class StackSelectorMenu {
             }
         }
     }
-
-
 }

@@ -31,7 +31,7 @@ public class ShopMigrator {
 
     public boolean migrateShops() {
         if (!shopGUIConfigFile.exists()) {
-            plugin.getLogger().warning("No se encontró el archivo de configuración de ShopGUIPlus.");
+            plugin.getLogger().warning("ShopGUIPlus configuration file not found.");
             return false;
         }
 
@@ -39,13 +39,13 @@ public class ShopMigrator {
         ConfigurationSection shopMenuItems = shopGUIConfig.getConfigurationSection("shopMenuItems");
 
         if (shopMenuItems == null) {
-            plugin.getLogger().warning("No se encontró la sección 'shopMenuItems' en la configuración de ShopGUIPlus.");
+            plugin.getLogger().warning("The 'shopMenuItems' section was not found in the ShopGUIPlus configuration.");
             return false;
         }
 
         Set<String> menuItemKeys = shopMenuItems.getKeys(false);
         if (menuItemKeys.isEmpty()) {
-            plugin.getLogger().warning("No se encontraron items en 'shopMenuItems'.");
+            plugin.getLogger().warning("No items were found in 'shopMenuItems'.");
             return false;
         }
 
@@ -57,28 +57,30 @@ public class ShopMigrator {
 
             String shopName = menuItemSection.getString("shop");
             if (shopName == null || shopName.isEmpty()) {
-                plugin.getLogger().warning("Tienda sin nombre en el item " + key + ", saltándola.");
+                plugin.getLogger().warning("Store with no name in the item " + key + ", skipping.");
                 continue;
             }
 
             boolean success = migrateShop(shopName, menuItemSection);
             if (success) {
                 migratedShops++;
-                plugin.getLogger().info("Tienda migrada exitosamente: " + shopName);
+                plugin.getLogger().info("Store successfully migrated: " + shopName);
             } else {
-                plugin.getLogger().warning("Error al migrar la tienda: " + shopName);
+                plugin.getLogger().warning("Error when migrating the store: " + shopName);
             }
         }
 
-        plugin.getLogger().info("Migración completada: " + migratedShops + " tiendas migradas.");
+        plugin.getLogger().info("Migration completed: " + migratedShops + " migrated stores.");
         return migratedShops > 0;
     }
-    private boolean migrateShop(String shopName, ConfigurationSection menuItemSection) {
+    private boolean migrateShop(String configSafeName, ConfigurationSection menuItemSection) {
+        String shopName = configSafeName.replace(" ", "_");
+
         File shopGUIShopFile = new File(shopGUIShopsDir, shopName + ".yml");
         YamlConfiguration shopConfig = new YamlConfiguration();
 
         shopConfig.set(shopName + ".enable", true);
-        shopConfig.set(shopName + ".title", "&8☀ Tienda | &l" + shopName.toUpperCase());
+        shopConfig.set(shopName + ".title", "&8☀ Store | &l" + shopName.toUpperCase());
         shopConfig.set(shopName + ".size", 54);
 
         ConfigurationSection itemSection = menuItemSection.getConfigurationSection("item");
@@ -252,7 +254,7 @@ public class ShopMigrator {
                                     shopConfig.set(itemPath + ".item.enchantments." + enchantName, enchantLevel);
                                 } catch (NumberFormatException e) {
                                     // Manejar formato inválido de nivel
-                                    System.out.println("Error al convertir nivel de encantamiento: " + enchantmentStr);
+                                    System.out.println("Error when converting enchantment level: " + enchantmentStr);
                                 }
                             }
                         }
@@ -360,7 +362,7 @@ public class ShopMigrator {
             case "BROWN":
                 return "165,42,42";
             default:
-                System.out.println("Color desconocido: " + colorName);
+                System.out.println("Color unknown: " + colorName);
                 return null;
         }
     }
@@ -374,14 +376,16 @@ public class ShopMigrator {
         return YamlConfiguration.loadConfiguration(shopFile);
     }
 
-    private boolean saveShopConfig(String shopName, YamlConfiguration config) {
+    private boolean saveShopConfig(String configSafeName, YamlConfiguration config) {
+        String shopName = configSafeName.replace(" ", "_");
+
         File shopFile = new File(shopMasterDir, shopName + ".yml");
         try {
             config.save(shopFile);
-            plugin.getLogger().info("Tienda guardada: " + shopName);
+            plugin.getLogger().info("Stored store: " + shopName);
             return true;
         } catch (IOException e) {
-            plugin.getLogger().log(Level.SEVERE, "Error al guardar la tienda " + shopName, e);
+            plugin.getLogger().log(Level.SEVERE, "Error saving the store " + shopName, e);
             return false;
         }
     }

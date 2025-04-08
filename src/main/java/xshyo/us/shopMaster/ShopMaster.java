@@ -89,6 +89,7 @@ public final class ShopMaster extends TheAPI {
         this.shopManager = new ShopManager();
         this.shopManager.load();
         this.purchaseService = new PurchaseService();
+
         this.sellService = new SellService(this, shopManager);
 
         CurrencyFormatter.initialize();

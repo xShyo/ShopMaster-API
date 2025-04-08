@@ -3,6 +3,7 @@ package xshyo.us.shopMaster.services;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import dev.dejvokep.boostedyaml.YamlDocument;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -148,6 +149,7 @@ public class SellService {
         // Si no, verificar en ítems personalizados
         SellableItemInfo customInfo = findCustomItem(player, item);
         return customInfo != null && customInfo.shopItem().getSellPrice() > 0;
+
     }
 
     /**
@@ -197,17 +199,38 @@ public class SellService {
 
     private void processStandardOrCustomItem(Shop shop, ShopItem item) {
         try {
-            Material material = Material.valueOf(item.getMaterial().toUpperCase());
-            ItemStack shopItemStack = item.createItemStack();
-            SellableItemInfo info = new SellableItemInfo(shop, item, shopItemStack);
+            Bukkit.getScheduler().runTask(plugin, () -> {
 
-            sellableItems.computeIfAbsent(material, k -> new CopyOnWriteArrayList<>()).add(info);
+                String matName = item.getMaterial();
+                plugin.getLogger().info("Procesando item: " + matName);
+                Material material = Material.valueOf(matName.toUpperCase());
+
+                // COMENTA esta línea por ahora
+
+                ItemStack shopItemStack = item.createItemStack();
+
+                // En su lugar, crea un ItemStack seguro y vacío
+//            ItemStack shopItemStack = new ItemStack(material);
+
+                SellableItemInfo info = new SellableItemInfo(shop, item, shopItemStack);
+                sellableItems.computeIfAbsent(material, k -> new CopyOnWriteArrayList<>()).add(info);
+            });
         } catch (IllegalArgumentException e) {
-            // Custom item handling
-            ItemStack customItem = item.createItemStack();
-            customSellableItems.add(new CustomItemEntry(shop, item, customItem));
+            plugin.getLogger().warning("Material inválido: " + item.getMaterial());
+            try {
+                plugin.getLogger().info("Intentando crear custom item...");
+                ItemStack customItem = item.createItemStack();
+                customSellableItems.add(new CustomItemEntry(shop, item, customItem));
+            } catch (Exception ex) {
+                plugin.getLogger().severe("Error creando custom item: " + ex.getMessage());
+                ex.printStackTrace();
+            }
+        } catch (Exception e) {
+            plugin.getLogger().severe("Error inesperado en processStandardOrCustomItem: " + e.getMessage());
+            e.printStackTrace();
         }
     }
+
 
     /**
      * Busca en materiales estándar
@@ -538,7 +561,6 @@ public class SellService {
             // Eliminar el ítem del inventario
             inventory.setItem(slot, null);
         }
-
 
 
         private void updateSalesTracking(String currency, Material material, int amount, double itemTotal) {

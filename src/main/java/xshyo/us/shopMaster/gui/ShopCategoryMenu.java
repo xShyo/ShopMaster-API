@@ -82,6 +82,20 @@ public class ShopCategoryMenu {
     }
 
     public void openMenu(int page) {
+
+        if (page < 1 || page > maxPage) {
+            PluginUtils.sendMessage(viewer, "MESSAGES.GUI.PAGE_NOT_FOUND");
+            if (maxPage > 0) {
+                // Redirigir a la primera página si hay tiendas disponibles
+                openMenu(1);
+            } else {
+                // No hay páginas disponibles, mostrar mensaje y cerrar
+                PluginUtils.sendMessage(viewer, "MESSAGES.GUI.NO_ITEMS_AVAILABLE");
+                viewer.closeInventory();
+            }
+            return;
+        }
+
         this.currentPage = page;
 
         // Limpiar el inventario
@@ -95,6 +109,19 @@ public class ShopCategoryMenu {
         Map<Integer, ShopItem> pageItems = shop.getItems().entrySet().stream()
                 .filter(entry -> entry.getValue().getPage() == currentPage)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        if (pageItems.isEmpty()) {
+            PluginUtils.sendMessage(viewer, "MESSAGES.GUI.EMPTY_PAGE");
+            // Intentar encontrar una página no vacía
+            int nonEmptyPage = findNonEmptyPage();
+            if (nonEmptyPage > 0) {
+                openMenu(nonEmptyPage);
+            } else {
+                PluginUtils.sendMessage(viewer, "MESSAGES.GUI.NO_ITEMS_AVAILABLE");
+                viewer.closeInventory();
+            }
+            return;
+        }
 
         // Mostrar los items de la página actual
         pageItems.forEach((itemId, shopItem) -> {
@@ -154,6 +181,17 @@ public class ShopCategoryMenu {
         categoryMenu.open(viewer);
     }
 
+    private int findNonEmptyPage() {
+        for (int i = 1; i <= maxPage; i++) {
+            int finalI = i;
+            boolean hasItems = shop.getItems().values().stream()
+                    .anyMatch(item -> item.getPage() == finalI);
+            if (hasItems) {
+                return i;
+            }
+        }
+        return 0;
+    }
 
     private String getClickTypeString(InventoryClickEvent event) {
         if (event.isLeftClick() && !event.isShiftClick()) return "LEFT";
