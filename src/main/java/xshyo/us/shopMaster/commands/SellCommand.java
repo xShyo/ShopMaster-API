@@ -102,7 +102,7 @@ public class SellCommand extends AbstractCommand {
             case "gui":
                 // Check if GUI subcommand is enabled
                 if (!config.getBoolean("config.command.sell.subcommands.gui.enabled", true)) {
-                    PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.SELL.GUI.DISABLED");
+                    PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.GUI.DISABLED");
                     return true;
                 }
 
@@ -150,10 +150,10 @@ public class SellCommand extends AbstractCommand {
                 player.getInventory().setItemInMainHand(null);
                 break;
             case WORLD_BLACKLISTED:
-                PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.SELL.HAND.WORLD_BLACKLISTED");
+                PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.WORLD_BLACKLISTED");
                 break;
             case GAMEMODE_BLACKLISTED:
-                PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.SELL.HAND.GAMEMODE_BLACKLISTED");
+                PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.GAMEMODE_BLACKLISTED");
                 break;
             case NOT_SELLABLE:
                 PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.SELL.HAND.NOT_SELLABLE");

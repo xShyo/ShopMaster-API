@@ -9,90 +9,80 @@ MESSAGES:
 
   # Gui
   GUI:
-    PURCHASE:
-      INVALID: "&cError: Currency management is not configured correctly."
-      ERROR: "&cError occurred during purchase. Please try again later."
-      NOT_ENOUGH: "&cNo tienes {1} para comprar este articulo"
-      SUCCESS: "&aCompra exitosa! Has comprado {1} {2} por {3}"
-      NO_SPACE: "No tienes suficiente espacio para comprar esto."
-    SELL:
-      SUCCESS: "&aHas vendido &e{1}x {2} &apor &e${3}"
-      WORLD_BLACKLISTED: "&cNo puedes usar este comando en este mundo"
-      GAMEMODE_BLACKLISTED: "&cNo puedes usar este comando en tu modo de juego actual."
-      NOT_SELLABLE: "&cEste ítem no se puede vender."
-      INVALID_ECONOMY: "&cLa economy del item esta incorrecta por favor avise a un administrador."
-      ERROR: "&cHa ocurrido un error al vender el ítem."
+    PAGE_NOT_FOUND: "&cLa página solicitada no existe. se abrió la primera página."
+    EMPTY_PAGE: "&cEsta página no contiene elementos."
+    NO_ITEMS_AVAILABLE: "&cNo hay elementos disponibles en esta tienda."
 
+    DISABLED: "&cLa interfaz de venta está desactivada actualmente."
+    PURCHASE:
+      INVALID: "&cError: La gestión de la economía no está configurada correctamente."
+      ERROR: "&cOcurrió un error al realizar la compra. Intenta de nuevo más tarde."
+      NOT_ENOUGH: "&cNo tienes {1} para comprar este artículo."
+      SUCCESS: "&a¡Compra exitosa! Has comprado {1} {2} por {3}."
+      NO_SPACE: "&cNo tienes suficiente espacio para comprar esto."
+    SELL:
+      SUCCESS: "&aHas vendido &e{1}x {2} &apor &e${3}."
+      NOT_SELLABLE: "&cEste ítem no se puede vender."
+      INVALID_ECONOMY: "&cLa economía del ítem está mal configurada. Por favor, avisa a un administrador."
+      ERROR: "&cOcurrió un error al vender el ítem."
 
   # Commands
   COMMANDS:
-    # Disable in world
-    NO_USAGE_IN_WORLD: "&cYou can't use this in this world."
+    # No Perms
+    NOPERMS: "&cNo tienes permiso {2} para usar este comando."
+    NOPERMS_LOGGER: "&cEl usuario {1} no tiene permiso {2}."
 
-    #No Perms
-    NOPERMS: "&cYou do not have permission {2} to use this command."
-    NOPERMS_LOGGER: "&cUser {1} does not have permission {2}"
-
-    #Help
-    NO_SUCH_COMMAND: "No such command. please type /{admin} help for more info"
+    # Help
+    NO_SUCH_COMMAND: "&cComando desconocido. Usa /{admin} help para más información."
     HELP_CONSOLE: |-
       &7
-      &e&l BASIC CONSOLE COMMANDS
+      &e&l COMANDOS BÁSICOS PARA CONSOLA
       &7
-      &8 » &e/{admin} reload &8- &fReloads the configuration
-      &8 » &e/{admin} help &8- &fView help message
+      &8 » &e/{admin} reload &8- &fRecarga la configuración
+      &8 » &e/{admin} help &8- &fMuestra los comandos disponibles
       &7
     HELP:
-      - "&e&lBASIC COMMANDS"
+      - "&e&lCOMANDOS BÁSICOS"
       - "&7"
-      - "&8 » &e/{shop} &8- &fOpen shop menu"
-      - "&8 » &e/{sell} &8- &fCommand to sell"
+      - "&8 » &e/{shop} &8- &fAbre el menú de tienda"
+      - "&8 » &e/{sell} &8- &fComando para vender"
       - "&7"
-      - "&8 » &e/{admin} reload &8- &fReload the configuration"
-      - "&8 » &e/{admin} help &8- &fView help message"
+      - "&8 » &e/{admin} reload &8- &fRecarga la configuración"
+      - "&8 » &e/{admin} help &8- &fMuestra los comandos disponibles"
       - ""
-    HELP_USAGE: "&cCorrect usage: /{admin} help (page)"
+    HELP_USAGE: "&cUso correcto: /{admin} help (página)"
 
-    # reload
-    RELOAD: '&aAll YML files have been successfully reset.'
-    RELOAD_COOLDOWN: 'You must wait {1} before reloading the configuration.'
+    # Reload
+    RELOAD: "&aTodos los archivos YML se han recargado correctamente."
+    RELOAD_COOLDOWN: "&cDebes esperar {1} antes de volver a recargar la configuración."
 
     SHOP:
+      WORLD_BLACKLISTED: "&cNo puedes usar este comando en este mundo."
+      GAMEMODE_BLACKLISTED: "&cNo puedes usar este comando en tu modo de juego actual."
+
       SELL:
         USAGE: "&cUso: /{sell} [all/hand/gui]"
         DISABLED: "&cEste comando está desactivado."
-        GUI:
-          DISABLED: "&cThe sell GUI is currently disabled."
         HAND:
           DISABLED: "&cEste subcomando está desactivado."
-          EMPTY: "&cNo tienes nada en tu mano para vender."
+          EMPTY: "&cNo tienes nada en la mano para vender."
           NOT_SELLABLE: "&cEste ítem no se puede vender."
-          ERROR: "&cHa ocurrido un error al vender el ítem."
-          WORLD_BLACKLISTED: "&cNo puedes usar este comando en este mundo"
-          GAMEMODE_BLACKLISTED: "&cNo puedes usar este comando en tu modo de juego actual."
-          INVALID_ECONOMY: "&cLa economy del item esta incorrecta por favor avise a un administrador."
+          ERROR: "&cOcurrió un error al vender el ítem."
+          INVALID_ECONOMY: "&cLa economía del ítem está mal configurada. Por favor, avisa a un administrador."
         ALL:
           DISABLED: "&cEste subcomando está desactivado."
-          EMPTY: "&cNo tienes nada en tu mano para vender."
-          NO_SELLABLE_ITEMS: "&cNo tines items para vender"
-          ERROR: "&cHa ocurrido un error al vender el ítem."
-          WORLD_BLACKLISTED: "&cNo puedes usar este comando en este mundo"
-          GAMEMODE_BLACKLISTED: "&cNo puedes usar este comando en tu modo de juego actual."
-          INVALID_ECONOMY: "&cLa economy del item esta incorrecta por favor avise a un administrador."
+          EMPTY: "&cNo tienes nada en tu inventario para vender."
+          NO_SELLABLE_ITEMS: "&cNo tienes ítems vendibles."
+          ERROR: "&cOcurrió un error al vender los ítems."
+          INVALID_ECONOMY: "&cLa economía de algún ítem está mal configurada. Por favor, avisa a un administrador."
           ITEM_SOLD: "a"
-
-
-
 
       OPEN:
         SUCCESS: "&aAbriendo la tienda: &6{1}"
         NOT_FOUND: "&cLa tienda &6{1} &cno existe."
-        PLAYER_ONLY: "&cSolo los jugadores pueden abrir tiendas para sí mismos."
+        PLAYER_ONLY: "&cSolo los jugadores pueden abrir tiendas por sí mismos."
         OTHER_SUCCESS: "&aHas abierto la tienda &6{1} &apara &6{2}&a."
         PLAYER_OFFLINE: "&cEl jugador &6{1} &cno está en línea."
-        USAGE: "Uso correcto: /{shop} [tienda] [jugador]"
-
+        USAGE: "&cUso correcto: /{shop} [tienda] [jugador]"
 
 file-version: 1
-
-

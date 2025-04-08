@@ -1,175 +1,166 @@
 config:
 
   economy:
-    # Define el símbolo monetario predeterminado para la economía principal (VAULT)
+    # Defines the default currency symbol for the main economy (VAULT)
     default-symbol: "$"
 
-    # Posición del símbolo monetario
-    # true = el símbolo aparece antes del valor ($100)
-    # false = el símbolo aparece después del valor (100$)
+    # Currency symbol position
+    # true = symbol appears before the value ($100)
+    # false = symbol appears after the value (100$)
     symbol-before: true
 
-    # Símbolos personalizados para las diferentes economías del servidor
+    # Custom symbols for different server economies
     symbols:
-      vault: "$"      # Moneda principal del servidor
-      tokens: "✦"     # Tokens especiales para eventos o recompensas
-      gems: "💎"       # Gemas para compras premium
-      crystals: "✧"   # Cristales para mejoras especiales
-      points: "Pts"   # Puntos para sistemas de rangos o logros
-
+      vault: "$"      # Main server currency
+      tokens: "✦"     # Special tokens for events or rewards
+      gems: "💎"       # Gems for premium purchases
+      crystals: "✧"   # Crystals for special upgrades
+      points: "Pts"   # Points for rank or achievement systems
 
   gui:
-    # Configuración de botones para interactuar con la tienda
+    # Button settings to interact with the shop
     buttons:
-      # Botones del ratón para comprar y vender en la GUI
-      # Opciones disponibles: LEFT, RIGHT, SHIFT_LEFT, SHIFT_RIGHT, MIDDLE
-      buy: "LEFT"     # Botón para comprar items
-      sell: "RIGHT"   # Botón para vender items
+      # Mouse buttons used to buy and sell in the GUI
+      # Available options: LEFT, RIGHT, SHIFT_LEFT, SHIFT_RIGHT, MIDDLE
+      buy: "LEFT"     # Button to buy items
+      sell: "RIGHT"   # Button to sell items
 
-    # Confirmación de compra/venta
-    # ¿Debe abrirse un menú de confirmación antes de completar la transacción?
+    # Purchase/sell confirmation
+    # Should a confirmation menu open before completing a transaction?
     purchase-confirmation:
-      enabled: true   # true = solicitar confirmación, false = transacción instantánea
+      enabled: true   # true = require confirmation, false = instant transaction
 
-    # Gestión de títulos largos en la GUI
-    truncate-titles: true     # ¿Acortar títulos que exceden la longitud máxima?
-    max-title-length: 36      # Longitud máxima de títulos antes de acortarlos con (...)
+    # Handling long titles in the GUI
+    truncate-titles: true       # Shorten titles exceeding max length?
+    max-title-length: 36        # Max title length before shortening with (...)
 
   command:
 
     admin:
-      # Activación del comando de administración
-      # Requiere reinicio del servidor para aplicar cambios
+      # Enable the admin command
+      # Requires server restart to apply changes
       enabled: true
-      # Nombre del comando base para administradores
+      # Base command name for admins
       name: adminshop
-      # Comandos alternativos que funcionan igual que el comando principal
+      # Alternate command aliases that work the same
       aliases:
         - jashop
 
-    # Comando para abrir el menú principal de la tienda
+    # Command to open the main shop menu
     shop:
-      # Activación del comando (requiere reinicio del servidor)
+      # Command activation (requires server restart)
       enabled: true
-      # Control de permisos
-      need-permissions: true             # ¿Se requiere permiso específico para usar este comando?
-      permission: shopmaster.open        # Permiso necesario si need-permissions es true
-      # Configuración del comando
-      name: shop                         # Nombre del comando
-      aliases: []                        # Comandos alternativos (lista vacía = sin aliases)
+      # Permission control
+      need-permissions: true             # Is a specific permission required to use this command?
+      permission: shopmaster.open        # Permission required if need-permissions is true
+      # Command settings
+      name: shop                         # Command name
+      aliases: []                        # Alternate commands (empty list = no aliases)
 
-    # Comando para vender items rápidamente
-    sell:
-      # Activación del sistema de venta
-      enabled: true                      # false = desactiva completamente el comando /sell
-      # Control de permisos
-      need-permissions: true             # ¿Se requiere permiso para usar este comando?
-      permission: shopmaster.sell        # Permiso necesario si need-permissions es true
-      # Configuración del comando
-      name: sell                         # Nombre del comando
-      aliases: []                        # Comandos alternativos (lista vacía = sin aliases)
-
-
-      messages:
-        # Registro de transacciones en la consola del servidor
-        log:
-          enabled: true                  # Activar/desactivar el registro de transacciones
-          # Variables: {player}, {action} (bought/sold), {amount}, {item}, {money}, {shopName}
-          message: "[ShopMaster] {player} {action} {amount} x {item} for ${money} from {shopName} shop"
-
-        # Mensaje para venta simple (con /sell hand)
-        # Variables: {amount}, {item}, {earnings}
-        simple: "&aHas vendido &e{amount} x {item} &aítems por un total de &e${earnings}"
-
-        # Configuración de mensajes detallados para ventas múltiples
-        summary:
-          enabled: true                  # true = usara formato detallado, false = usar formato simple
-          show-itemized: true            # Mostrar detalles de cada item vendido
-          # Texto que se mostrará como enlace para ver el resumen detallado
-          summary-text: "(resumen)"
-          # Formato para cada línea de item en el resumen detallado
-          # Variables: {amount}, {item}, {earnings}, {percent}, {currency}
-          format-items: "{amount}x {item} <gray>por <green>{earnings} <gray>(<aqua>{percent}%<gray>)"
-          # Texto que aparece al pasar el cursor sobre el enlace de resumen
-          hover-lines:
-            - "<yellow>Resumen de la venta:"
-            - ""
-            - "{format-items}"           # Esta línea se repetirá por cada item vendido
-            - ""
-            - "<gray>Gracias por vender!"
-          # Mensaje principal que verá el jugador
-          # Variables: {total} (cantidad de items), {earnings} (dinero ganado), {summary} (enlace al resumen), {currencies} (Cantidad de economias)
-          message: "<green>Has vendido <yellow>{total} <green>ítems por un total de <yellow>${earnings} {summary}"
-
-      # Restricciones para el comando sell
+      # Restrictions for the shop command
       black-list:
-        # Mundos donde el comando sell está deshabilitado
+        # Worlds where the shop command is disabled
         world:
-          - ExampleWorld                 # Ejemplo (reemplazar con nombres reales de mundos)
-        # Modos de juego donde el comando sell está deshabilitado
+          - ExampleWorld                 # Example (replace with actual world names)
+        # Game modes where the shop command is disabled
         gameModes:
           - ADVENTURE
           - CREATIVE
           - SPECTATOR
 
-      # Subcomandos del comando sell
-      # Cada subcomando puede habilitarse/deshabilitarse individualmente
+    # Command to quickly sell items
+    sell:
+      # Enable the sell system
+      enabled: true                      # false = fully disables the /sell command
+      # Permission control
+      need-permissions: true             # Is permission required to use this command?
+      permission: shopmaster.sell        # Permission required if need-permissions is true
+      # Command settings
+      name: sell                         # Command name
+      aliases: []                        # Alternate commands (empty list = no aliases)
+
+      messages:
+        # Transaction logging in server console
+        log:
+          enabled: true
+          # Variables: {player}, {action} (bought/sold), {amount}, {item}, {money}, {shopName}
+          message: "[ShopMaster] {player} {action} {amount} x {item} for ${money} from {shopName} shop"
+
+        # Message for simple sell (/sell hand)
+        # Variables: {amount}, {item}, {earnings}
+        simple: "&aYou sold &e{amount} x {item} &afor a total of &e${earnings}"
+
+        # Detailed message config for multiple item sales
+        summary:
+          enabled: true
+          show-itemized: true
+          summary-text: "(summary)"
+          format-items: "{amount}x {item} <gray>for <green>{earnings} <gray>(<aqua>{percent}%<gray>)"
+          hover-lines:
+            - "<yellow>Sale Summary:"
+            - ""
+            - "{format-items}"
+            - ""
+            - "<gray>Thanks for selling!"
+          message: "<green>You sold <yellow>{total} <green>items for a total of <yellow>${earnings} {summary}"
+
+      # Restrictions for the sell command
+      black-list:
+        world:
+          - ExampleWorld
+        gameModes:
+          - ADVENTURE
+          - CREATIVE
+          - SPECTATOR
+
+      # Subcommands of the sell command
       subcommands:
-        # /sell all - Vende todos los items vendibles del inventario
+        # /sell all - Sells all sellable items from the inventory
         all:
-          enabled: true                  # Activar/desactivar este subcomando
-          need-permissions: true         # ¿Se requiere permiso específico?
-          permission: shopmaster.sell.all # Permiso necesario si need-permissions es true
+          enabled: true
+          need-permissions: true
+          permission: shopmaster.sell.all
 
-        # /sell hand - Vende el item que el jugador tiene en la mano
+        # /sell hand - Sells the item in the player's hand
         hand:
-          enabled: true                  # Activar/desactivar este subcomando
-          need-permissions: true         # ¿Se requiere permiso específico?
-          permission: shopmaster.sell.hand # Permiso necesario si need-permissions es true
+          enabled: true
+          need-permissions: true
+          permission: shopmaster.sell.hand
 
-        # /sell gui - Abre una GUI donde podras añadir tus items una vez el menu se cierre se venderan todos los aritulos dentro de ella
+        # /sell gui - Opens a GUI to add items; once closed, all items inside are sold
         gui:
-          enabled: true                  # Activar/desactivar este subcomando
-          show-itemized: true            # Mostrar detalles de cada item en la GUI
-          need-permissions: true         # ¿Se requiere permiso específico?
-          permission: "shopmaster.sell.gui" # Permiso necesario si need-permissions es true
-          default: true                  # Si es true, ejecutar /sell sin argumentos abrirá la GUI
+          enabled: true
+          show-itemized: true
+          need-permissions: true
+          permission: "shopmaster.sell.gui"
+          default: true
 
-
-  # Configuración del formato de números y precios
+  # Number and price format settings
   number-format:
-    # Separadores básicos para la presentación de números
-    decimal-separator: "."              # Carácter para separar decimales (ej: 10.5)
-    grouping-separator: ","             # Carácter para separar miles (ej: 1,000)
+    decimal-separator: "."
+    grouping-separator: ","
 
-    # Configuración de la parte entera de los números
-    minimum-integer-digits: 1           # Mínimo de dígitos para la parte entera (ej: 01 vs 1)
-    maximum-integer-digits: 32          # Máximo de dígitos permitidos para la parte entera
+    minimum-integer-digits: 1
+    maximum-integer-digits: 32
 
-    # Configuración de la parte decimal de los números
-    minimum-fraction-digits: 0          # Mínimo de decimales a mostrar (ej: 10 vs 10.0)
-    maximum-fraction-digits: 8          # Máximo de decimales a mostrar (ej: 10.12345678)
+    minimum-fraction-digits: 0
+    maximum-fraction-digits: 8
 
-    hide-fraction: true                 # Si es true, oculta decimales si son todos ceros (100.00 → 100)
+    hide-fraction: true
 
-    # Sistema de notación abreviada para números grandes
     short-scale:
-      enable-numbering: false           # Activar notación abreviada (ej: 1M en vez de 1,000,000)
-      limit: 1000000                    # Número a partir del cual se usa notación abreviada
-      hand-decimal-limit: 2             # Decimales máximos en notación abreviada
-      hand-number-limit: 32             # Dígitos máximos en notación abreviada
+      enable-numbering: false
+      limit: 1000000
+      hand-decimal-limit: 2
+      hand-number-limit: 32
 
-      # Lista de sufijos para cada rango numérico.
-      # Cada sufijo se aplica multiplicando por 1000 en cada nivel:
       suffixes:
-        - ""    # 0-999: Sin sufijo
-        - "K"   # 1,000-999,999: Kilo (mil)
-        - "M"   # 1,000,000-999,999,999: Mega (millón)
-        - "B"   # 1,000,000,000-999,999,999,999: Billion (mil millones)
-        - "T"   # 1,000,000,000,000-999,999,999,999,999: Trillion (billón)
-        - "Q"   # 1,000,000,000,000,000+: Quadrillion (mil billones)
-        # Se pueden agregar más sufijos según necesidad
+        - ""
+        - "K"
+        - "M"
+        - "B"
+        - "T"
+        - "Q"
 
-
-# Versión del archivo de configuración (No modificar)
+# Configuration file version (Do not modify)
 file-version: 1

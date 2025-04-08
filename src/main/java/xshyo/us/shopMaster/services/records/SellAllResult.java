@@ -37,10 +37,10 @@ public record SellAllResult(
         if (status != SellStatus.SUCCESS) {
             switch (status) {
                 case WORLD_BLACKLISTED:
-                    PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.SELL.ALL.WORLD_BLACKLISTED");
+                    PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.WORLD_BLACKLISTED");
                     break;
                 case GAMEMODE_BLACKLISTED:
-                    PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.SELL.ALL.GAMEMODE_BLACKLISTED");
+                    PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.GAMEMODE_BLACKLISTED");
                     break;
                 case NO_SELLABLE_ITEMS:
                     PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.SELL.ALL.NO_SELLABLE_ITEMS");

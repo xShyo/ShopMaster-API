@@ -29,7 +29,6 @@ public class PurchaseConfirmationMenu {
     private final ShopItem item;
     private final Gui confirmationMenu;
     private int quantity = 1;
-    private final double pricePerUnit;
     private final Shop shop;
     private final int returnPage;
     private final ShopMaster plugin;
@@ -42,7 +41,6 @@ public class PurchaseConfirmationMenu {
         this.item = item;
         this.shop = shop;
         this.returnPage = returnPage;
-        this.pricePerUnit = item.getBuyPrice();
         this.plugin = ShopMaster.getInstance();
         this.confirmationMenu = initializeGui();
         this.quantity = Math.max(1, item.getAmount());
@@ -180,9 +178,8 @@ public class PurchaseConfirmationMenu {
             if (controls.getButtonItem(viewer).getType() != Material.AIR) {
                 confirmationMenu.updateItem(slot, new GuiItem(controls.getButtonItem(viewer),
                         event -> {
-                    new StackSelectorMenu(viewer, item, shop).openMenu();
-//                            openStackSelector();
-
+                            // Pasar 'this' (la instancia actual) al StackSelectorMenu
+                            new StackSelectorMenu(viewer, item, shop, this).openMenu();
                         }));
                 reservedSlots.add(slot);
             }
@@ -222,7 +219,7 @@ public class PurchaseConfirmationMenu {
         ).forEach((slot, controls) -> {
             if (controls.getButtonItem(viewer).getType() != Material.AIR) {
                 confirmationMenu.setItem(slot, new GuiItem(controls.getButtonItem(viewer), event ->
-                        new ShopCategoryMenu(viewer, shop).openMenu(1)));
+                        new ShopCategoryMenu(viewer, shop).openMenu(returnPage)));
                 reservedSlots.add(slot);
             }
         });
@@ -282,6 +279,12 @@ public class PurchaseConfirmationMenu {
             }
         }
     }
+    public int getReturnPage() {
+        return returnPage;
+    }
 
-
+    // Añadir getter para quantity si es necesario
+    public int getQuantity() {
+        return quantity;
+    }
 }

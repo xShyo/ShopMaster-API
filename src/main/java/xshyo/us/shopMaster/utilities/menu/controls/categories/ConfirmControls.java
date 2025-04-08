@@ -127,10 +127,10 @@ public class ConfirmControls extends Controls {
                     PluginUtils.sendMessage(player, "MESSAGES.GUI.SELL.SUCCESS", amount, PluginUtils.formatItemName(shopItem.createItemStack().getType()), result.price());
                     break;
                 case WORLD_BLACKLISTED:
-                    PluginUtils.sendMessage(player, "MESSAGES.GUI.SELL.WORLD_BLACKLISTED");
+                    PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.WORLD_BLACKLISTED");
                     break;
                 case GAMEMODE_BLACKLISTED:
-                    PluginUtils.sendMessage(player, "MESSAGES.GUI.SELL.GAMEMODE_BLACKLISTED");
+                    PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.GAMEMODE_BLACKLISTED");
                     break;
                 case NOT_SELLABLE:
                     PluginUtils.sendMessage(player, "MESSAGES.GUI.SELL.NOT_SELLABLE");

@@ -1,12 +1,16 @@
-name: ShopMaster
+name: ${project.artifactId}
 version: '${project.version}'
 main: xshyo.us.shopMaster.ShopMaster
+description: 'This is a plugin to create stores where you can browse and buy what you want.'
 author: xShyo_
 website: docs.xshyo.us
+folia-supported: true
+
+depend:
+  - Vault
 softdepend:
   - TokenManager
   - PlayerPoints
-  - Vault
   - BreweryX
   - PlaceholderAPI
   - ExecutableItems

@@ -2,7 +2,6 @@ package xshyo.us.shopMaster.utilities;
 
 import xshyo.us.shopMaster.ShopMaster;
 import dev.dejvokep.boostedyaml.YamlDocument;
-import org.bukkit.configuration.file.FileConfiguration;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -45,6 +44,7 @@ public class CurrencyFormatter {
         reloadNumberFormat();
     }
 
+
     /**
      * Obtiene el símbolo para una moneda específica
      *
@@ -52,27 +52,55 @@ public class CurrencyFormatter {
      * @return Símbolo de la moneda
      */
     public static String getCurrencySymbol(String currency) {
-        // Comprobar si ya está en caché
-        if (currencySymbolCache.containsKey(currency)) {
-            return currencySymbolCache.get(currency);
+        try {
+            // Establecer valor por defecto
+            if (currency == null || currency.isEmpty()) {
+                currency = "VAULT";
+            }
+
+            // Normalizar para búsqueda en caché
+            String cacheKey = currency.toUpperCase();
+
+            // Si ya está cacheado, devuelve directamente
+            if (currencySymbolCache.containsKey(cacheKey)) {
+                String cachedSymbol = currencySymbolCache.get(cacheKey);
+                // Si el símbolo cacheado es null, devuelve un valor por defecto
+                return (cachedSymbol != null) ? cachedSymbol : "$";
+            }
+
+            YamlDocument config = ShopMaster.getInstance().getConf();
+            // Si config es null, devuelve un valor por defecto
+            if (config == null) {
+                return "$";
+            }
+
+            String symbol;
+
+            // Búsqueda insensible a mayúsculas/minúsculas
+            if ("vault".equalsIgnoreCase(currency)) {
+                // Para VAULT usar el símbolo predeterminado
+                symbol = config.getString("config.economy.default-symbol");
+            } else {
+                // Para otras monedas, buscar en la sección symbols
+                String path = "config.economy.symbols." + currency.toLowerCase();
+                symbol = config.getString(path);
+            }
+
+            // Si el símbolo es null, usar un valor por defecto
+            if (symbol == null) {
+                symbol = "$"; // Valor por defecto seguro
+            }
+
+            // Almacenar en caché y devolver
+            currencySymbolCache.put(cacheKey, symbol);
+            return symbol;
+        } catch (Exception e) {
+            return "$";
         }
-
-        // Obtener la configuración
-        YamlDocument config = ShopMaster.getInstance().getConf();
-        String symbol;
-
-        // Si es nulo o vacío o VAULT, usar el símbolo predeterminado
-        if (currency == null || currency.isEmpty() || "VAULT".equalsIgnoreCase(currency)) {
-            symbol = config.getString("config.economy.default-symbol", "$");
-        } else {
-            // Intentar obtener un símbolo personalizado de la configuración
-            symbol = config.getString("config.economy.symbols." + currency.toLowerCase(), currency);
-        }
-
-        // Guardar en caché para futuras consultas
-        currencySymbolCache.put(currency, symbol);
-        return symbol;
     }
+
+
+
 
     /**
      * Formatea un valor monetario con su símbolo correspondiente
@@ -264,24 +292,41 @@ public class CurrencyFormatter {
         clearCache();
         YamlDocument config = ShopMaster.getInstance().getConf();
 
-        // Pre-cargar el símbolo predeterminado
-        currencySymbolCache.put("VAULT", config.getString("config.economy.default-symbol", "$"));
-
-        // Pre-cargar símbolos personalizados si existen
-        if (config.isSection("config.economy.symbols")) {
-            for (String key : config.getSection("config.economy.symbols").getRoutesAsStrings(false)) {
-                String currencyId = key.substring(key.lastIndexOf('.') + 1).toUpperCase();
-                String symbol = config.getString(key);
-                currencySymbolCache.put(currencyId, symbol);
-            }
+        // Verificar si el config es null
+        if (config == null) {
+            return;
         }
-    }
 
+        try {
+            // Pre-cargar el símbolo predeterminado
+            String defaultSymbol = config.getString("config.economy.default-symbol", "$");
+            currencySymbolCache.put("VAULT", defaultSymbol);
+
+            // Verificar si existe la sección de símbolos
+            if (config.contains("config.economy.symbols")) {
+
+                // Verificar si es realmente una sección y no un valor individual
+                if (config.isSection("config.economy.symbols")) {
+                    // Obtener todas las claves directamente desde la sección
+                    for (Object currencyKey : config.getSection("config.economy.symbols").getKeys()) {
+                        String fullPath = "config.economy.symbols." + currencyKey;
+                        String symbol = config.getString(fullPath);
+                        String normalizedKey = currencyKey.toString().toUpperCase();
+
+                        currencySymbolCache.put(normalizedKey, symbol);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
     /**
      * Recarga la configuración del formateador de números
      */
     private static void reloadNumberFormat() {
-        FileConfiguration config = ShopMaster.getInstance().getConfig();
+        YamlDocument config = ShopMaster.getInstance().getConf();
 
         // Cargar configuración de formato
         DecimalFormatSymbols symbols = crearSimbolosFormato(config);
@@ -296,7 +341,7 @@ public class CurrencyFormatter {
 
         // Cargar configuración de escala corta
         enableShortScale = config.getBoolean("config.number-format.short-scale.enable-numbering", false);
-        shortScaleLimit = config.getLong("config.number-format.short-scale.limit", 1000000);
+        shortScaleLimit = config.getLong("config.number-format.short-scale.limit", 1000000L);
         shortHandDecimalLimit = config.getInt("config.number-format.short-scale.hand-decimal-limit", 2);
         shortHandNumberLimit = config.getInt("config.number-format.short-scale.hand-number-limit", 32);
 
@@ -307,7 +352,7 @@ public class CurrencyFormatter {
     /**
      * Carga los suffixes desde la configuración o usa los valores por defecto
      */
-    private static String[] cargarSuffixes(FileConfiguration config) {
+    private static String[] cargarSuffixes(YamlDocument config) {
         // Valores predeterminados si no se encuentra la configuración
         String[] defaultSuffixes = {"", "K", "M", "B", "T", "Q"};
 
@@ -327,7 +372,7 @@ public class CurrencyFormatter {
     /**
      * Crea los símbolos de formato decimal según la configuración
      */
-    private static DecimalFormatSymbols crearSimbolosFormato(FileConfiguration config) {
+    private static DecimalFormatSymbols crearSimbolosFormato(YamlDocument config) {
         DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.getDefault());
         symbols.setDecimalSeparator(config.getString("config.number-format.decimal-separator", ".").charAt(0));
         symbols.setGroupingSeparator(config.getString("config.number-format.grouping-separator", ",").charAt(0));
@@ -337,7 +382,7 @@ public class CurrencyFormatter {
     /**
      * Crea el patrón de formato decimal según la configuración
      */
-    private static String crearPatronFormato(FileConfiguration config) {
+    private static String crearPatronFormato(YamlDocument config) {
         StringBuilder pattern = new StringBuilder("#,##0");
 
         int minFractionDigits = config.getInt("config.number-format.minimum-fraction-digits", 0);
@@ -359,7 +404,7 @@ public class CurrencyFormatter {
     /**
      * Configura los límites de dígitos enteros en el formateador
      */
-    private static void configurarLimitesEnteros(FileConfiguration config) {
+    private static void configurarLimitesEnteros(YamlDocument config) {
         decimalFormat.setMinimumIntegerDigits(config.getInt("config.number-format.minimum-integer-digits", 1));
         decimalFormat.setMaximumIntegerDigits(config.getInt("config.number-format.maximum-integer-digits", 32));
     }

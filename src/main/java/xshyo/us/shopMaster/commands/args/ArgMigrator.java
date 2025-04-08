@@ -7,14 +7,19 @@ import xshyo.us.shopMaster.superclass.ShopMigrator;
 import xshyo.us.shopMaster.utilities.PluginUtils;
 import xshyo.us.theAPI.commands.CommandArg;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 public class ArgMigrator implements CommandArg {
     private static final String PERMISSION_MIGRATE = "shopmaster.migrator";
 
     private final ShopMaster shopMaster = ShopMaster.getInstance();
+
+    // Lista de migradores disponibles
+    private final List<String> availableMigrators = Arrays.asList("shopguiplus", "economyShopGUIFree", "economyShopGUIPremium");
 
     @Override
     public List<String> getNames() {
@@ -34,21 +39,46 @@ public class ArgMigrator implements CommandArg {
     @Override
     public boolean executeArgument(CommandSender s, String[] args) {
         if (!PluginUtils.hasPermission(s, PERMISSION_MIGRATE)) return true;
-        PluginUtils.sendMessage(s, "&aMigrando tiendas desde ShopGUIPlus...");
 
-        ShopMigrator migrator = new ShopMigrator(shopMaster);
+        // Si no hay argumentos adicionales o si el argumento no es un migrador válido
+        if (args.length < 1 || !availableMigrators.contains(args[0].toLowerCase())) {
+            PluginUtils.sendMessage(s, "&cCorrect use: /shopmaster migrator <type>");
+            PluginUtils.sendMessage(s, "&cMigrators available: " + String.join(", ", availableMigrators));
+            return true;
+        }
+
+        String migratorType = args[0].toLowerCase();
+        PluginUtils.sendMessage(s, "&aMigrating stores from " + migratorType + "...");
+
+        ShopMigrator migrator = createMigrator(migratorType);
         boolean success = migrator.migrateShops();
 
         if (success) {
-            PluginUtils.sendMessage(s, "&aMigración completada exitosamente.");
+            PluginUtils.sendMessage(s, "&aMigration successfully completed.");
         } else {
-            PluginUtils.sendMessage(s, "&cError durante la migración. Revisa la consola para más detalles.");
+            PluginUtils.sendMessage(s, "&cError during migration. Check the console for more details.");
         }
         return false;
     }
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args) {
-        return null;
+        if (args.length == 1) {
+            String currentInput = args[0].toLowerCase();
+            return availableMigrators.stream()
+                    .filter(migrator -> migrator.startsWith(currentInput))
+                    .collect(Collectors.toList());
+        }
+        return Collections.emptyList();
+    }
+
+    private ShopMigrator createMigrator(String type) {
+        // Crear el migrador apropiado según el tipo
+        switch (type) {
+            case "shopguiplus":
+                return new ShopMigrator(shopMaster); // Asumo que el actual es para ShopGUIPlus
+            default:
+                return new ShopMigrator(shopMaster);
+        }
     }
 }

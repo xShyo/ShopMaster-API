@@ -1,5 +1,6 @@
 package xshyo.us.shopMaster;
 
+import dev.dejvokep.boostedyaml.YamlDocument;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -52,6 +53,10 @@ public class JSCommand extends AbstractCommand {
         PluginUtils.sendMessage(s, "MESSAGES.COMMANDS.NO_SUCH_COMMAND", ShopMaster.getInstance().getLang());
         return true;
     }
+
+
+
+
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
