@@ -200,33 +200,20 @@ public class SellService {
     private void processStandardOrCustomItem(Shop shop, ShopItem item) {
         try {
             Bukkit.getScheduler().runTask(plugin, () -> {
-
                 String matName = item.getMaterial();
-                plugin.getLogger().info("Procesando item: " + matName);
                 Material material = Material.valueOf(matName.toUpperCase());
-
-                // COMENTA esta línea por ahora
-
                 ItemStack shopItemStack = item.createItemStack();
-
-                // En su lugar, crea un ItemStack seguro y vacío
-//            ItemStack shopItemStack = new ItemStack(material);
-
                 SellableItemInfo info = new SellableItemInfo(shop, item, shopItemStack);
                 sellableItems.computeIfAbsent(material, k -> new CopyOnWriteArrayList<>()).add(info);
             });
         } catch (IllegalArgumentException e) {
-            plugin.getLogger().warning("Material inválido: " + item.getMaterial());
             try {
-                plugin.getLogger().info("Intentando crear custom item...");
                 ItemStack customItem = item.createItemStack();
                 customSellableItems.add(new CustomItemEntry(shop, item, customItem));
             } catch (Exception ex) {
-                plugin.getLogger().severe("Error creando custom item: " + ex.getMessage());
                 ex.printStackTrace();
             }
         } catch (Exception e) {
-            plugin.getLogger().severe("Error inesperado en processStandardOrCustomItem: " + e.getMessage());
             e.printStackTrace();
         }
     }

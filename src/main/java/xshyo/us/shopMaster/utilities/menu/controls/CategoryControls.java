@@ -5,11 +5,9 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
-import xshyo.us.shopMaster.ShopMaster;
 import xshyo.us.shopMaster.gui.ShopCategoryMenu;
 import xshyo.us.shopMaster.shop.Shop;
 import xshyo.us.shopMaster.utilities.menu.Controls;
-import xshyo.us.theAPI.utilities.Utils;
 import xshyo.us.theAPI.utilities.item.ItemBuilder;
 
 import java.util.ArrayList;
@@ -18,7 +16,6 @@ import java.util.List;
 
 @AllArgsConstructor
 public class CategoryControls extends Controls {
-    private final ShopMaster plugin = ShopMaster.getInstance();
     private final Shop shop;
 
 

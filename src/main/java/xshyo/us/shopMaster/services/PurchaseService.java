@@ -4,6 +4,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import xshyo.us.shopMaster.ShopMaster;
 import xshyo.us.shopMaster.enums.CurrencyType;
+import xshyo.us.shopMaster.services.records.PurchaseResult;
 import xshyo.us.shopMaster.shop.data.ShopItem;
 import xshyo.us.shopMaster.managers.CurrencyManager;
 import xshyo.us.shopMaster.utilities.CurrencyFormatter;
@@ -20,7 +21,7 @@ public class PurchaseService {
      * @param item     El ítem de la tienda a comprar
      * @param quantity La cantidad a comprar
      */
-    public void processPurchase(Player player, ShopItem item, int quantity) {
+    public PurchaseResult processPurchase(Player player, ShopItem item, int quantity) {
         double pricePerUnit = (double) item.getBuyPrice() / item.getAmount(); // Ajusta el precio por unidad correctamente
         double totalPrice = pricePerUnit * quantity;
 
@@ -30,20 +31,20 @@ public class PurchaseService {
         if (currencyManager == null) {
             player.closeInventory();
             PluginUtils.sendMessage(player, "MESSAGES.GUI.PURCHASE.INVALID");
-            return;
+            return new PurchaseResult(false, 0, "", 0);
         }
 
         if (!currencyManager.hasEnough(player, totalPrice)) {
             player.closeInventory();
             String formattedPrice = CurrencyFormatter.formatCurrency(totalPrice, item.getEconomy());
             PluginUtils.sendMessage(player, "MESSAGES.GUI.PURCHASE.NOT_ENOUGH", formattedPrice);
-            return;
+            return new PurchaseResult(false, 0, "", 0);
         }
 
         ItemStack sampleItem = item.createItemStack();
         if (sampleItem == null) {
             PluginUtils.sendMessage(player, "MESSAGES.GUI.PURCHASE.ERROR");
-            return;
+            return new PurchaseResult(false, 0, "", 0);
         }
 
         int maxStackSize = sampleItem.getType().getMaxStackSize();
@@ -53,13 +54,13 @@ public class PurchaseService {
         if (freeSlots < totalStacksNeeded) {
             player.closeInventory();
             PluginUtils.sendMessage(player, "MESSAGES.GUI.PURCHASE.NO_SPACE");
-            return;
+            return new PurchaseResult(false, 0, "", 0);
         }
 
         if (!currencyManager.withdraw(player, totalPrice)) {
             player.closeInventory();
             PluginUtils.sendMessage(player, "MESSAGES.GUI.PURCHASE.ERROR");
-            return;
+            return new PurchaseResult(false, 0, "", 0);
         }
 
         try {
@@ -68,13 +69,16 @@ public class PurchaseService {
             currencyManager.add(player, totalPrice);
             player.closeInventory();
             PluginUtils.sendMessage(player, "MESSAGES.GUI.PURCHASE.ERROR");
-            return;
+            return new PurchaseResult(false, 0, "", 0);
         }
         String displayName = item.getDisplayName() != null ? item.getDisplayName() : item.createItemStack().getType().toString();
 
         String precio = CurrencyFormatter.formatCurrency(totalPrice, item.getEconomy());
+
         PluginUtils.sendMessage(player, "MESSAGES.GUI.PURCHASE.SUCCESS", quantity, displayName, precio);
         player.closeInventory();
+        return new PurchaseResult(true, quantity, displayName, totalPrice);
+
     }
 
     private int countFreeSlots(Player player) {

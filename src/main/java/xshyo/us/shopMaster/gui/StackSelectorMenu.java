@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import xshyo.us.shopMaster.ShopMaster;
+import xshyo.us.shopMaster.services.records.PurchaseResult;
 import xshyo.us.shopMaster.shop.data.ShopItem;
 import xshyo.us.shopMaster.shop.Shop;
 import xshyo.us.shopMaster.utilities.PluginUtils;
@@ -144,7 +145,14 @@ public class StackSelectorMenu {
             selectorMenu.setItem(slot, new GuiItem(new StackPurchaseControls(stackSection, item, finalTotalItems).getButtonItem(viewer), event -> {
                 event.setCancelled(true);
                 viewer.closeInventory();
-                ShopMaster.getInstance().getPurchaseService().processPurchase(viewer, item, finalTotalItems);
+
+                PurchaseResult result =  ShopMaster.getInstance().getPurchaseService().processPurchase(viewer, item, finalTotalItems);
+
+                if (result.success()) {
+                    if (!item.getBuyCommands().isEmpty()) {
+                        PluginUtils.executeActions(item.getBuyCommands(), viewer, item, finalTotalItems);
+                    }
+                }
             }));
 
             reservedSlots.add(slot);

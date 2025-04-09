@@ -359,13 +359,20 @@ inventories:
         item_flags:
           - HIDE_ATTRIBUTES
         lore:
-          - '&8Information'
+          - '&8⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋'
           - ''
-          - '&8 ● &f{displayName}'
-          - '&8 ● &f{material}'
-          - '&8 ● &f{price}'
+          - '&f&lItem Details:'
+          - ' &8• &fName: &e{displayName}'
+          - ' &8• &fType: &e{material}'
+          - ' &8• &fUnit Price: &a{price} {currency}'
           - ''
-          - '&a► Click to purchase.'
+          - '&f&lPurchase Details:'
+          - ' &8• &fQuantity: &e{amount}'
+          - ' &8• &fTotal: &a{totalPrice} {currency}'
+          - ''
+          - '&8⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋⚋'
+          - ''
+          - '&a&l▶ &aClick to purchase this item'
 
     # Here you will find the fixed buttons (You can deactivate them if you don't need them)
     # In this section you will not be able to add new items to the menu, only edit the current ones.
@@ -648,7 +655,7 @@ inventories:
     # Must be a multiple of 9. (9, 18, 27, 36, 45, 54)
     size: 54
 
-    # This is the category of items that will be displayed in the menu
+
     items:
       # This is the section of items that the player can buy per stack
       stack-controls:
@@ -658,7 +665,7 @@ inventories:
           material: GRAY_STAINED_GLASS_PANE
           amount: 1
           model_data: 0
-          display_name: '#FBD0081 Stack'
+          display_name: '#FBD0081 Stack of {displayName}'
           stack_amount: 1
           glowing: false
           item_flags:
@@ -666,18 +673,19 @@ inventories:
           lore:
             - '&8Stack Selector'
             - ''
-            - '&8 ● &fSelect #FBD0081 stack'
-            - '   &f(64 items)'
+            - '&8 ● &fSelect #FBD0081 stack of {displayName}'
+            - '   &f(64 {material})'
+            - '&8 ● &fPrice: #FBD008{price} {currency}'
+            - '&8 ● &fTotal: #FBD008{totalPrice} {currency}'
             - ''
             - '#FBD008► Click to select.'
 
-        # You can add more stack options like this
         stack_2:
           slot: 20
           material: GRAY_STAINED_GLASS_PANE
           amount: 2
           model_data: 0
-          display_name: '#FBD0082 Stacks'
+          display_name: '#FBD0082 Stacks of {displayName}'
           stack_amount: 2
           glowing: false
           item_flags:
@@ -685,18 +693,19 @@ inventories:
           lore:
             - '&8Stack Selector'
             - ''
-            - '&8 ● &fSelect #FBD0082 stacks'
-            - '   &f(128 items)'
+            - '&8 ● &fSelect #FBD0082 stacks of {displayName}'
+            - '   &f(128 {material})'
+            - '&8 ● &fPrice: #FBD008{price} {currency}'
+            - '&8 ● &fTotal: #FBD008{totalPrice} {currency}'
             - ''
             - '#FBD008► Click to select.'
 
-        # You can add more stack options like this
         stack_3:
           slot: 29
           material: GRAY_STAINED_GLASS_PANE
           amount: 3
           model_data: 0
-          display_name: '#FBD0083 Stacks'
+          display_name: '#FBD0083 Stacks of {displayName}'
           stack_amount: 3
           glowing: false
           item_flags:
@@ -704,18 +713,19 @@ inventories:
           lore:
             - '&8Stack Selector'
             - ''
-            - '&8 ● &fSelect #FBD0083 stacks'
-            - '   &f(192 items)'
+            - '&8 ● &fSelect #FBD0083 stacks of {displayName}'
+            - '   &f(192 {material})'
+            - '&8 ● &fPrice: #FBD008{price} {currency}'
+            - '&8 ● &fTotal: #FBD008{totalPrice} {currency}'
             - ''
             - '#FBD008► Click to select.'
 
-        # You can add more stack options like this
         stack_4:
           slot: 13
           material: GRAY_STAINED_GLASS_PANE
           amount: 4
           model_data: 0
-          display_name: '#FBD0084 Stacks'
+          display_name: '#FBD0084 Stacks of {displayName}'
           stack_amount: 4
           glowing: false
           item_flags:
@@ -723,18 +733,19 @@ inventories:
           lore:
             - '&8Stack Selector'
             - ''
-            - '&8 ● &fSelect #FBD0084 stacks'
-            - '   &f(256 items)'
+            - '&8 ● &fSelect #FBD0084 stacks of {displayName}'
+            - '   &f(256 {material})'
+            - '&8 ● &fPrice: #FBD008{price} {currency}'
+            - '&8 ● &fTotal: #FBD008{totalPrice} {currency}'
             - ''
             - '#FBD008► Click to select.'
 
-        # You can add more stack options like this
         stack_5:
           slot: 22
           material: GRAY_STAINED_GLASS_PANE
           amount: 5
           model_data: 0
-          display_name: '#FBD0085 Stacks'
+          display_name: '#FBD0085 Stacks of {displayName}'
           stack_amount: 5
           glowing: false
           item_flags:
@@ -742,18 +753,19 @@ inventories:
           lore:
             - '&8Stack Selector'
             - ''
-            - '&8 ● &fSelect #FBD0085 stacks'
-            - '   &f(320 items)'
+            - '&8 ● &fSelect #FBD0085 stacks of {displayName}'
+            - '   &f(320 {material})'
+            - '&8 ● &fPrice: #FBD008{price} {currency}'
+            - '&8 ● &fTotal: #FBD008{totalPrice} {currency}'
             - ''
             - '#FBD008► Click to select.'
 
-        # You can add more stack options like this
         stack_6:
           slot: 31
           material: GRAY_STAINED_GLASS_PANE
           amount: 6
           model_data: 0
-          display_name: '#FBD0086 Stacks'
+          display_name: '#FBD0086 Stacks of {displayName}'
           stack_amount: 6
           glowing: false
           item_flags:
@@ -761,18 +773,19 @@ inventories:
           lore:
             - '&8Stack Selector'
             - ''
-            - '&8 ● &fSelect #FBD0086 stacks'
-            - '   &f(384 items)'
+            - '&8 ● &fSelect #FBD0086 stacks of {displayName}'
+            - '   &f(384 {material})'
+            - '&8 ● &fPrice: #FBD008{price} {currency}'
+            - '&8 ● &fTotal: #FBD008{totalPrice} {currency}'
             - ''
             - '#FBD008► Click to select.'
 
-        # You can add more stack options like this
         stack_7:
           slot: 40
           material: GRAY_STAINED_GLASS_PANE
           amount: 7
           model_data: 0
-          display_name: '#FBD0087 Stacks'
+          display_name: '#FBD0087 Stacks of {displayName}'
           stack_amount: 7
           glowing: false
           item_flags:
@@ -780,18 +793,19 @@ inventories:
           lore:
             - '&8Stack Selector'
             - ''
-            - '&8 ● &fSelect #FBD0087 stacks'
-            - '   &f(448 items)'
+            - '&8 ● &fSelect #FBD0087 stacks of {displayName}'
+            - '   &f(448 {material})'
+            - '&8 ● &fPrice: #FBD008{price} {currency}'
+            - '&8 ● &fTotal: #FBD008{totalPrice} {currency}'
             - ''
             - '#FBD008► Click to select.'
 
-        # You can add more stack options like this
         stack_8:
           slot: 15
           material: GRAY_STAINED_GLASS_PANE
           amount: 8
           model_data: 0
-          display_name: '#FBD0088 Stacks'
+          display_name: '#FBD0088 Stacks of {displayName}'
           stack_amount: 8
           glowing: false
           item_flags:
@@ -799,18 +813,19 @@ inventories:
           lore:
             - '&8Stack Selector'
             - ''
-            - '&8 ● &fSelect #FBD0088 stacks'
-            - '   &f(515 items)'
+            - '&8 ● &fSelect #FBD0088 stacks of {displayName}'
+            - '   &f(515 {material})'
+            - '&8 ● &fPrice: #FBD008{price} {currency}'
+            - '&8 ● &fTotal: #FBD008{totalPrice} {currency}'
             - ''
             - '#FBD008► Click to select.'
 
-        # You can add more stack options like this
         stack_9:
           slot: 24
           material: GRAY_STAINED_GLASS_PANE
           amount: 9
           model_data: 0
-          display_name: '#FBD0089 Stacks'
+          display_name: '#FBD0089 Stacks of {displayName}'
           stack_amount: 9
           glowing: false
           item_flags:
@@ -818,8 +833,10 @@ inventories:
           lore:
             - '&8Stack Selector'
             - ''
-            - '&8 ● &fSelect #FBD0089 stacks'
-            - '   &f(576 items)'
+            - '&8 ● &fSelect #FBD0089 stacks of {displayName}'
+            - '   &f(576 {material})'
+            - '&8 ● &fPrice: #FBD008{price} {currency}'
+            - '&8 ● &fTotal: #FBD008{totalPrice} {currency}'
             - ''
             - '#FBD008► Click to select.'
 
@@ -828,7 +845,7 @@ inventories:
           material: GRAY_STAINED_GLASS_PANE
           amount: 36
           model_data: 0
-          display_name: '#FBD00836 Stacks'
+          display_name: '#FBD00836 Stacks of {displayName}'
           stack_amount: 36
           glowing: false
           item_flags:
@@ -836,8 +853,10 @@ inventories:
           lore:
             - '&8Stack Selector'
             - ''
-            - '&8 ● &fSelect #FBD00836 stacks'
-            - '   &f(2,304 items)'
+            - '&8 ● &fSelect #FBD00836 stacks of {displayName}'
+            - '   &f(2,304 {material})'
+            - '&8 ● &fPrice: #FBD008{price} {currency}'
+            - '&8 ● &fTotal: #FBD008{totalPrice} {currency}'
             - ''
             - '#FBD008► Click to select.'
 

@@ -3,28 +3,80 @@ package xshyo.us.shopMaster.utilities;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import lombok.experimental.UtilityClass;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import xshyo.us.shopMaster.ShopMaster;
+import xshyo.us.shopMaster.shop.data.ShopItem;
 import xshyo.us.shopMaster.utilities.menu.Controls;
 import xshyo.us.shopMaster.utilities.menu.controls.CustomControls;
 import xshyo.us.theAPI.utilities.Utils;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 
 @UtilityClass
 public class PluginUtils {
 
+
+    public void executeActions(List<String> actions, Player player, ShopItem shopItem, int amount) {
+        for (String action : actions) {
+            action = action.trim();
+            action = PluginUtils.replacePlaceholders(action, shopItem, amount);
+            String[] parts = action.split("\\s+", 2);  // Dividir en dos partes, el tipo de acción y el resto
+            String actionType = parts[0].toLowerCase();
+            String actionData = (parts.length > 1) ? parts[1] : "";
+
+            if (actionType.startsWith("[chance=")) {  // Verificar si la acción tiene probabilidad definida
+                if (Utils.shouldExecuteAction(actionType)) {
+                    ShopMaster.getInstance().getActionExecutor().executeAction(player, actionData);
+                }
+            } else {
+                ShopMaster.getInstance().getActionExecutor().executeAction(player, action);
+            }
+        }
+
+    }
+
+    public String replacePlaceholders(String text, ShopItem shopItem, int amount) {
+        // Ajuste el precio por unidad
+        double pricePerUnit = (double) shopItem.getBuyPrice() / shopItem.getAmount();
+        double totalPrice = pricePerUnit * amount;
+
+        // Obtener el displayName, y si es nulo, usar el nombre del material
+        ItemStack itemStack = shopItem.createItemStack();
+        String item = itemStack.getItemMeta() != null && itemStack.getItemMeta().hasDisplayName()
+                ? itemStack.getItemMeta().getDisplayName()
+                : itemStack.getType().toString();
+
+        // Asegurarse de que display no sea null
+        String displayName = shopItem.getDisplayName();
+        String display = displayName != null ? displayName : item;
+        String material = itemStack.getType().toString();
+
+        // Asegurarse de que ningún valor de reemplazo sea null
+        String amountStr = String.valueOf(amount);
+        String priceStr = CurrencyFormatter.formatCurrency(pricePerUnit, shopItem.getEconomy());
+        String totalPriceStr = CurrencyFormatter.formatCurrency(totalPrice, shopItem.getEconomy());
+
+        // Garantizar que item no sea null
+        if (item == null) item = "Unknown Item";
+
+        // Garantizar que display no sea null
+        if (display == null) display = "Unknown Item";
+
+        return text.replace("{amount}", amountStr)
+                .replace("{price}", priceStr)
+                .replace("{totalPrice}", totalPriceStr)
+                .replace("{currency}", shopItem.getEconomy())
+                .replace("{item}", item)
+                .replace("{displayName}", display)
+                .replace("{material}", material);
+    }
 
     public String formatItemName(Material material) {
         String name = material.toString();

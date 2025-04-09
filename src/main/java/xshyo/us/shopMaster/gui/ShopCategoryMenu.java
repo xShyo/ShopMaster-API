@@ -11,6 +11,7 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import xshyo.us.shopMaster.ShopMaster;
+import xshyo.us.shopMaster.services.records.PurchaseResult;
 import xshyo.us.shopMaster.shop.Shop;
 import xshyo.us.shopMaster.shop.data.ShopButton;
 import xshyo.us.shopMaster.shop.data.ShopItem;
@@ -142,7 +143,12 @@ public class ShopCategoryMenu {
                             if (plugin.getConf().getBoolean("config.gui.purchase-confirmation.enabled")) {
                                 new PurchaseConfirmationMenu(viewer, shopItem, shop, currentPage).openMenu();
                             } else {
-                                plugin.getPurchaseService().processPurchase(viewer, shopItem, 1); // Comprar 1 unidad directamente
+                                PurchaseResult result = plugin.getPurchaseService().processPurchase(viewer, shopItem, shopItem.getAmount());
+                                if (result.success()) {
+                                    if (!shopItem.getBuyCommands().isEmpty()) {
+                                        PluginUtils.executeActions(shopItem.getBuyCommands(), viewer, shopItem, shopItem.getAmount());
+                                    }
+                                }
                             }
                         } else if (clickType.equals(sellButton)) {
                             if (shopItem.getSellPrice() > 0) {

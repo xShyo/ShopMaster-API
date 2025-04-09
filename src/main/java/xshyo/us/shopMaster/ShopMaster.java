@@ -271,9 +271,9 @@ public final class ShopMaster extends TheAPI {
             // Save the file to ensure it's created
             defaultShop.save();
 
-            this.getLogger().info("Tienda predeterminada creada correctamente: default_shop.yml");
+            this.getLogger().info("Default store created successfully: tools.yml");
         } catch (IOException e) {
-            this.getLogger().severe("Error al crear la tienda predeterminada: " + e.getMessage());
+            this.getLogger().severe("Error creating the default store: " + e.getMessage());
         }
     }
 
