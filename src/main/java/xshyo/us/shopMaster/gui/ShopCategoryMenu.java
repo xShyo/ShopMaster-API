@@ -37,15 +37,36 @@ public class ShopCategoryMenu {
     private final int maxPage;
     private final int totalItems; // Total de items en la tienda
 
-    public ShopCategoryMenu(Player viewer, Shop shop) {
+    /**
+     * Factory method to create a ShopCategoryMenu instance after checking permissions
+     *
+     * @param viewer The player viewing the menu
+     * @param shop   The shop to display
+     * @return A ShopCategoryMenu instance or null if player doesn't have permission
+     */
+    public static ShopCategoryMenu create(Player viewer, Shop shop) {
+        // Verify permissions first
+        if (!PluginUtils.hasPermissionToCategory(viewer, shop.getName().toLowerCase())) {
+            PluginUtils.sendMessage(viewer, "MESSAGES.GUI.NO_ACCESS_TO_CATEGORY", "shopmaster.category." + shop.getName().toLowerCase());
+            return null;
+        }
+
+        // If player has permissions, create and initialize the menu
+        return new ShopCategoryMenu(viewer, shop);
+    }
+
+    /**
+     * Private constructor - use ShopCategoryMenu.create() instead
+     */
+    private ShopCategoryMenu(Player viewer, Shop shop) {
         this.viewer = viewer;
         this.shop = shop;
         this.categoryMenu = initializeGui();
 
-        // Calcular el número total de items
+        // Calculate total number of items
         this.totalItems = calculateTotalItems();
 
-        // Calcular el número máximo de páginas
+        // Calculate maximum number of pages
         this.maxPage = calculateMaxPages();
     }
 
@@ -57,20 +78,20 @@ public class ShopCategoryMenu {
         return shop.getItems().values().stream()
                 .mapToInt(ShopItem::getPage)
                 .max()
-                .orElse(1); // Por defecto, al menos 1 página
+                .orElse(1); // Default to at least 1 page
     }
 
     private Gui initializeGui() {
-        int size = 9; // Tamaño predeterminado (1 fila)
+        int size = 9; // Default size (1 row)
 
-        // Verificar si el tamaño del shop es válido
+        // Check if shop size is valid
         if (shop.getSize() > 0 && shop.getSize() % 9 == 0) {
             size = shop.getSize();
         } else {
-            // Usar un valor de configuración por defecto si está disponible
-            int configSize = plugin.getLayouts().getInt("inventories.categories.size", 27); // 27 = 3 filas por defecto
+            // Use default config value if available
+            int configSize = plugin.getLayouts().getInt("inventories.categories.size", 27); // 27 = 3 rows default
 
-            // Asegurarse de que el tamaño de configuración sea válido (múltiplo de 9)
+            // Make sure config size is valid (multiple of 9)
             if (configSize > 0 && configSize % 9 == 0) {
                 size = configSize;
             }
@@ -83,14 +104,13 @@ public class ShopCategoryMenu {
     }
 
     public void openMenu(int page) {
-
         if (page < 1 || page > maxPage) {
             PluginUtils.sendMessage(viewer, "MESSAGES.GUI.PAGE_NOT_FOUND");
             if (maxPage > 0) {
-                // Redirigir a la primera página si hay tiendas disponibles
+                // Redirect to first page if shops are available
                 openMenu(1);
             } else {
-                // No hay páginas disponibles, mostrar mensaje y cerrar
+                // No pages available, show message and close
                 PluginUtils.sendMessage(viewer, "MESSAGES.GUI.NO_ITEMS_AVAILABLE");
                 viewer.closeInventory();
             }
@@ -99,21 +119,21 @@ public class ShopCategoryMenu {
 
         this.currentPage = page;
 
-        // Limpiar el inventario
+        // Clear inventory
         for (int i = 0; i < categoryMenu.getRows() * 9; i++) {
             categoryMenu.removeItem(i);
         }
 
-        Set<Integer> usedSlots = new HashSet<>(); // Para rastrear los slots utilizados
+        Set<Integer> usedSlots = new HashSet<>(); // To track used slots
 
-        // Filtrar los items para la página actual
+        // Filter items for current page
         Map<Integer, ShopItem> pageItems = shop.getItems().entrySet().stream()
                 .filter(entry -> entry.getValue().getPage() == currentPage)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         if (pageItems.isEmpty()) {
             PluginUtils.sendMessage(viewer, "MESSAGES.GUI.EMPTY_PAGE");
-            // Intentar encontrar una página no vacía
+            // Try to find a non-empty page
             int nonEmptyPage = findNonEmptyPage();
             if (nonEmptyPage > 0) {
                 openMenu(nonEmptyPage);
@@ -124,18 +144,18 @@ public class ShopCategoryMenu {
             return;
         }
 
-        // Mostrar los items de la página actual
+        // Display items for current page
         pageItems.forEach((itemId, shopItem) -> {
             for (int slot : shopItem.getSlots()) {
                 if (slot < categoryMenu.getRows() * 9) {
-                    if(shopItem.isHidden()){
-                        continue;// Verificar que el slot está dentro del menú
+                    if (shopItem.isHidden()) {
+                        continue;// Check that slot is within menu
                     }
                     categoryMenu.setItem(slot, new GuiItem(new DisplayControls("inventories.categories", shopItem).getButtonItem(viewer), event -> {
-                        // Obtener el tipo de click actual
+                        // Get current click type
                         String clickType = getClickTypeString(event);
 
-                        // Obtener los tipos de botones configurados
+                        // Get configured button types
                         String buyButton = plugin.getConf().getString("config.gui.buttons.buy");
                         String sellButton = plugin.getConf().getString("config.gui.buttons.sell");
 
@@ -164,13 +184,13 @@ public class ShopCategoryMenu {
             }
         });
 
-        // Agregar los botones de navegación usando los botones del shop
+        // Add navigation buttons using shop buttons
         setupNavigationButtons(usedSlots);
 
-        // Agregar elementos personalizados
+        // Add custom elements
         setupCustomItems(usedSlots);
 
-        // Rellenar slots vacíos
+        // Fill empty slots
         fillEmptySlots(usedSlots);
 
         String title = shop.getTitle();
@@ -209,27 +229,27 @@ public class ShopCategoryMenu {
     }
 
     private void setupNavigationButtons(Set<Integer> usedSlots) {
-        // Obtener los botones de la tienda actual
+        // Get buttons for current shop
         Map<String, ShopButton> shopButtons = shop.getButtons();
 
-        // Obtener los botones globales por defecto
+        // Get default global buttons
         Map<String, ShopButton> defaultButtons = getDefaultButtons();
 
-        // Procesar cada tipo de botón
+        // Process each button type
         String[] buttonTypes = {"next", "previous", "close", "back", "indicator"};
 
         for (String buttonType : buttonTypes) {
-            // Usar el botón específico de la categoría si existe, de lo contrario usar el botón por defecto
+            // Use category-specific button if it exists, otherwise use default button
             ShopButton button = (shopButtons != null && shopButtons.containsKey(buttonType))
                     ? shopButtons.get(buttonType)
                     : defaultButtons.get(buttonType);
 
-            if (button == null) continue; // Si no hay botón ni específico ni por defecto, continuar
+            if (button == null) continue; // If no button exists (neither specific nor default), continue
 
-            // Verificar si el botón está habilitado
+            // Check if button is enabled
             if (!button.enabled()) continue;
 
-            // Lógica específica para cada tipo de botón
+            // Specific logic for each button type
             switch (buttonType) {
                 case "next":
                     if (currentPage < maxPage) {
@@ -278,23 +298,23 @@ public class ShopCategoryMenu {
     public static Map<String, ShopButton> getDefaultButtons() {
         Map<String, ShopButton> defaultButtons = new HashMap<>();
 
-        // Obtener la instancia del plugin
+        // Get plugin instance
         ShopMaster plugin = ShopMaster.getInstance();
 
-        // Intentar obtener la sección de botones predeterminados
+        // Try to get default buttons section
         YamlDocument config = plugin.getLayouts();
         if (config == null) {
-            plugin.getLogger().warning("No se pudo cargar la configuración para los botones predeterminados");
+            plugin.getLogger().warning("Could not load configuration for default buttons");
             return defaultButtons;
         }
 
         Section buttonsSection = config.getSection("inventories.categories.buttons");
         if (buttonsSection == null) {
-            plugin.getLogger().warning("No se encontró la sección de botones predeterminados en la configuración");
+            plugin.getLogger().warning("Default buttons section not found in configuration");
             return defaultButtons;
         }
 
-        // Procesar cada botón en la sección
+        // Process each button in section
         for (String buttonKey : buttonsSection.getRoutesAsStrings(false)) {
             Section buttonSection = buttonsSection.getSection(buttonKey);
             if (buttonSection != null) {
@@ -307,7 +327,6 @@ public class ShopCategoryMenu {
 
         return defaultButtons;
     }
-
 
     private ItemStack createButtonItemStack(ShopButton button) {
         return new ItemBuilder(button.material())
@@ -345,6 +364,4 @@ public class ShopCategoryMenu {
             }
         }
     }
-
-
 }

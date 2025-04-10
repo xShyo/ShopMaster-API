@@ -21,7 +21,14 @@ import java.util.function.Function;
 
 @UtilityClass
 public class PluginUtils {
-
+    public boolean hasPermissionToCategory(CommandSender sender, String category) {
+        String permission = "shopmaster.category." + category.toLowerCase(); // Asegúrate de que `shop.getId()` te dé un ID único
+        return sender.hasPermission(permission);
+    }
+    public boolean hasPermissionToCategory(Player player, String category) {
+        String permission = "shopmaster.category." + category.toLowerCase(); // Asegúrate de que `shop.getId()` te dé un ID único
+        return player.hasPermission(permission);
+    }
 
     public void executeActions(List<String> actions, Player player, ShopItem shopItem, int amount) {
         for (String action : actions) {

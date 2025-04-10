@@ -127,8 +127,13 @@ public class SellAllConfirmationMenu {
                 sellAllMenu.getRows()
         ).forEach((slot, controls) -> {
             if (controls.getButtonItem(viewer).getType() != Material.AIR) {
-                sellAllMenu.setItem(slot, new GuiItem(controls.getButtonItem(viewer), event ->
-                        new ShopCategoryMenu(viewer, shop).openMenu(returnPage)));
+                sellAllMenu.setItem(slot, new GuiItem(controls.getButtonItem(viewer), event ->{
+                    ShopCategoryMenu menu = ShopCategoryMenu.create(viewer, shop);
+                    if (menu != null) {
+                        menu.openMenu(returnPage);
+                    }
+                }
+                    ));
                 reservedSlots.add(slot);
             }
         });

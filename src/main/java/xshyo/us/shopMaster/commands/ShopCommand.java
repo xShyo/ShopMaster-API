@@ -34,7 +34,7 @@ public class ShopCommand extends AbstractCommand {
 
         // Si no es un jugador y no especifica un jugador objetivo
         if (!(sender instanceof Player) && !containsPlayerArg(args)) {
-            PluginUtils.sendMessage(sender, "COMMANDS.SHOP.OPEN.PLAYER_ONLY");
+            PluginUtils.sendMessage(sender, "MESSAGES.COMMANDS.SHOP.OPEN.PLAYER_ONLY");
             return true;
         }
 
@@ -48,7 +48,7 @@ public class ShopCommand extends AbstractCommand {
         // Caso 2: /shop shopName [page] - Abre una tienda específica para el jugador que ejecuta
         if (args.length >= 1 && isShopName(args[0])) {
             if (!(sender instanceof Player)) {
-                PluginUtils.sendMessage(sender, "COMMANDS.SHOP.OPEN.PLAYER_ONLY");
+                PluginUtils.sendMessage(sender, "MESSAGES.COMMANDS.SHOP.OPEN.PLAYER_ONLY");
                 return true;
             }
 
@@ -58,9 +58,12 @@ public class ShopCommand extends AbstractCommand {
 
             // Verificar permiso específico para esta tienda
             if (needPermissions &&
-                    !PluginUtils.hasPermission(player, basePermission + ".all") &&
-                    !PluginUtils.hasPermission(player, basePermission + "." + shopName.toLowerCase())) {
-                PluginUtils.sendMessage(player, "COMMANDS.NOPERMS", player.getName(), basePermission + "." + shopName.toLowerCase());
+                    !PluginUtils.hasPermissionToCategory(player, "all") &&
+                    !PluginUtils.hasPermissionToCategory(player, shopName.toLowerCase())) {
+
+                PluginUtils.sendMessage(sender, "MESSAGES.GUI.NO_ACCESS_TO_CATEGORY",
+                        "shopmaster.category." + shopName.toLowerCase());
+
                 return true;
             }
 
@@ -77,7 +80,6 @@ public class ShopCommand extends AbstractCommand {
         if (args.length == 1 && isPlayerName(args[0])) {
             // Verificar permiso para abrir tiendas para otros jugadores
             if (needPermissions && !PluginUtils.hasPermission(sender, basePermission + ".others")) {
-                PluginUtils.sendMessage(sender, "COMMANDS.NOPERMS", sender.getName(), basePermission + ".others");
                 return true;
             }
 
@@ -85,12 +87,12 @@ public class ShopCommand extends AbstractCommand {
             Player targetPlayer = Bukkit.getPlayer(targetPlayerName);
 
             if (targetPlayer == null || !targetPlayer.isOnline()) {
-                PluginUtils.sendMessage(sender, "COMMANDS.SHOP.OPEN.PLAYER_OFFLINE", targetPlayerName);
+                PluginUtils.sendMessage(sender, "MESSAGES.COMMANDS.SHOP.OPEN.PLAYER_OFFLINE", targetPlayerName);
                 return true;
             }
 
             new ShopMainMenu(targetPlayer).openMenu();
-            PluginUtils.sendMessage(sender, "COMMANDS.SHOP.OPEN.OTHER_SUCCESS_MAIN", targetPlayerName);
+            PluginUtils.sendMessage(sender, "MESSAGES.COMMANDS.SHOP.OPEN.OTHER_SUCCESS_MAIN", targetPlayerName);
             return true;
         }
 
@@ -98,7 +100,6 @@ public class ShopCommand extends AbstractCommand {
         if (args.length >= 2 && isPlayerName(args[0])) {
             // Verificar permiso para abrir tiendas para otros jugadores
             if (needPermissions && !PluginUtils.hasPermission(sender, basePermission + ".others")) {
-                PluginUtils.sendMessage(sender, "COMMANDS.NOPERMS", sender.getName(), basePermission + ".others");
                 return true;
             }
 
@@ -109,7 +110,7 @@ public class ShopCommand extends AbstractCommand {
             Player targetPlayer = Bukkit.getPlayer(targetPlayerName);
 
             if (targetPlayer == null || !targetPlayer.isOnline()) {
-                PluginUtils.sendMessage(sender, "COMMANDS.SHOP.OPEN.PLAYER_OFFLINE", targetPlayerName);
+                PluginUtils.sendMessage(sender, "MESSAGES.COMMANDS.SHOP.OPEN.PLAYER_OFFLINE", targetPlayerName);
                 return true;
             }
 
@@ -119,11 +120,11 @@ public class ShopCommand extends AbstractCommand {
             }
 
             openSpecificShop(targetPlayer, shopName, page);
-            PluginUtils.sendMessage(sender, "COMMANDS.SHOP.OPEN.OTHER_SUCCESS", shopName, targetPlayerName);
+            PluginUtils.sendMessage(sender, "MESSAGES.COMMANDS.SHOP.OPEN.OTHER_SUCCESS", shopName, targetPlayerName);
             return true;
         }
 
-        PluginUtils.sendMessage(sender, "COMMANDS.SHOP.OPEN.USAGE");
+        PluginUtils.sendMessage(sender, "MESSAGES.COMMANDS.SHOP.OPEN.USAGE");
         return true;
     }
 
@@ -131,7 +132,7 @@ public class ShopCommand extends AbstractCommand {
         Shop shop = ShopMaster.getInstance().getShopManager().getShop(shopName);
 
         if (shop == null) {
-            PluginUtils.sendMessage(player, "COMMANDS.SHOP.OPEN.NOT_FOUND", shopName);
+            PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.OPEN.NOT_FOUND", shopName);
             return;
         }
 
@@ -145,9 +146,12 @@ public class ShopCommand extends AbstractCommand {
             return;
         }
 
-        PluginUtils.sendMessage(player, "COMMANDS.SHOP.OPEN.SUCCESS", shopName);
+        PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.OPEN.SUCCESS", shopName);
         // Abrir la tienda específica en la página indicada
-        new ShopCategoryMenu(player, shop).openMenu(page);
+        ShopCategoryMenu menu = ShopCategoryMenu.create(player, shop);
+        if (menu != null) {
+            menu.openMenu(page);
+        }
     }
 
     /**
@@ -216,20 +220,19 @@ public class ShopCommand extends AbstractCommand {
         String basePermission = ShopMaster.getInstance().getConf().getString("config.command.shop.permission");
 
         // Verificar permiso base para el autocompletado
-        if (needPermissions && !PluginUtils.hasPermission(sender, basePermission)) {
+        if (needPermissions && !sender.hasPermission(basePermission)) {
             return completions;
         }
 
         if (args.length == 1) {
             // Sugerencias para primer argumento: nombres de tiendas o jugadores
             String partialName = args[0].toLowerCase();
-            boolean hasAllShopsPermission = PluginUtils.hasPermission(sender, basePermission + ".all");
+            boolean hasAllShopsPermission = PluginUtils.hasPermissionToCategory((Player) sender, ".all");
 
             // Añadir nombres de tiendas
             for (String shopName : ShopMaster.getInstance().getShopManager().getShopMap().keySet()) {
                 if (!needPermissions ||
-                        hasAllShopsPermission ||
-                        PluginUtils.hasPermission(sender, basePermission + "." + shopName.toLowerCase())) {
+                        hasAllShopsPermission || PluginUtils.hasPermissionToCategory((Player) sender, shopName.toLowerCase())) {
                     if (shopName.toLowerCase().startsWith(partialName)) {
                         completions.add(shopName);
                     }
@@ -237,7 +240,7 @@ public class ShopCommand extends AbstractCommand {
             }
 
             // Añadir nombres de jugadores si tiene permiso para otros
-            if (!needPermissions || PluginUtils.hasPermission(sender, basePermission + ".others")) {
+            if (!needPermissions || sender.hasPermission(basePermission + ".others")) {
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     if (player.getName().toLowerCase().startsWith(partialName)) {
                         completions.add(player.getName());

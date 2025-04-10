@@ -9,6 +9,8 @@ MESSAGES:
 
   # Gui
   GUI:
+    NO_ACCESS_TO_CATEGORY: "&cNo tienes aceso a esta categoria necesitas el permiso {1}"
+
     PAGE_NOT_FOUND: "&cLa página solicitada no existe. se abrió la primera página."
     EMPTY_PAGE: "&cEsta página no contiene elementos."
     NO_ITEMS_AVAILABLE: "&cNo hay elementos disponibles en esta tienda."
@@ -78,11 +80,13 @@ MESSAGES:
           ITEM_SOLD: "a"
 
       OPEN:
-        SUCCESS: "&aAbriendo la tienda: &6{1}"
         NOT_FOUND: "&cLa tienda &6{1} &cno existe."
         PLAYER_ONLY: "&cSolo los jugadores pueden abrir tiendas por sí mismos."
-        OTHER_SUCCESS: "&aHas abierto la tienda &6{1} &apara &6{2}&a."
         PLAYER_OFFLINE: "&cEl jugador &6{1} &cno está en línea."
-        USAGE: "&cUso correcto: /{shop} [tienda] [jugador]"
+        USAGE: "&cUso correcto: /shop [tienda/jugador] [página/tienda] [jugador/página]"
+
+        OTHER_SUCCESS_MAIN: "&aHas abierto el menú principal de la tienda para &e{0}&a."
+        OTHER_SUCCESS: "&aHas abierto la tienda &e{0} &apara el jugador &e{1}&a."
+        SUCCESS: "&aAbriendo la tienda &e{0}&a..."
 
 file-version: 1

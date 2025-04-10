@@ -54,7 +54,10 @@ public class CategoryControls extends Controls {
 
     @Override
     public void clicked(Player player, int slot, ClickType clickType, int hotbarButton) {
-        new ShopCategoryMenu(player, shop).openMenu(1);
+        ShopCategoryMenu menu = ShopCategoryMenu.create(player, shop);
+        if (menu != null) {
+            menu.openMenu(1);
+        }
     }
 
 
