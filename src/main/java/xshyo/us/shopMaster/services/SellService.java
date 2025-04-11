@@ -141,6 +141,20 @@ public class SellService {
 
     }
 
+    private SellableItemInfo findStandardItem(Player player, ItemStack item) {
+        Material material = item.getType();
+
+        if (!sellableItems.containsKey(material)) {
+            return null;
+        }
+
+        return sellableItems.get(material).stream()
+                .filter(info -> itemComparator.areItemsSimilar(item, info.itemStack()))
+                .findFirst()
+                .orElse(null);
+    }
+
+
     /**
      * Optimized item indexing with better parallel processing
      */
@@ -153,7 +167,33 @@ public class SellService {
         for (Shop shop : shopManager.getShopMap().values()) {
             if (shop.isEnabled()) {
                 try {
-                    processShopItems(shop);  // Procesamos los items de la tienda
+                    for (ShopItem item : shop.getItems().values()) {
+                        if (item.getSellPrice() <= 0) continue;
+
+                        try {
+                            try {
+                                String matName = item.getMaterial();
+                                Material material = Material.valueOf(matName.toUpperCase());
+                                ItemStack shopItemStack = item.createItemStack();
+                                SellableItemInfo info = new SellableItemInfo(shop, item, shopItemStack);
+                                sellableItems.computeIfAbsent(material, k -> new CopyOnWriteArrayList<>()).add(info);
+                            } catch (IllegalArgumentException e) {
+                                try {
+                                    customSellableItems.add(new CustomItemEntry(shop, item));
+                                } catch (Exception ex) {
+                                    ex.printStackTrace();
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        } catch (Exception e) {
+                            plugin.getLogger().warning(
+                                    "Error processing item " + item.getMaterial() + ": " + e.getMessage()
+                            );
+                        }
+                    }
+
+//                    processShopItems(shop);  // Procesamos los items de la tienda
                 } catch (Exception e) {
                     plugin.getLogger().log(Level.SEVERE, "Error processing shop items for shop: " + shop.getName(), e);
                 }
@@ -173,58 +213,6 @@ public class SellService {
 
 
 
-    private void processShopItems(Shop shop) {
-        for (ShopItem item : shop.getItems().values()) {
-            if (item.getSellPrice() <= 0) continue;
-
-            try {
-                processStandardOrCustomItem(shop, item);
-            } catch (Exception e) {
-                plugin.getLogger().warning(
-                        "Error processing item " + item.getMaterial() + ": " + e.getMessage()
-                );
-            }
-        }
-    }
-
-    private void processStandardOrCustomItem(Shop shop, ShopItem item) {
-
-            try {
-                String matName = item.getMaterial();
-                Material material = Material.valueOf(matName.toUpperCase());
-                ItemStack shopItemStack = item.createItemStack();
-                SellableItemInfo info = new SellableItemInfo(shop, item, shopItemStack);
-                sellableItems.computeIfAbsent(material, k -> new CopyOnWriteArrayList<>()).add(info);
-            } catch (IllegalArgumentException e) {
-                try {
-                    customSellableItems.add(new CustomItemEntry(shop, item));
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-    }
-
-
-    /**
-     * Busca en materiales estándar
-     */
-    private SellableItemInfo findStandardItem(Player player, ItemStack item) {
-        Material material = item.getType();
-
-        if (!sellableItems.containsKey(material)) {
-            return null;
-        }
-
-        return sellableItems.get(material).stream()
-                // Usar itemComparator en lugar de isSimilar
-                .filter(info -> itemComparator.areItemsSimilar(item, info.itemStack()))
-                .findFirst()
-                .orElse(null);
-    }
-
     /**
      * Busca en items personalizados usando un algoritmo de partición
      */
@@ -235,7 +223,13 @@ public class SellService {
 
         // Usar multi-threading para búsquedas en colecciones grandes
         if (customSellableItems.size() > PARALLEL_THRESHOLD) {
-            return findCustomItemParallel(player, item);
+            return customSellableItems.stream()
+                    .parallel()
+                    // Usar itemComparator en lugar de isSimilar
+                    .filter(entry -> itemComparator.areItemsSimilar(item, entry.shopItem.createItemStack()))
+                    .findFirst()
+                    .map(entry -> new SellableItemInfo(entry.shop, entry.shopItem, entry.shopItem.createItemStack()))
+                    .orElse(null);
         }
 
         return customSellableItems.stream()
@@ -247,21 +241,6 @@ public class SellService {
     }
 
 
-    /**
-     * Advanced parallel processing for custom item search
-     */
-    private SellableItemInfo findCustomItemParallel(Player player, ItemStack item) {
-        int processors = Runtime.getRuntime().availableProcessors();
-        int segmentSize = Math.max(10, customSellableItems.size() / processors);
-
-        return customSellableItems.stream()
-                .parallel()
-                // Usar itemComparator en lugar de isSimilar
-                .filter(entry -> itemComparator.areItemsSimilar(item, entry.shopItem.createItemStack()))
-                .findFirst()
-                .map(entry -> new SellableItemInfo(entry.shop, entry.shopItem, entry.shopItem.createItemStack()))
-                .orElse(null);
-    }
 
     /**
      * Enhanced sellable item search with improved caching and performance
@@ -346,11 +325,12 @@ public class SellService {
         }
 
         PlayerInventory inventory = player.getInventory();
+        ItemStack handItem = inventory.getItemInMainHand();
 
         // Determinar la estrategia de búsqueda de ítems
         int availableAmount = searchEntireInventory
                 ? countItemsInEntireInventory(inventory, item)
-                : countItemsInHand(inventory, item);
+                : handItem != null && handItem.isSimilar(item) ? handItem.getAmount() : 0;
 
         if (availableAmount == 0) {
             return new SellResult(SellStatus.INSUFFICIENT_ITEMS, 0, "");
@@ -387,11 +367,6 @@ public class SellService {
         return new SellResult(SellStatus.SUCCESS, totalPrice, currency);
     }
 
-    // Método para contar ítems en la mano
-    private int countItemsInHand(PlayerInventory inventory, ItemStack referenceItem) {
-        ItemStack handItem = inventory.getItemInMainHand();
-        return handItem != null && handItem.isSimilar(referenceItem) ? handItem.getAmount() : 0;
-    }
 
     // Método para contar ítems en todo el inventario
     private int countItemsInEntireInventory(PlayerInventory inventory, ItemStack referenceItem) {

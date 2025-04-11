@@ -23,8 +23,8 @@ tools:
   buttons: [ ]
 
   items:
-    # Fila 1 (slots 0-8)
-    # Fila 2 (slots 9-17) - Comida y consumibles
+    # Row 1 (slots 0-8)
+    # Row 2 (slots 9-17) - Food and Consumables
     '1':
       item:
         material: COOKED_BEEF
@@ -149,7 +149,7 @@ tools:
       buyPrice: 1500
       sellPrice: -1
 
-    # Fila 3 (slots 18-26) - Decorativos y especiales
+    # Row 3 (slots 18-26) - Decorative and Special
     '4':
       item:
         material: WHITE_BANNER
@@ -207,10 +207,10 @@ tools:
       item:
         material: SHIELD
         quantity: 1
-        name: "&eEscudo Personalizado"
+        name: "&eCustom Shield"
         lore:
-          - "&7Un escudo único con diseño"
-          - "&7¡Protégete con estilo!"
+          - "&7A unique shield with design"
+          - "&7Protect yourself in style!"
         shield_pattern:
           base_color: RED
           patterns:
@@ -232,17 +232,17 @@ tools:
       item:
         material: GOAT_HORN
         quantity: 1
-        name: "&eCuerno de Cabra Mágico"
+        name: "&eMagic Goat Horn"
         lore:
-          - "&7Un cuerno ancestral"
-          - "&7¡Su sonido resuena en la distancia!"
+          - "&7An ancestral horn"
+          - "&7Its sound echoes from afar!"
         musicInstrument: ponder_goat_horn
       slot: 25
       page: 1
       buyPrice: 500
       economy: VAULT
 
-    # Fila 4 (slots 27-35) - Armas y armaduras
+    # Row 4 (slots 27-35) - Weapons and Armor
     '7':
       item:
         material: TIPPED_ARROW
@@ -344,7 +344,7 @@ tools:
         - "[command] effect give {player} regeneration 60 1"
         - "[command] broadcast &e{player} has purchased a special reward!"
 
-  # Fila 5 (slots 36-44) - Página 2
-  # Fila 6 (slots 45-53) - Navegación y botones
+  # Row 5 (slots 36-44) - Page 2
+  # Row 6 (slots 45-53) - Navigation and buttons
 
 file-version: 1

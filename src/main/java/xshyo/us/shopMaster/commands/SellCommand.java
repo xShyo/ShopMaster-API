@@ -126,7 +126,7 @@ public class SellCommand extends AbstractCommand {
     }
 
     private void openSellGUI(Player player) {
-        new SellMenu(sellService).open(player);
+        new SellMenu(sellService, player).open();
     }
 
     private void sellItemInHand(Player player) {

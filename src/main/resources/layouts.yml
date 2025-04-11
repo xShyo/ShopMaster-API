@@ -642,6 +642,15 @@ inventories:
         lore: []
 
     custom-items: []
+  #  back:
+  #    material: ARROW
+  #    amount: 1
+  #    display_name: '&aBack'
+  #    lore: [ ]
+  #    slot: 39
+  #    actions:
+  #      - "[command] dm open Menu {player}"
+
 
   stack-selector:
     # The title of the inventory.
@@ -893,5 +902,23 @@ inventories:
   #    slot: 39
   #    actions:
   #      - "[command] dm open Menu {player}"
+
+  sell-gui:
+    # The title of the inventory.
+    title: '&8☀ Sell Items'
+    # The size of the inventory.
+    # Must be a multiple of 9. (9, 18, 27, 36, 45, 54)
+    size: 54
+
+    custom-items: []
+  #  back:
+  #    material: ARROW
+  #    amount: 1
+  #    display_name: '&aBack'
+  #    lore: [ ]
+  #    slot: 39
+  #    actions:
+  #      - "[command] dm open Menu {player}"
+
 
 file-version: 1

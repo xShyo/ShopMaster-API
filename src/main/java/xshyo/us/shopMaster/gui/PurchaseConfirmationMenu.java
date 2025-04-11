@@ -31,7 +31,7 @@ public class PurchaseConfirmationMenu {
     private int quantity = 1;
     private final Shop shop;
     private final int returnPage;
-    private final ShopMaster plugin;
+    private final ShopMaster plugin = ShopMaster.getInstance();
     private static final String MENU_PATH = "inventories.purchase-confirmation";
     private final Set<Integer> reservedSlots = new HashSet<>();
 
@@ -41,7 +41,6 @@ public class PurchaseConfirmationMenu {
         this.item = item;
         this.shop = shop;
         this.returnPage = returnPage;
-        this.plugin = ShopMaster.getInstance();
         this.confirmationMenu = initializeGui();
         this.quantity = Math.max(1, item.getAmount());
 
