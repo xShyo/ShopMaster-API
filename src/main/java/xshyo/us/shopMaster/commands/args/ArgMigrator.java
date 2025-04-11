@@ -41,13 +41,13 @@ public class ArgMigrator implements CommandArg {
         if (!PluginUtils.hasPermission(s, PERMISSION_MIGRATE)) return true;
 
         // Si no hay argumentos adicionales o si el argumento no es un migrador válido
-        if (args.length < 1 || !availableMigrators.contains(args[0].toLowerCase())) {
+        if (args.length < 2 || !availableMigrators.contains(args[1].toLowerCase())) {
             PluginUtils.sendMessage(s, "&cCorrect use: /shopmaster migrator <type>");
             PluginUtils.sendMessage(s, "&cMigrators available: " + String.join(", ", availableMigrators));
             return true;
         }
 
-        String migratorType = args[0].toLowerCase();
+        String migratorType = args[1].toLowerCase();
         PluginUtils.sendMessage(s, "&aMigrating stores from " + migratorType + "...");
 
         ShopMigrator migrator = createMigrator(migratorType);
@@ -63,8 +63,8 @@ public class ArgMigrator implements CommandArg {
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args) {
-        if (args.length == 1) {
-            String currentInput = args[0].toLowerCase();
+        if (args.length == 2) {
+            String currentInput = args[1].toLowerCase();
             return availableMigrators.stream()
                     .filter(migrator -> migrator.startsWith(currentInput))
                     .collect(Collectors.toList());

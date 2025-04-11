@@ -5,11 +5,15 @@ import dev.dejvokep.boostedyaml.block.implementation.Section;
 import dev.triumphteam.gui.guis.Gui;
 import dev.triumphteam.gui.guis.GuiItem;
 import net.kyori.adventure.text.Component;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 import xshyo.us.shopMaster.ShopMaster;
 import xshyo.us.shopMaster.services.records.PurchaseResult;
 import xshyo.us.shopMaster.shop.Shop;
@@ -151,7 +155,10 @@ public class ShopCategoryMenu {
                     if (shopItem.isHidden()) {
                         continue;// Check that slot is within menu
                     }
-                    categoryMenu.setItem(slot, new GuiItem(new DisplayControls("inventories.categories", shopItem).getButtonItem(viewer), event -> {
+                    ItemStack itemStack = new DisplayControls("inventories.categories", shopItem).getButtonItem(viewer);
+                    categoryMenu.setItem(slot, new GuiItem(itemStack, event -> {
+
+
                         // Get current click type
                         String clickType = getClickTypeString(event);
 
@@ -160,6 +167,12 @@ public class ShopCategoryMenu {
                         String sellButton = plugin.getConf().getString("config.gui.buttons.sell");
 
                         if (clickType.equals(buyButton)) {
+                            // Revisa si el item es un placeholder de plugin faltante
+                            if (isMissingPluginItem(itemStack)) {
+                                PluginUtils.sendMessageWhitPath(viewer, ChatColor.RED + "This item requires a plugin that is not installed.");
+                                return;
+                            }
+
                             if (plugin.getConf().getBoolean("config.gui.purchase-confirmation.enabled")) {
                                 new PurchaseConfirmationMenu(viewer, shopItem, shop, currentPage).openMenu();
                             } else {
@@ -171,6 +184,11 @@ public class ShopCategoryMenu {
                                 }
                             }
                         } else if (clickType.equals(sellButton)) {
+                            // Revisa si el item es un placeholder de plugin faltante
+                            if (isMissingPluginItem(itemStack)) {
+                                PluginUtils.sendMessageWhitPath(viewer, ChatColor.RED + "This item requires a plugin that is not installed.");
+                                return;
+                            }
                             if (shopItem.getSellPrice() > 0) {
                                 new SellAllConfirmationMenu(viewer, shopItem, shop, currentPage).openMenu();
                             } else {
@@ -206,6 +224,17 @@ public class ShopCategoryMenu {
                 .replace("{page}", String.valueOf(page)))));
         categoryMenu.open(viewer);
     }
+
+
+    private boolean isMissingPluginItem(ItemStack item) {
+        if (item.getType() != Material.BARRIER) return false;
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) return false;
+
+        NamespacedKey key = new NamespacedKey(plugin, "missing_plugin");
+        return meta.getPersistentDataContainer().has(key, PersistentDataType.BYTE);
+    }
+
 
     private int findNonEmptyPage() {
         for (int i = 1; i <= maxPage; i++) {

@@ -147,7 +147,7 @@ public class ShopCommand extends AbstractCommand {
         }
 
         PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.OPEN.SUCCESS", shopName);
-        // Abrir la tienda específica en la página indicada
+
         ShopCategoryMenu menu = ShopCategoryMenu.create(player, shop);
         if (menu != null) {
             menu.openMenu(page);

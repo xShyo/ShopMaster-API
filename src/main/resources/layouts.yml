@@ -411,8 +411,9 @@ inventories:
   #    actions:
   #      - "[command] dm open Menu {player}"
 
+
   sell-all-confirmation:
-    title: '&8☀ Confirmar Venta: &f{item}'
+    title: '&8☀ Confirm Sale: &f{item}'
     size: 45
 
     items:
@@ -427,198 +428,193 @@ inventories:
           material: RED_STAINED_GLASS_PANE
           amount: 1
           model_data: 0
-          display_name: '#FB0808Remover 1'
+          display_name: '#FB0808Remove 1'
           glowing: false
           set_amount: -1
           item_flags:
             - HIDE_ATTRIBUTES
           lore:
-            - '&8Ajustes de Venta'
+            - '&8Sale Settings'
             - ''
-            - '&8 ● &fEsto eliminará #FB08081'
-            - '   &fítem de la cantidad'
+            - '&8 ● &fThis will remove #FB08081'
+            - '   &fitem from the quantity'
             - ''
-            - '#FB0808► Click para ajustar.'
+            - '#FB0808► Click to adjust.'
 
         decrease_medium:
           slot: 22
           material: RED_STAINED_GLASS_PANE
           amount: 5
           model_data: 0
-          display_name: '#FB0808Remover 5'
+          display_name: '#FB0808Remove 5'
           glowing: false
           set_amount: -5
           item_flags:
             - HIDE_ATTRIBUTES
           lore:
-            - '&8Ajustes de Venta'
+            - '&8Sale Settings'
             - ''
-            - '&8 ● &fEsto eliminará #FB08085'
-            - '   &fítems de la cantidad'
+            - '&8 ● &fThis will remove #FB08085'
+            - '   &fitems from the quantity'
             - ''
-            - '#FB0808► Click para ajustar.'
+            - '#FB0808► Click to adjust.'
 
         decrease_big:
           slot: 23
           material: RED_STAINED_GLASS_PANE
           amount: 10
           model_data: 0
-          display_name: '#FB0808Remover 10'
+          display_name: '#FB0808Remove 10'
           glowing: false
           set_amount: -10
           item_flags:
             - HIDE_ATTRIBUTES
           lore:
-            - '&8Ajustes de Venta'
+            - '&8Sale Settings'
             - ''
-            - '&8 ● &fEsto eliminará #FB080810'
-            - '   &fítems de la cantidad'
+            - '&8 ● &fThis will remove #FB080810'
+            - '   &fitems from the quantity'
             - ''
-            - '#FB0808► Click para ajustar.'
+            - '#FB0808► Click to adjust.'
 
         decrease:
           slot: 25
           material: RED_STAINED_GLASS
           amount: 1
           model_data: 0
-          display_name: '#FB0808Establecer 1'
+          display_name: '#FB0808Set 1'
           glowing: false
           set_amount: 1
           item_flags:
             - HIDE_ATTRIBUTES
           lore:
-            - '&8Ajustes de Venta'
+            - '&8Sale Settings'
             - ''
-            - '&8 ● &fEstablecer la cantidad en #FB08081'
+            - '&8 ● &fSet the quantity to #FB08081'
             - ''
-            - '#FB0808► Click para ajustar.'
-
+            - '#FB0808► Click to adjust.'
 
         increase_small:
           slot: 12
           material: LIME_STAINED_GLASS_PANE
           amount: 1
           model_data: 0
-          display_name: '#FBD008Añadir 1'
+          display_name: '#FBD008Add 1'
           glowing: false
           set_amount: +1
           item_flags:
             - HIDE_ATTRIBUTES
           lore:
-            - '&8Ajustes de Venta'
+            - '&8Sale Settings'
             - ''
-            - '&8 ● &fEsto agregará #FBD0081'
-            - '   &fítem a la cantidad'
+            - '&8 ● &fThis will add #FBD0081'
+            - '   &fitem to the quantity'
             - ''
-            - '#FBD008► Click para ajustar.'
+            - '#FBD008► Click to adjust.'
 
         increase_medium:
           slot: 13
           material: LIME_STAINED_GLASS_PANE
           amount: 5
           model_data: 0
-          display_name: '#FBD008Añadir 5'
+          display_name: '#FBD008Add 5'
           glowing: false
           set_amount: +5
           item_flags:
             - HIDE_ATTRIBUTES
           lore:
-            - '&8Ajustes de Venta'
+            - '&8Sale Settings'
             - ''
-            - '&8 ● &fEsto agregará #FBD0085'
-            - '   &fítems a la cantidad'
+            - '&8 ● &fThis will add #FBD0085'
+            - '   &fitems to the quantity'
             - ''
-            - '#FBD008► Click para ajustar.'
+            - '#FBD008► Click to adjust.'
 
         increase_big:
           slot: 14
           material: LIME_STAINED_GLASS_PANE
           amount: 10
           model_data: 0
-          display_name: '#FBD008Añadir 10'
+          display_name: '#FBD008Add 10'
           glowing: false
           set_amount: +10
           item_flags:
             - HIDE_ATTRIBUTES
           lore:
-            - '&8Ajustes de Venta'
+            - '&8Sale Settings'
             - ''
-            - '&8 ● &fEsto agregará #FBD00810'
-            - '   &fítems a la cantidad'
+            - '&8 ● &fThis will add #FBD00810'
+            - '   &fitems to the quantity'
             - ''
-            - '#FBD008► Click para ajustar.'
+            - '#FBD008► Click to adjust.'
 
         increase:
           slot: 16
           material: LIME_STAINED_GLASS
           amount: 64
           model_data: 0
-          display_name: '#FBD008Establecer 64'
+          display_name: '#FBD008Set 64'
           glowing: false
           set_amount: 64
           item_flags:
             - HIDE_ATTRIBUTES
           lore:
-            - '&8Ajustes de Venta'
+            - '&8Sale Settings'
             - ''
-            - '&8 ● &fEstablecer la cantidad en #FBD00864'
+            - '&8 ● &fSet the quantity to #FBD00864'
             - ''
-            - '#FBD008► Click para ajustar.'
-
+            - '#FBD008► Click to adjust.'
 
       sell-inventory:
         slot: 28
         material: CHEST
         amount: 1
         model_data: 0
-        display_name: '#FBD008Vender Todo'
+        display_name: '#FBD008Sell All'
         glowing: true
         item_flags:
           - HIDE_ATTRIBUTES
         lore:
-          - '&8Venta Rápida'
+          - '&8Quick Sale'
           - ''
-          - '&8 ● &fVende todo por: &a{totalPrice}'
+          - '&8 ● &fSell everything for: &a{totalPrice}'
           - ''
-          - '#FBD008► Click para vender todo.'
-
+          - '#FBD008► Click to sell all.'
 
       confirm:
         slot: 41
         material: LIME_CONCRETE
         amount: 1
         model_data: 0
-        display_name: '#FBD008Confirmar Venta'
+        display_name: '#FBD008Confirm Sale'
         glowing: false
         item_flags:
           - HIDE_ATTRIBUTES
         lore:
-          - '&8Ajustes de Venta'
+          - '&8Sale Settings'
           - ''
-          - '&8 ● &fSi todo está correctamente'
-          - '   &fconfigurado, haz click para vender'
+          - '&8 ● &fIf everything is correctly'
+          - '   &fset, click to sell'
           - ''
-          - '&a► Click para confirmar.'
-
+          - '&a► Click to confirm.'
 
       information:
         slot: 4
         material: NETHER_STAR
         amount: 1
         model_data: 0
-        display_name: '#FBD008Información'
+        display_name: '#FBD008Information'
         glowing: false
         item_flags:
           - HIDE_ATTRIBUTES
         lore:
-          - '&8Detalles del ítem'
+          - '&8Item Details'
           - ''
-          - '&8 ● &fNombre: {displayName}'
+          - '&8 ● &fName: {displayName}'
           - '&8 ● &fMaterial: {material}'
-          - '&8 ● &fPrecio: {price}'
+          - '&8 ● &fPrice: {price}'
           - ''
-          - '&7► Vista previa.'
-
+          - '&7► Preview.'
 
     buttons:
       close:
@@ -627,7 +623,7 @@ inventories:
         slot: 40
         amount: 1
         model_data: 0
-        display_name: '&cCerrar'
+        display_name: '&cClose'
         glowing: false
         item_flags:
           - HIDE_ATTRIBUTES
@@ -639,14 +635,13 @@ inventories:
         slot: 39
         amount: 1
         model_data: 0
-        display_name: '&cRegresar'
+        display_name: '&cBack'
         glowing: false
         item_flags:
           - HIDE_ATTRIBUTES
         lore: []
 
     custom-items: []
-
 
   stack-selector:
     # The title of the inventory.

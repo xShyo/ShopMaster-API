@@ -75,7 +75,7 @@ public class Shop {
                 String path = name + ".items." + key;
                 int itemId = Integer.parseInt(key);
 
-                String material = config.getString(path + ".item.material", "BARRIER");
+                String material = config.getString(path + ".item.material", "STONE");
                 String mob = config.getString(path + ".item.mob", "ZOMBIE");
 
                 int quantity = config.getInt(path + ".item.quantity", 1);
@@ -131,10 +131,10 @@ public class Shop {
                                 int level = config.getInt(path + ".item.enchantments." + enchantKey);
                                 item.getEnchantments().put(enchant, level);
                             } else {
-                                ShopMaster.getInstance().getLogger().warning("Encantamiento inválido en la tienda " + name + ", ítem " + key + ": " + enchantKey);
+                                ShopMaster.getInstance().getLogger().warning("Invalid enchantment in shop " + name + ", item " + key + ": " + enchantKey);
                             }
                         } catch (Exception e) {
-                            ShopMaster.getInstance().getLogger().warning("Error al cargar encantamiento " + enchantKey + " para ítem " + key + " en tienda " + name);
+                            ShopMaster.getInstance().getLogger().warning("Error loading enchantment " + enchantKey + " for item " + key + " in shop " + name);
                         }
                     }
                 }
@@ -152,7 +152,7 @@ public class Shop {
                             item.setExtended(extended);
                             item.setUpgraded(upgraded);
                         } catch (IllegalArgumentException e) {
-                            ShopMaster.getInstance().getLogger().warning("Tipo de poción inválido en la tienda " + name + ", ítem " + key + ": " + potionTypeStr);
+                            ShopMaster.getInstance().getLogger().warning("Invalid potion type in shop " + name + ", item " + key + ": " + potionTypeStr);
                         }
 
                         // Cargar efectos personalizados si existen
@@ -169,7 +169,7 @@ public class Shop {
                                         item.getCustomEffects().add(effect);
                                     }
                                 } catch (Exception e) {
-                                    ShopMaster.getInstance().getLogger().warning("Error al cargar efecto personalizado para poción en ítem " + key + " en tienda " + name);
+                                    ShopMaster.getInstance().getLogger().warning("Error loading custom potion effect for item " + key + " in shop " + name);
                                 }
                             }
                         }
@@ -180,7 +180,7 @@ public class Shop {
                     item.setSpawnerMobType(mob);
                 }
 
-                    // Procesar configuración específica para banners
+                // Procesar configuración específica para banners
                 if (material.endsWith("_BANNER")) {
                     if (config.contains(path + ".item.banner")) {
 
@@ -196,12 +196,47 @@ public class Shop {
                                     Pattern pattern = new Pattern(color, patternType);
                                     item.getBannerPatterns().add(pattern);
                                 } catch (Exception e) {
-                                    ShopMaster.getInstance().getLogger().warning("Error al cargar patrón para banner en ítem " + key + " en tienda " + name);
+                                    ShopMaster.getInstance().getLogger().warning("Error loading banner pattern for item " + key + " in shop " + name);
                                 }
                             }
                         }
                     }
                 }
+
+                if (material.equals("SHIELD")) {
+                    if (config.contains(path + ".item.shield_pattern")) {
+                        // Procesar color base del escudo
+                        if (config.contains(path + ".item.shield_pattern.base_color")) {
+                            try {
+                                String baseColorStr = config.getString(path + ".item.shield_pattern.base_color", "WHITE");
+                                DyeColor baseColor = DyeColor.valueOf(baseColorStr.toUpperCase());
+                                item.setShieldBaseColor(baseColor);
+                            } catch (Exception e) {
+                                ShopMaster.getInstance().getLogger().warning("Error loading shield base color for item " + key + " in shop " + name);
+                            }
+                        }
+
+                        // Procesar patrones del escudo
+                        if (config.contains(path + ".item.shield_pattern.patterns")) {
+                            for (String patternKey : config.getSection(path + ".item.shield_pattern.patterns").getRoutesAsStrings(false)) {
+//                                try {
+                                    String patternTypeStr = config.getString(path + ".item.shield_pattern.patterns." + patternKey + ".pattern");
+                                    String colorStr = config.getString(path + ".item.shield_pattern.patterns." + patternKey + ".color", "WHITE");
+
+                                    PatternType patternType = PatternType.valueOf(patternTypeStr.toUpperCase());
+                                    DyeColor color = DyeColor.valueOf(colorStr.toUpperCase());
+
+                                    Pattern pattern = new Pattern(color, patternType);
+                                    item.getShieldPatterns().add(pattern);
+//                                } catch (Exception e) {
+//                                    ShopMaster.getInstance().getLogger().warning("Error loading shield pattern for item " + key + " in shop " + name);
+//                                }
+                            }
+                        }
+                    }
+                }
+
+
 
                 // Procesar configuración específica para fuegos artificiales
                 if (material.equalsIgnoreCase("FIREWORK_ROCKET")) {
@@ -250,7 +285,7 @@ public class Shop {
 
                                     item.getFireworkEffects().add(effect.build());
                                 } catch (Exception e) {
-                                    ShopMaster.getInstance().getLogger().warning("Error al cargar efecto para fuego artificial en ítem " + key + " en tienda " + name);
+                                    ShopMaster.getInstance().getLogger().warning("Error loading firework effect for item " + key + " in shop " + name);
                                 }
                             }
                         }
@@ -267,7 +302,7 @@ public class Shop {
                             Method setVariant = item.getClass().getMethod("setAxolotlVariant", axolotlClass);
                             setVariant.invoke(item, variant);
                         } catch (Exception e) {
-                            ShopMaster.getInstance().getLogger().warning("No se pudo asignar el tipo de ajolote en la tienda " + name + ", ítem " + key + ": " + e.getMessage());
+                            ShopMaster.getInstance().getLogger().warning("Could not assign axolotl type in shop " + name + ", item " + key + ": " + e.getMessage());
                         }
                     }
                 }
@@ -286,7 +321,7 @@ public class Shop {
                             item.setArrowExtended(extended);
 
                         } catch (IllegalArgumentException e) {
-                            ShopMaster.getInstance().getLogger().warning("Tipo de poción para flecha inválido en la tienda " + name + ", ítem " + key + ": " + potionTypeStr);
+                            ShopMaster.getInstance().getLogger().warning("Invalid potion type for arrow in shop " + name + ", item " + key + ": " + potionTypeStr);
                         }
 
                         // Cargar efectos personalizados para flechas si existen
@@ -303,7 +338,7 @@ public class Shop {
                                         item.getArrowCustomEffects().add(effect);
                                     }
                                 } catch (Exception e) {
-                                    ShopMaster.getInstance().getLogger().warning("Error al cargar efecto personalizado para flecha en ítem " + key + " en tienda " + name);
+                                    ShopMaster.getInstance().getLogger().warning("Error loading custom effect for arrow in item " + key + " in shop " + name);
                                 }
                             }
                         }
@@ -333,13 +368,13 @@ public class Shop {
                                         meta.setBasePotionData(new PotionData(potionType, extended, upgraded));
                                         projectile.setItemMeta(meta);
                                     } catch (IllegalArgumentException e) {
-                                        ShopMaster.getInstance().getLogger().warning("Tipo de poción para flecha en ballesta inválido en la tienda " + name + ", ítem " + key);
+                                        ShopMaster.getInstance().getLogger().warning("Invalid potion type for arrow in crossbow in shop " + name + ", item " + key);
                                     }
                                 }
 
                                 item.getLoadedProjectiles().add(projectile);
                             } catch (Exception e) {
-                                ShopMaster.getInstance().getLogger().warning("Error al cargar proyectil para ballesta en ítem " + key + " en tienda " + name + ": " + e.getMessage());
+                                ShopMaster.getInstance().getLogger().warning("Error loading projectile for crossbow in item " + key + " in shop " + name + ": " + e.getMessage());
                             }
                         }
                     }
@@ -349,6 +384,20 @@ public class Shop {
                     String colorStr = config.getString(path + ".item.armor_color");
                     item.setArmorColor(colorStr);
                 }
+
+                if (Utils.getCurrentVersion() >= 1190) {
+                    if (material.contains("GOAT_HORN") &&
+                            config.contains(path + ".item.musicInstrument")) {
+                        String musicInstrumentStr = config.getString(path + ".item.musicInstrument");
+                        try {
+                            MusicInstrument trimMaterial = Registry.INSTRUMENT.get(NamespacedKey.minecraft(musicInstrumentStr.toLowerCase()));
+                            item.setMusicInstrument(trimMaterial);
+                        } catch (IllegalArgumentException e) {
+                            ShopMaster.getInstance().getLogger().warning("Invalid music instrument configuration in shop " + name + ", item " + key);
+                        }
+                    }
+                }
+
 
                 if (Utils.getCurrentVersion() >= 1200) {
 
@@ -369,6 +418,8 @@ public class Shop {
                             ShopMaster.getInstance().getLogger().warning("Invalid armor trim configuration in shop " + name + ", item " + key);
                         }
                     }
+
+
                 }
 // Process item flags
                 if (config.contains(path + ".item.flags")) {
@@ -581,7 +632,7 @@ public class Shop {
             config.save();
             return true;
         } catch (IOException e) {
-            ShopMaster.getInstance().getLogger().severe("Error al guardar la tienda " + name + ": " + e.getMessage());
+            ShopMaster.getInstance().getLogger().severe("Error saving the shop " + name + ": " + e.getMessage());
             return false;
         }
     }

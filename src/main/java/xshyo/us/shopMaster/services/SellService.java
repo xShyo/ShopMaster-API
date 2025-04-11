@@ -1,13 +1,11 @@
 package xshyo.us.shopMaster.services;
 
-import com.google.common.util.concurrent.ListeningExecutorService;
-import com.google.common.util.concurrent.MoreExecutors;
 import dev.dejvokep.boostedyaml.YamlDocument;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import xshyo.us.shopMaster.ItemComparator;
 import xshyo.us.shopMaster.ShopMaster;
 import xshyo.us.shopMaster.enums.CurrencyType;
 import xshyo.us.shopMaster.enums.SellStatus;
@@ -21,7 +19,6 @@ import xshyo.us.shopMaster.managers.CurrencyManager;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
 public class SellService {
     private static final int MAX_CACHE_SIZE = 100;
@@ -32,7 +29,7 @@ public class SellService {
     private final Map<Material, List<SellableItemInfo>> sellableItems;
     private final List<CustomItemEntry> customSellableItems;
     private final Map<CacheKey, SellableItemInfo> resultCache;
-    private final ListeningExecutorService executorService;
+    private final ItemComparator itemComparator;
 
     public SellService(ShopMaster plugin, ShopManager shopManager) {
         this.plugin = plugin;
@@ -47,15 +44,7 @@ public class SellService {
                     }
                 }
         );
-        this.executorService = MoreExecutors.listeningDecorator(
-                new ThreadPoolExecutor(
-                        Runtime.getRuntime().availableProcessors(), // núcleos mínimos
-                        Runtime.getRuntime().availableProcessors() * 2, // máximo de hilos
-                        60L, // tiempo de espera antes de eliminar hilos inactivos
-                        TimeUnit.SECONDS,
-                        new LinkedBlockingQueue<>() // cola sin límite
-                )
-        );
+        this.itemComparator = plugin.getItemComparator();
 
         buildSellableItemsIndex();
     }
@@ -101,7 +90,7 @@ public class SellService {
     /**
      * Clase auxiliar para almacenar items personalizados con el ItemStack pre-creado
      */
-    private record CustomItemEntry(Shop shop, ShopItem shopItem, ItemStack itemStack) {
+    private record CustomItemEntry(Shop shop, ShopItem shopItem) {
     }
 
     /**
@@ -160,19 +149,18 @@ public class SellService {
         customSellableItems.clear();
         resultCache.clear();
 
-        List<CompletableFuture<Void>> futures = shopManager.getShopMap().values().stream()
-                .filter(Shop::isEnabled)
-                .map(shop -> CompletableFuture.runAsync(() -> processShopItems(shop), executorService))
-                .collect(Collectors.toList());
+        // Iteramos sobre las tiendas de manera secuencial
+        for (Shop shop : shopManager.getShopMap().values()) {
+            if (shop.isEnabled()) {
+                try {
+                    processShopItems(shop);  // Procesamos los items de la tienda
+                } catch (Exception e) {
+                    plugin.getLogger().log(Level.SEVERE, "Error processing shop items for shop: " + shop.getName(), e);
+                }
+            }
+        }
 
-        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
-                .exceptionally(ex -> {
-                    plugin.getLogger().log(Level.SEVERE, "Error indexing shop items", ex);
-                    return null;
-                })
-                .join();
-
-        // Sort lists more efficiently
+        // Ordenamos las listas de manera más eficiente
         sellableItems.values().forEach(list -> list.sort(
                 Comparator.comparing(info -> -info.shopItem().getSellPrice())
         ));
@@ -182,6 +170,8 @@ public class SellService {
                 sellableItems.size(), customSellableItems.size()
         ));
     }
+
+
 
     private void processShopItems(Shop shop) {
         for (ShopItem item : shop.getItems().values()) {
@@ -198,24 +188,23 @@ public class SellService {
     }
 
     private void processStandardOrCustomItem(Shop shop, ShopItem item) {
-        try {
-            Bukkit.getScheduler().runTask(plugin, () -> {
+
+            try {
                 String matName = item.getMaterial();
                 Material material = Material.valueOf(matName.toUpperCase());
                 ItemStack shopItemStack = item.createItemStack();
                 SellableItemInfo info = new SellableItemInfo(shop, item, shopItemStack);
                 sellableItems.computeIfAbsent(material, k -> new CopyOnWriteArrayList<>()).add(info);
-            });
-        } catch (IllegalArgumentException e) {
-            try {
-                ItemStack customItem = item.createItemStack();
-                customSellableItems.add(new CustomItemEntry(shop, item, customItem));
-            } catch (Exception ex) {
-                ex.printStackTrace();
+            } catch (IllegalArgumentException e) {
+                try {
+                    customSellableItems.add(new CustomItemEntry(shop, item));
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
     }
 
 
@@ -230,7 +219,8 @@ public class SellService {
         }
 
         return sellableItems.get(material).stream()
-                .filter(info -> item.isSimilar(info.itemStack()))
+                // Usar itemComparator en lugar de isSimilar
+                .filter(info -> itemComparator.areItemsSimilar(item, info.itemStack()))
                 .findFirst()
                 .orElse(null);
     }
@@ -249,11 +239,13 @@ public class SellService {
         }
 
         return customSellableItems.stream()
-                .filter(entry -> item.isSimilar(entry.itemStack))
+                // Usar itemComparator en lugar de isSimilar
+                .filter(entry -> itemComparator.areItemsSimilar(item, entry.shopItem.createItemStack()))
                 .findFirst()
-                .map(entry -> new SellableItemInfo(entry.shop, entry.shopItem, entry.itemStack))
+                .map(entry -> new SellableItemInfo(entry.shop, entry.shopItem, entry.shopItem.createItemStack()))
                 .orElse(null);
     }
+
 
     /**
      * Advanced parallel processing for custom item search
@@ -264,9 +256,10 @@ public class SellService {
 
         return customSellableItems.stream()
                 .parallel()
-                .filter(entry -> item.isSimilar(entry.itemStack))
+                // Usar itemComparator en lugar de isSimilar
+                .filter(entry -> itemComparator.areItemsSimilar(item, entry.shopItem.createItemStack()))
                 .findFirst()
-                .map(entry -> new SellableItemInfo(entry.shop, entry.shopItem, entry.itemStack))
+                .map(entry -> new SellableItemInfo(entry.shop, entry.shopItem, entry.shopItem.createItemStack()))
                 .orElse(null);
     }
 

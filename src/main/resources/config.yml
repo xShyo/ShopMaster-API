@@ -1,4 +1,9 @@
 config:
+  item-sell:
+    compare-meta: true         # <- Compare display name, lore and customModelData
+    compare-damage: false      # <- Compare item durability (damage)
+    compare-model: true        # <- Compare customModelData
+    compare-all: true          # <- Use isSimilar() to compare NBT and all other data
 
   economy:
     # Defines the default currency symbol for the main economy (VAULT)

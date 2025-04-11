@@ -6,7 +6,7 @@ tools:
 
   category:
     material: IRON_PICKAXE
-    slot: 10
+    slot: 4
     amount: 1
     model_data: 0
     display_name: '&cTools Category'
@@ -20,9 +20,11 @@ tools:
       - ''
       - '&e► Click to open the menu!'
 
-  buttons: []
+  buttons: [ ]
 
   items:
+    # Fila 1 (slots 0-8)
+    # Fila 2 (slots 9-17) - Comida y consumibles
     '1':
       item:
         material: COOKED_BEEF
@@ -77,26 +79,33 @@ tools:
       buyPrice: 550
       sellPrice: 275
 
-    '4':
+    '14':
       item:
-        material: WHITE_BANNER
+        material: ENCHANTED_GOLDEN_APPLE
         quantity: 1
-        name: '&fCustom Banner'
+        name: '&6Enchanted Golden Apple'
         lore:
-          - '&7A unique banner'
-        banner:
-          patterns:
-            '1':
-              pattern: GRADIENT
-              color: RED
-            '2':
-              pattern: STRIPE_MIDDLE
-              color: BLACK
-      slots: 13-14
+          - '&7The ultimate food'
+        flags:
+          - HIDE_ENCHANTS
+      slot: 13
       page: 1
       economy: VAULT
-      buyPrice: 850
-      sellPrice: 425
+      buyPrice: 5000
+      sellPrice: 2500
+
+    '15':
+      item:
+        material: CAKE
+        quantity: 1
+        name: '&fCake'
+        lore:
+          - '&7Perfect for celebrations!'
+      slot: 14
+      page: 1
+      economy: VAULT
+      buyPrice: 150
+      sellPrice: 75
 
     '5':
       item:
@@ -140,6 +149,100 @@ tools:
       buyPrice: 1500
       sellPrice: -1
 
+    # Fila 3 (slots 18-26) - Decorativos y especiales
+    '4':
+      item:
+        material: WHITE_BANNER
+        quantity: 1
+        name: '&fCustom Banner'
+        lore:
+          - '&7A unique banner'
+        banner:
+          patterns:
+            '1':
+              pattern: GRADIENT
+              color: RED
+            '2':
+              pattern: STRIPE_MIDDLE
+              color: BLACK
+      slot: 19
+      page: 1
+      economy: VAULT
+      buyPrice: 850
+      sellPrice: 425
+
+    '16':
+      item:
+        material: SPAWNER
+        mob: ZOMBIE
+        quantity: 1
+        name: '&aZombie Spawner'
+        lore:
+          - '&7Spawn zombies automatically!'
+      slot: 20
+      page: 1
+      economy: VAULT
+      buyPrice: 50000
+      sellPrice: 25000
+
+    '13':
+      item:
+        material: DRAGON_EGG
+        quantity: 1
+        name: '&5Dragon Egg'
+        lore:
+          - '&7An extremely rare item!'
+        enchantments:
+          PROTECTION_ENVIRONMENTAL: 10
+        flags:
+          - HIDE_ENCHANTS
+          - HIDE_ATTRIBUTES
+      slot: 22
+      page: 1
+      economy: VAULT
+      buyPrice: 50000
+      sellPrice: -1
+
+    '17':
+      item:
+        material: SHIELD
+        quantity: 1
+        name: "&eEscudo Personalizado"
+        lore:
+          - "&7Un escudo único con diseño"
+          - "&7¡Protégete con estilo!"
+        shield_pattern:
+          base_color: RED
+          patterns:
+            1:
+              pattern: CREEPER
+              color: BLACK
+            2:
+              pattern: BORDER
+              color: WHITE
+            3:
+              pattern: SKULL
+              color: YELLOW
+      slot: 24
+      page: 1
+      buyPrice: 1000
+      economy: VAULT
+
+    '18':
+      item:
+        material: GOAT_HORN
+        quantity: 1
+        name: "&eCuerno de Cabra Mágico"
+        lore:
+          - "&7Un cuerno ancestral"
+          - "&7¡Su sonido resuena en la distancia!"
+        musicInstrument: ponder_goat_horn
+      slot: 25
+      page: 1
+      buyPrice: 500
+      economy: VAULT
+
+    # Fila 4 (slots 27-35) - Armas y armaduras
     '7':
       item:
         material: TIPPED_ARROW
@@ -156,7 +259,7 @@ tools:
               type: WEAKNESS
               duration: 200
               amplifier: 0
-      slot: 20-21
+      slot: 28
       page: 1
       economy: VAULT
       buyPrice: 400
@@ -180,7 +283,7 @@ tools:
               type: INSTANT_DAMAGE
               extended: false
               upgraded: true
-      slot: 22
+      slot: 30
       page: 1
       economy: VAULT
       buyPrice: 1800
@@ -200,7 +303,7 @@ tools:
         flags:
           - HIDE_ATTRIBUTES
           - HIDE_ENCHANTS
-      slot: 23
+      slot: 31
       page: 1
       economy: VAULT
       buyPrice: 1200
@@ -221,7 +324,7 @@ tools:
           material: GOLD
         flags:
           - HIDE_ATTRIBUTES
-      slot: 24
+      slot: 32
       page: 1
       economy: VAULT
       buyPrice: 2500
@@ -230,7 +333,7 @@ tools:
     '12':
       item:
         material: brewery-wheatbeer
-      slot: 30
+      slot: 34
       page: 1
       economy: VAULT
       buyPrice: 10000
@@ -241,64 +344,7 @@ tools:
         - "[command] effect give {player} regeneration 60 1"
         - "[command] broadcast &e{player} has purchased a special reward!"
 
-    '13':
-      item:
-        material: DRAGON_EGG
-        quantity: 1
-        name: '&5Dragon Egg'
-        lore:
-          - '&7An extremely rare item!'
-        enchantments:
-          PROTECTION_ENVIRONMENTAL: 10
-        flags:
-          - HIDE_ENCHANTS
-          - HIDE_ATTRIBUTES
-      slot: 13
-      page: 2
-      economy: VAULT
-      buyPrice: 50000
-      sellPrice: -1
-
-    '14':
-      item:
-        material: ENCHANTED_GOLDEN_APPLE
-        quantity: 1
-        name: '&6Enchanted Golden Apple'
-        lore:
-          - '&7The ultimate food'
-        flags:
-          - HIDE_ENCHANTS
-      slots:
-        - '31'
-        - '32'
-        - '33'
-      page: 1
-      economy: VAULT
-      buyPrice: 5000
-      sellPrice: 2500
-
-    '15':
-      item:
-        material: CAKE
-        quantity: 1
-        name: '&fCake'
-        lore:
-          - '&7Perfect for celebrations!'
-      slots: 40-42
-      page: 1
-      economy: VAULT
-      buyPrice: 150
-      sellPrice: 75
-
-    '16':
-      item:
-        material: SPAWNER
-        mob: ZOMBIE
-        quantity: 1
-      slot: 29
-      page: 1
-      economy: VAULT
-      buyPrice: 150
-      sellPrice: 75
+  # Fila 5 (slots 36-44) - Página 2
+  # Fila 6 (slots 45-53) - Navegación y botones
 
 file-version: 1

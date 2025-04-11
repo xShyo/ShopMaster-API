@@ -2,10 +2,13 @@ package xshyo.us.shopMaster.shop.data;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.DyeColor;
 import org.bukkit.FireworkEffect;
+import org.bukkit.MusicInstrument;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Axolotl;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.MusicInstrumentMeta;
 import org.bukkit.inventory.meta.trim.ArmorTrim;
 import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.bukkit.inventory.meta.trim.TrimPattern;
@@ -52,6 +55,9 @@ public class ShopItem {
     private List<PotionEffect> arrowCustomEffects;
     private List<ItemStack> loadedProjectiles;
     private String spawnerMobType; // Para almacenar el tipo de entidad (como "ZOMBIE", "SKELETON", etc.)
+    private MusicInstrument musicInstrument; // Ejemplo: "minecraft:ponder"
+    private DyeColor shieldBaseColor;
+    private List<Pattern> shieldPatterns;
 
 
     // Nuevos campos según los comentarios
@@ -83,6 +89,8 @@ public class ShopItem {
         this.lore = new ArrayList<>();
         this.customEffects = new ArrayList<>();
         this.bannerPatterns = new ArrayList<>();
+        this.shieldPatterns = new ArrayList<>();
+
         this.fireworkEffects = new ArrayList<>();
         this.arrowCustomEffects = new ArrayList<>();
         this.loadedProjectiles = new ArrayList<>();
@@ -114,6 +122,8 @@ public class ShopItem {
         this.lore = new ArrayList<>();
         this.customEffects = new ArrayList<>();
         this.bannerPatterns = new ArrayList<>();
+        this.shieldPatterns = new ArrayList<>();
+
         this.fireworkEffects = new ArrayList<>();
         this.arrowCustomEffects = new ArrayList<>();
         this.loadedProjectiles = new ArrayList<>();
@@ -148,6 +158,8 @@ public class ShopItem {
         this.lore = new ArrayList<>();
         this.customEffects = new ArrayList<>();
         this.bannerPatterns = new ArrayList<>();
+        this.shieldPatterns = new ArrayList<>();
+
         this.fireworkEffects = new ArrayList<>();
         this.arrowCustomEffects = new ArrayList<>();
         this.loadedProjectiles = new ArrayList<>();
@@ -212,8 +224,10 @@ public class ShopItem {
         } else if (material.contains("_HELMET") || material.contains("_CHESTPLATE") ||
                 material.contains("_LEGGINGS") || material.contains("_BOOTS")) {
             applyArmorMetadata(builder);
-        }else if (material.equalsIgnoreCase("SPAWNER")) {
+        } else if (material.equalsIgnoreCase("SPAWNER")) {
             applySpawnerMetadata(builder);
+        } else if (material.equalsIgnoreCase("SHIELD")) {
+            applyShieldMetadata(builder);
         }
 
         // Aplicar datos NBT si están disponibles
@@ -237,7 +251,6 @@ public class ShopItem {
         // Aplicar color de armadura si está disponible y es armadura de cuero
         if (armorColor != null && !armorColor.isEmpty() && material.startsWith("LEATHER_")) {
             builder.setLeatherArmorColor(armorColor);
-
         }
 
         // Aplicar trim de armadura si está disponible (para versiones que lo soporten)
@@ -266,6 +279,10 @@ public class ShopItem {
         for (Pattern pattern : bannerPatterns) {
             builder.addBannerPattern(pattern);
         }
+    }
+
+    private void applyShieldMetadata(ItemBuilder builder) {
+        builder.setShieldPattern(shieldBaseColor, shieldPatterns);
     }
 
     /**
@@ -315,6 +332,15 @@ public class ShopItem {
             builder.setSpawnerType(spawnerMobType);
         }
     }
+
+
+    private void applyMusicInstrumentMetadata(ItemBuilder builder) {
+        if (musicInstrument != null) {
+            builder.setGoatHornData(musicInstrument);
+
+        }
+    }
+
 
     /**
      * Método estático para procesar una configuración de slots desde un string

@@ -42,6 +42,7 @@ public final class ShopMaster extends TheAPI {
     private ShopManager shopManager;
     private SellService sellService;
     private PurchaseService purchaseService;
+    private ItemComparator itemComparator;
 
     private final HashMap<CurrencyType, CurrencyManager> currencyMap;
     private Economy economy;
@@ -88,6 +89,9 @@ public final class ShopMaster extends TheAPI {
 
         this.shopManager = new ShopManager();
         this.shopManager.load();
+
+        this.itemComparator = new ItemComparator();
+
         this.purchaseService = new PurchaseService();
 
         this.sellService = new SellService(this, shopManager);
@@ -129,7 +133,7 @@ public final class ShopMaster extends TheAPI {
             throw new RuntimeException(e);
         }
         CurrencyFormatter.reload();
-
+        this.itemComparator.reload();
         shopManager.load();
         sellService.reload();
         reloadConfig();
