@@ -8,6 +8,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import xshyo.us.shopMaster.ShopMaster;
+import xshyo.us.shopMaster.enums.TypeService;
+import xshyo.us.shopMaster.shop.Shop;
 import xshyo.us.shopMaster.shop.data.ShopItem;
 import xshyo.us.shopMaster.utilities.menu.Controls;
 import xshyo.us.shopMaster.utilities.menu.controls.CustomControls;
@@ -17,14 +19,31 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.logging.Level;
 
 
 @UtilityClass
 public class PluginUtils {
+
+    public void sellLog(String player, TypeService typeService, int amount, String item, String money, String ShopName) {
+        boolean enabled = ShopMaster.getInstance().getConf().getBoolean("config.command.sell.messages.log.enabled", true);
+        if (enabled) {
+            String message = ShopMaster.getInstance().getConf().getString("config.command.sell.messages.log.message");
+            message = message.replace("{player}", player);
+            message = message.replace("{action}", typeService.toString());
+            message = message.replace("{amount}", "" + amount);
+            message = message.replace("{item}", item);
+            message = message.replace("{money}", money);
+            message = message.replace("{shopName}", ShopName);
+            ShopMaster.getInstance().getLogger().log(Level.INFO, message);
+        }
+    }
+
     public boolean hasPermissionToCategory(CommandSender sender, String category) {
         String permission = "shopmaster.category." + category.toLowerCase(); // Asegúrate de que `shop.getId()` te dé un ID único
         return sender.hasPermission(permission);
     }
+
     public boolean hasPermissionToCategory(Player player, String category) {
         String permission = "shopmaster.category." + category.toLowerCase(); // Asegúrate de que `shop.getId()` te dé un ID único
         return player.hasPermission(permission);
@@ -197,7 +216,6 @@ public class PluginUtils {
     }
 
 
-
     public <T extends Controls> Map<Integer, T> loadSingleButton(
             String path,
             YamlDocument plugin,
@@ -325,7 +343,7 @@ public class PluginUtils {
 
         // Handle different formats
         if (slotsValue instanceof String) {
-            processSlotString((String) slotsValue, buttonsLoad, itemPath, guiRows,yamlDocument);
+            processSlotString((String) slotsValue, buttonsLoad, itemPath, guiRows, yamlDocument);
         } else if (slotsValue instanceof List) {
             List<?> slotsList = (List<?>) slotsValue;
             for (Object slot : slotsList) {
@@ -372,9 +390,6 @@ public class PluginUtils {
         }
         buttonsLoad.put(slot, new CustomControls(itemPath));
     }
-
-
-
 
 
 }

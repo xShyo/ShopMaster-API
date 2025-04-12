@@ -8,7 +8,6 @@ import org.bukkit.MusicInstrument;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Axolotl;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.MusicInstrumentMeta;
 import org.bukkit.inventory.meta.trim.ArmorTrim;
 import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.bukkit.inventory.meta.trim.TrimPattern;
@@ -30,6 +29,7 @@ import java.util.Set;
 @Setter
 public class ShopItem {
 
+    private String shopName;
     private String material;
     private final int amount;
     private final int modelData;
@@ -73,7 +73,9 @@ public class ShopItem {
     /**
      * Constructor para un único slot
      */
-    public ShopItem(String material, int amount, int slot, int page, String economy, int buyPrice, int sellPrice) {
+    public ShopItem(String shopName, String material, int amount, int slot, int page, String economy, int buyPrice, int sellPrice) {
+        this.shopName = shopName;
+
         this.material = material;
         this.amount = amount;
         this.modelData = 0;
@@ -107,7 +109,8 @@ public class ShopItem {
     /**
      * Constructor para múltiples slots específicos
      */
-    public ShopItem(String material, int amount, List<Integer> slots, int page, String economy, int buyPrice, int sellPrice) {
+    public ShopItem(String shopName, String material, int amount, List<Integer> slots, int page, String economy, int buyPrice, int sellPrice) {
+        this.shopName = shopName;
         this.material = material;
         this.amount = amount;
         this.modelData = 0;
@@ -140,7 +143,8 @@ public class ShopItem {
     /**
      * Constructor para un rango de slots
      */
-    public ShopItem(String material, int amount, int startSlot, int endSlot, int page, String economy, int buyPrice, int sellPrice) {
+    public ShopItem(String shopName, String material, int amount, int startSlot, int endSlot, int page, String economy, int buyPrice, int sellPrice) {
+        this.shopName = shopName;
         this.material = material;
         this.amount = amount;
         this.modelData = 0;

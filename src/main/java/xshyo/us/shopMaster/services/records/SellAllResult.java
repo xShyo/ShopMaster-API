@@ -8,6 +8,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import xshyo.us.shopMaster.ShopMaster;
 import xshyo.us.shopMaster.enums.SellStatus;
+import xshyo.us.shopMaster.enums.TypeService;
+import xshyo.us.shopMaster.shop.data.ShopItem;
 import xshyo.us.shopMaster.utilities.CurrencyFormatter;
 import xshyo.us.shopMaster.utilities.PluginUtils;
 import xshyo.us.theAPI.utilities.Utils;
@@ -27,6 +29,7 @@ public record SellAllResult(
         Map<String, Map<Material, Integer>> itemsByCurrency,
         Map<Material, Double> earningsByMaterial,
         List<ItemStack> skippedItems,
+        Map<Material, ShopItem> soldShopItems,
         int totalItemsSold) {
 
 
@@ -110,6 +113,7 @@ public record SellAllResult(
 
                         // Obtener la moneda para este ítem
                         String currency = itemCurrencyMap.getOrDefault(material, "");
+                        ShopItem shopItem = soldShopItems.getOrDefault(material, null);
 
                         // Obtener las ganancias reales por este material
                         double itemEarnings = earningsByMaterial.getOrDefault(material, 0.0);
@@ -120,10 +124,13 @@ public record SellAllResult(
                         // Formatear la línea del ítem usando el formato personalizado
                         String itemLine = formatItems
                                 .replace("{amount}", String.valueOf(amount))
-                                .replace("{item}", formatMaterialName(material))
+                                .replace("{item}", PluginUtils.formatItemName(material))
                                 .replace("{earnings}", CurrencyFormatter.formatCurrency(itemEarnings, currency))
                                 .replace("{currency}", currency)
                                 .replace("{percent}", String.format("%.1f", itemPercentage));
+
+                        PluginUtils.sellLog(player.getName(), TypeService.SELL, amount, PluginUtils.formatItemName(material),
+                                CurrencyFormatter.formatCurrency(itemEarnings, currency), shopItem.getShopName());
 
                         hoverText.append(itemLine);
                     }
@@ -170,22 +177,5 @@ public record SellAllResult(
         return result;
     }
 
-    /**
-     * Formatea el nombre del material para mostrar
-     */
-    private String formatMaterialName(Material material) {
-        // Convierte GOLD_INGOT a Gold Ingot
-        String name = material.toString();
-        String[] words = name.toLowerCase().split("_");
-        StringBuilder result = new StringBuilder();
 
-        for (String word : words) {
-            if (result.length() > 0) {
-                result.append(" ");
-            }
-            result.append(word.substring(0, 1).toUpperCase()).append(word.substring(1));
-        }
-
-        return result.toString();
-    }
 }

@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import xshyo.us.shopMaster.ShopMaster;
+import xshyo.us.shopMaster.api.ShopMasterAPI;
 import xshyo.us.shopMaster.enums.TypeService;
 import xshyo.us.shopMaster.services.SellService;
 import xshyo.us.shopMaster.services.records.PurchaseResult;
@@ -93,8 +94,9 @@ public class ConfirmControls extends Controls {
                 case SUCCESS:
                     PluginUtils.sendMessage(player, "MESSAGES.GUI.SELL.SUCCESS", amount, PluginUtils.formatItemName(shopItem.createItemStack().getType()), result.price());
                     if (!shopItem.getSellCommands().isEmpty()) {
-                      PluginUtils.executeActions(shopItem.getSellCommands(), player, shopItem, amount);
+                        PluginUtils.executeActions(shopItem.getSellCommands(), player, shopItem, amount);
                     }
+                    PluginUtils.sellLog(player.getName(), typeService, amount, PluginUtils.formatItemName(shopItem.createItemStack().getType()), "" + result.price(), shopItem.getShopName());
                     break;
                 case WORLD_BLACKLISTED:
                     PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.WORLD_BLACKLISTED");
@@ -119,7 +121,6 @@ public class ConfirmControls extends Controls {
 
 
     }
-
 
 
 }

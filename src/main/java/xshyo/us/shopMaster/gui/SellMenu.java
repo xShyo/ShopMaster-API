@@ -14,6 +14,7 @@ import xshyo.us.shopMaster.enums.SellStatus;
 import xshyo.us.shopMaster.services.SellService;
 import xshyo.us.shopMaster.services.records.SellAllResult;
 import xshyo.us.shopMaster.services.records.SellResult;
+import xshyo.us.shopMaster.shop.data.ShopItem;
 import xshyo.us.shopMaster.utilities.PluginUtils;
 import xshyo.us.shopMaster.utilities.menu.Controls;
 import xshyo.us.theAPI.utilities.Utils;
@@ -23,7 +24,7 @@ import java.util.*;
 public class SellMenu {
 
     private final SellService sellService;
-    private final Gui gui;
+    private final StorageGui gui;
     private static final String MENU_PATH = "inventories.sell-gui";
     private final ShopMaster plugin = ShopMaster.getInstance();
     private final Player viewer;
@@ -34,11 +35,11 @@ public class SellMenu {
         this.gui = initializeGui();
     }
 
-    private Gui initializeGui() {
+    private StorageGui initializeGui() {
         String title = Utils.translate(plugin.getLayouts().getString(MENU_PATH + ".title"));
         int configSize = plugin.getLayouts().getInt(MENU_PATH + ".size");
         int rows = (configSize % 9 == 0 && configSize >= 9 && configSize <= 54) ? configSize / 9 : 6;
-        return Gui.gui().title(Component.text(Utils.translate(Utils.setPAPI(viewer, PluginUtils.formatTitle(title))))).rows(rows).create();
+        return Gui.storage().title(Component.text(Utils.translate(Utils.setPAPI(viewer, PluginUtils.formatTitle(title))))).rows(rows).create();
     }
 
 
@@ -48,6 +49,8 @@ public class SellMenu {
 
             // Process all items in the first 5 rows (excluding control row)
             Map<Material, Integer> itemCounts = new HashMap<>();
+            Map<Material, ShopItem> itemShops = new HashMap<>();
+
             Map<String, Map<Material, Integer>> itemsByCurrency = new HashMap<>();
             Map<String, Double> earningsByCurrency = new HashMap<>();
             double totalPrice = 0.0;
@@ -61,7 +64,7 @@ public class SellMenu {
                     ItemStack item = gui.getInventory().getItem(slot);
 
                     if (item != null && item.getType() != Material.AIR) {
-                        // Sell the item
+
                         SellResult result = sellService.sellGuiItem(player, item, item.getAmount());
 
                         if (result.status() == SellStatus.SUCCESS) {
@@ -73,7 +76,7 @@ public class SellMenu {
 
                             // Update summary information
                             itemCounts.put(type, itemCounts.getOrDefault(type, 0) + amount);
-
+                            itemShops.put(type, result.shopItem());
                             // Update data by currency
                             itemsByCurrency.computeIfAbsent(currency, k -> new HashMap<>())
                                     .merge(type, amount, Integer::sum);
@@ -103,6 +106,7 @@ public class SellMenu {
                         itemsByCurrency,
                         earningsByMaterial,// Add this parameter
                         skippedItems,
+                        itemShops,
                         totalItems
                 );
 

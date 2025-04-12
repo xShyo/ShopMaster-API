@@ -90,11 +90,11 @@ public class Shop {
 
                 if (config.contains(path + ".slot") && config.isInt(path + ".slot")) {
                     int slot = config.getInt(path + ".slot");
-                    item = new ShopItem(material, quantity, Collections.singletonList(slot), page, economy, buyPrice, sellPrice);
+                    item = new ShopItem(name, material, quantity, Collections.singletonList(slot), page, economy, buyPrice, sellPrice);
                 } else if (config.contains(path + ".slot") && config.isString(path + ".slot")) {
                     String slotConfig = config.getString(path + ".slot");
                     List<Integer> slots = ShopItem.parseSlots(slotConfig);
-                    item = new ShopItem(material, quantity, slots, page, economy, buyPrice, sellPrice);
+                    item = new ShopItem(name, material, quantity, slots, page, economy, buyPrice, sellPrice);
                 } else {
                     List<Integer> slots = new ArrayList<>();
 
@@ -110,7 +110,7 @@ public class Shop {
                         slots.addAll(ShopItem.parseSlots(slotsConfig));
                     }
 
-                    item = new ShopItem(material, quantity, slots, page, economy, buyPrice, sellPrice);
+                    item = new ShopItem(name, material, quantity, slots, page, economy, buyPrice, sellPrice);
                 }
 
                 if (config.contains(path + ".item.name")) {

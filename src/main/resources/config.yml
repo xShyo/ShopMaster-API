@@ -59,7 +59,7 @@ config:
       need-permissions: true             # Is a specific permission required to use this command?
       permission: shopmaster.open        # Permission required if need-permissions is true
       # Command settings
-      name: shop                         # Command name
+      name: sshop                         # Command name
       aliases: []                        # Alternate commands (empty list = no aliases)
 
       # Restrictions for the shop command
@@ -81,7 +81,7 @@ config:
       need-permissions: true             # Is permission required to use this command?
       permission: shopmaster.sell        # Permission required if need-permissions is true
       # Command settings
-      name: sell                         # Command name
+      name: ssell                         # Command name
       aliases: []                        # Alternate commands (empty list = no aliases)
 
       messages:
@@ -89,7 +89,7 @@ config:
         log:
           enabled: true
           # Variables: {player}, {action} (bought/sold), {amount}, {item}, {money}, {shopName}
-          message: "[ShopMaster] {player} {action} {amount} x {item} for ${money} from {shopName} shop"
+          message: "{player} {action} {amount} x {item} for {money} from {shopName} shop"
 
         # Message for simple sell (/sell hand)
         # Variables: {amount}, {item}, {earnings}

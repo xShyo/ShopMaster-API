@@ -15,6 +15,7 @@ import xshyo.us.shopMaster.services.records.SellResult;
 import xshyo.us.shopMaster.shop.Shop;
 import xshyo.us.shopMaster.shop.data.ShopItem;
 import xshyo.us.shopMaster.managers.CurrencyManager;
+import xshyo.us.shopMaster.utilities.PluginUtils;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -266,16 +267,20 @@ public class SellService {
     // En SellService, añade un nuevo método
     public SellResult sellGuiItem(Player player, ItemStack item, int amount) {
         if (isWorldBlacklisted(player.getWorld().getName())) {
-            return new SellResult(SellStatus.WORLD_BLACKLISTED, 0, "");
+            return new SellResult(SellStatus.WORLD_BLACKLISTED, 0, "", null);
         }
 
         if (isGameModeBlacklisted(player.getGameMode().toString())) {
-            return new SellResult(SellStatus.GAMEMODE_BLACKLISTED, 0, "");
+            return new SellResult(SellStatus.GAMEMODE_BLACKLISTED, 0, "", null);
         }
 
         SellableItemInfo info = getSellableShopItem(player, item);
         if (info == null || info.shopItem().getSellPrice() <= 0) {
-            return new SellResult(SellStatus.NOT_SELLABLE, 0, "");
+            return new SellResult(SellStatus.NOT_SELLABLE, 0, "", null);
+        }
+
+        if (!PluginUtils.hasPermissionToCategory(player, info.shop().getName())) {
+            return new SellResult(SellStatus.NO_PERMISSION, 0, "", null);
         }
 
         // No necesitamos verificar el inventario ni remover ítems, ya que los ítems están en la GUI
@@ -292,17 +297,17 @@ public class SellService {
         // Verificaciones de economía
         CurrencyManager currencyManager = getCurrencyManager(info);
         if (currencyManager == null) {
-            return new SellResult(SellStatus.INVALID_ECONOMY, 0, "");
+            return new SellResult(SellStatus.INVALID_ECONOMY, 0, "", null);
         }
         String currency = info.shopItem().getEconomy();
 
         // Dar dinero
         boolean success = currencyManager.add(player, totalPrice);
         if (!success) {
-            return new SellResult(SellStatus.ERROR, 0, "");
+            return new SellResult(SellStatus.ERROR, 0, "", null);
         }
 
-        return new SellResult(SellStatus.SUCCESS, totalPrice, currency);
+        return new SellResult(SellStatus.SUCCESS, totalPrice, currency, info.shopItem);
     }
 
 
@@ -312,16 +317,20 @@ public class SellService {
     public SellResult sellItem(Player player, ItemStack item, int amount, boolean searchEntireInventory) {
 
         if (isWorldBlacklisted(player.getWorld().getName())) {
-            return new SellResult(SellStatus.WORLD_BLACKLISTED, 0, "");
+            return new SellResult(SellStatus.WORLD_BLACKLISTED, 0, "", null);
         }
 
         if (isGameModeBlacklisted(player.getGameMode().toString())) {
-            return new SellResult(SellStatus.GAMEMODE_BLACKLISTED, 0, "");
+            return new SellResult(SellStatus.GAMEMODE_BLACKLISTED, 0, "", null);
         }
 
         SellableItemInfo info = getSellableShopItem(player, item);
         if (info == null || info.shopItem().getSellPrice() <= 0) {  // Verifica que el precio sea mayor que 0
-            return new SellResult(SellStatus.NOT_SELLABLE, 0, "");
+            return new SellResult(SellStatus.NOT_SELLABLE, 0, "", null);
+        }
+
+        if (!PluginUtils.hasPermissionToCategory(player, info.shop().getName())) {
+            return new SellResult(SellStatus.NO_PERMISSION, 0, "", null);
         }
 
         PlayerInventory inventory = player.getInventory();
@@ -333,7 +342,7 @@ public class SellService {
                 : handItem != null && handItem.isSimilar(item) ? handItem.getAmount() : 0;
 
         if (availableAmount == 0) {
-            return new SellResult(SellStatus.INSUFFICIENT_ITEMS, 0, "");
+            return new SellResult(SellStatus.INSUFFICIENT_ITEMS, 0, "", null);
         }
 
         // Limitar la cantidad a vender según lo solicitado
@@ -352,7 +361,7 @@ public class SellService {
         // Verificaciones de economía
         CurrencyManager currencyManager = getCurrencyManager(info);
         if (currencyManager == null) {
-            return new SellResult(SellStatus.INVALID_ECONOMY, 0, "");
+            return new SellResult(SellStatus.INVALID_ECONOMY, 0, "", null);
         }
 
         // Remover ítems del inventario
@@ -361,10 +370,10 @@ public class SellService {
         // Dar dinero
         boolean success = currencyManager.add(player, totalPrice);
         if (!success) {
-            return new SellResult(SellStatus.ERROR, 0, "");
+            return new SellResult(SellStatus.ERROR, 0, "", null);
         }
 
-        return new SellResult(SellStatus.SUCCESS, totalPrice, currency);
+        return new SellResult(SellStatus.SUCCESS, totalPrice, currency, info.shopItem);
     }
 
 
@@ -418,6 +427,7 @@ public class SellService {
             return createFailedSellResult(SellStatus.GAMEMODE_BLACKLISTED);
         }
 
+
         SellAllProcessor processor = new SellAllProcessor(player);
         return processor.processInventory();
     }
@@ -450,6 +460,7 @@ public class SellService {
         private final Map<String, Double> earningsByCurrency = new HashMap<>();
         private final List<ItemStack> skippedItems = new ArrayList<>();
         private final Map<Material, Double> earningsByMaterial = new HashMap<>();
+        private final Map<Material, ShopItem> soldShopItems = new HashMap<>();
 
         private double totalEarnings = 0.0;
         private int totalItemsSold = 0;
@@ -488,16 +499,18 @@ public class SellService {
             SellableItemInfo info = getSellableShopItem(player, item);
             if (info == null) return;
 
+
+            if (!PluginUtils.hasPermissionToCategory(player, info.shop().getName())) {
+                return;
+            }
+
+
             CurrencyManager currencyManager = getCurrencyManager(info);
             if (currencyManager == null) {
                 skippedItems.add(item);
                 return;
             }
 
-            processSellableItem(info, item, slot);
-        }
-
-        private void processSellableItem(SellableItemInfo info, ItemStack item, int slot) {
             String currency = info.shopItem().getEconomy();
             int amount = item.getAmount();
 
@@ -511,17 +524,19 @@ public class SellService {
             double itemTotal = unitPrice * amount;
 
             // Actualizar el seguimiento de ventas
-            updateSalesTracking(currency, info.itemStack().getType(), amount, itemTotal);
+            updateSalesTracking(currency, info.itemStack().getType(), info.shopItem, amount, itemTotal);
 
             // Eliminar el ítem del inventario
             inventory.setItem(slot, null);
+
         }
 
 
-        private void updateSalesTracking(String currency, Material material, int amount, double itemTotal) {
+
+        private void updateSalesTracking(String currency, Material material, ShopItem shopItem, int amount, double itemTotal) {
             itemsByCurrency.computeIfAbsent(currency, k -> new HashMap<>())
                     .merge(material, amount, Integer::sum);
-
+            soldShopItems.merge(material, shopItem, (existing, newItem) -> newItem);
             soldItems.merge(material, amount, Integer::sum);
             earningsByMaterial.merge(material, itemTotal, Double::sum); // Añadir esto
             totalItemsSold += amount;
@@ -547,6 +562,7 @@ public class SellService {
                     itemsByCurrency,
                     earningsByMaterial, // Añadir esto
                     skippedItems,
+                    soldShopItems,
                     totalItemsSold
             );
         }
@@ -575,6 +591,7 @@ public class SellService {
                 Collections.emptyMap(),
                 Collections.emptyMap(), // Añadir esto
                 Collections.emptyList(),
+                Collections.emptyMap(),
                 0
         );
     }

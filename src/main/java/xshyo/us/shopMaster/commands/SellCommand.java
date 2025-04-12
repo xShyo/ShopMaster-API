@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import xshyo.us.shopMaster.ShopMaster;
 import dev.dejvokep.boostedyaml.YamlDocument;
+import xshyo.us.shopMaster.enums.TypeService;
 import xshyo.us.shopMaster.gui.SellMenu;
 import xshyo.us.shopMaster.services.SellService;
 import xshyo.us.shopMaster.services.records.SellAllResult;
@@ -148,6 +149,8 @@ public class SellCommand extends AbstractCommand {
                 message = Utils.translate(message);
                 player.sendMessage(message);
                 player.getInventory().setItemInMainHand(null);
+                PluginUtils.sellLog(player.getName(), TypeService.SELL, itemInHand.getAmount(), PluginUtils.formatItemName(itemInHand.getType()), "" + result.price(), result.shopItem().getShopName());
+
                 break;
             case WORLD_BLACKLISTED:
                 PluginUtils.sendMessage(player, "MESSAGES.COMMANDS.SHOP.WORLD_BLACKLISTED");
