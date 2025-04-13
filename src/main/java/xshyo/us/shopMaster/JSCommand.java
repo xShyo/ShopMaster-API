@@ -1,6 +1,5 @@
 package xshyo.us.shopMaster;
 
-import dev.dejvokep.boostedyaml.YamlDocument;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -22,10 +21,26 @@ public class JSCommand extends AbstractCommand {
 
     public JSCommand() {
         // Use the command name from config
-        super(ShopMaster.getInstance().getConfig().getString("config.command.admin.name"));
+        super(getBaseCommand(), getUsage(), "Administrator command", getAliases());
         addDefaultArguments();
 
     }
+
+    private static String getBaseCommand() {
+        return ShopMaster.getInstance().getConf().getString("config.command.admin.name", "adminshop");
+    }
+    private static String getUsage() {
+        String baseCommand = getBaseCommand();
+        return "/" + baseCommand + " [reload]";
+    }
+    private static List<String> getAliases() {
+        List<String> aliases = ShopMaster.getInstance().getConf().getStringList("config.command.admin.aliases");
+        if (aliases == null) {
+            aliases = Arrays.asList("jashop");
+        }
+        return aliases;
+    }
+
 
     @Override
     public boolean onCommand(CommandSender s, Command cmd, String label, String[] args) {

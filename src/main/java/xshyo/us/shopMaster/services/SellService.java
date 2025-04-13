@@ -100,6 +100,29 @@ public class SellService {
     public record SellableItemInfo(Shop shop, ShopItem shopItem, ItemStack itemStack) {
     }
 
+    public boolean isSellable( ItemStack item) {
+        if (item == null || item.getType() == Material.AIR) {
+            return false;
+        }
+
+        CacheKey key = new CacheKey(item);
+        if (resultCache.containsKey(key)) {
+            SellableItemInfo info = resultCache.get(key);
+            return info != null && info.shopItem().getSellPrice() > 0;
+        }
+
+        SellableItemInfo standardInfo = findStandardItem(item);
+        if (standardInfo != null) {
+            if (standardInfo.shopItem().getSellPrice() > 0) {
+                return true;
+            }
+        }
+
+        SellableItemInfo customInfo = findCustomItem(item);
+        return customInfo != null && customInfo.shopItem().getSellPrice() > 0;
+
+    }
+
 
     /**
      * Verifica rápidamente si un ItemStack es vendible
@@ -128,7 +151,7 @@ public class SellService {
 
 
         // Verificar en ítems estándar primero (más rápido)
-        SellableItemInfo standardInfo = findStandardItem(player, item);
+        SellableItemInfo standardInfo = findStandardItem(item);
         if (standardInfo != null) {
             if (standardInfo.shopItem().getSellPrice() > 0) {
                 return true;
@@ -137,12 +160,14 @@ public class SellService {
 
 
         // Si no, verificar en ítems personalizados
-        SellableItemInfo customInfo = findCustomItem(player, item);
+        SellableItemInfo customInfo = findCustomItem(item);
         return customInfo != null && customInfo.shopItem().getSellPrice() > 0;
 
     }
 
-    private SellableItemInfo findStandardItem(Player player, ItemStack item) {
+
+
+    private SellableItemInfo findStandardItem(ItemStack item) {
         Material material = item.getType();
 
         if (!sellableItems.containsKey(material)) {
@@ -217,7 +242,7 @@ public class SellService {
     /**
      * Busca en items personalizados usando un algoritmo de partición
      */
-    private SellableItemInfo findCustomItem(Player player, ItemStack item) {
+    private SellableItemInfo findCustomItem(ItemStack item) {
         if (customSellableItems.isEmpty()) {
             return null;
         }
@@ -242,6 +267,15 @@ public class SellService {
     }
 
 
+    public SellableItemInfo getSellableShopItem(ItemStack item) {
+        if (item == null || item.getType() == Material.AIR) return null;
+
+        CacheKey key = new CacheKey(item);
+        return resultCache.computeIfAbsent(key, k -> {
+            SellableItemInfo standardInfo = findStandardItem( item);
+            return standardInfo != null ? standardInfo : findCustomItem(item);
+        });
+    }
 
     /**
      * Enhanced sellable item search with improved caching and performance
@@ -258,8 +292,8 @@ public class SellService {
         // Cache lookup
         CacheKey key = new CacheKey(item);
         return resultCache.computeIfAbsent(key, k -> {
-            SellableItemInfo standardInfo = findStandardItem(player, item);
-            return standardInfo != null ? standardInfo : findCustomItem(player, item);
+            SellableItemInfo standardInfo = findStandardItem( item);
+            return standardInfo != null ? standardInfo : findCustomItem( item);
         });
     }
 

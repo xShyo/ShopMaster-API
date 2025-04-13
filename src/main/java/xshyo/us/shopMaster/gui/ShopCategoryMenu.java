@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import xshyo.us.shopMaster.ShopMaster;
+import xshyo.us.shopMaster.enums.TypeService;
 import xshyo.us.shopMaster.services.records.PurchaseResult;
 import xshyo.us.shopMaster.shop.Shop;
 import xshyo.us.shopMaster.shop.data.ShopButton;
@@ -181,6 +182,8 @@ public class ShopCategoryMenu {
                                     if (!shopItem.getBuyCommands().isEmpty()) {
                                         PluginUtils.executeActions(shopItem.getBuyCommands(), viewer, shopItem, shopItem.getAmount());
                                     }
+                                    PluginUtils.sellLog(viewer.getName(), TypeService.BUY, shopItem.getAmount(),
+                                            PluginUtils.formatItemName(shopItem.createItemStack().getType()), "" + shopItem.getBuyPrice(), shopItem.getShopName());
                                 }
                             }
                         } else if (clickType.equals(sellButton)) {

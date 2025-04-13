@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import xshyo.us.shopMaster.ShopMaster;
+import xshyo.us.shopMaster.enums.TypeService;
 import xshyo.us.shopMaster.services.records.PurchaseResult;
 import xshyo.us.shopMaster.shop.data.ShopItem;
 import xshyo.us.shopMaster.shop.Shop;
@@ -152,6 +153,9 @@ public class StackSelectorMenu {
                     if (!item.getBuyCommands().isEmpty()) {
                         PluginUtils.executeActions(item.getBuyCommands(), viewer, item, finalTotalItems);
                     }
+                    PluginUtils.sellLog(viewer.getName(), TypeService.BUY, finalTotalItems,
+                            PluginUtils.formatItemName(item.createItemStack().getType()), "" + item.getBuyPrice(), item.getShopName());
+
                 }
             }));
 

@@ -84,6 +84,10 @@ public class ConfirmControls extends Controls {
                 if (!shopItem.getBuyCommands().isEmpty()) {
                     PluginUtils.executeActions(shopItem.getBuyCommands(), player, shopItem, amount);
                 }
+
+                PluginUtils.sellLog(player.getName(), TypeService.BUY, amount,
+                        PluginUtils.formatItemName(shopItem.createItemStack().getType()), "" + shopItem.getBuyPrice(), shopItem.getShopName());
+
             }
 
         } else {

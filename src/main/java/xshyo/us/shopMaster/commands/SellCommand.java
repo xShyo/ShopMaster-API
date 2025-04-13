@@ -16,16 +16,39 @@ import xshyo.us.shopMaster.superclass.AbstractCommand;
 import xshyo.us.shopMaster.utilities.PluginUtils;
 import xshyo.us.theAPI.utilities.Utils;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class SellCommand extends AbstractCommand {
 
     private final ShopMaster plugin;
     private final SellService sellService;
 
     public SellCommand(ShopMaster plugin, SellService sellService) {
-        super("sell", "/sell [all/hand/gui]", "Vende automaticamente");
+        super(getBaseCommand(),  getUsage(), "Sells automatically",  getAliases());
         this.plugin = plugin;
         this.sellService = sellService;
     }
+
+
+    private static String getBaseCommand() {
+        return ShopMaster.getInstance().getConf().getString("config.command.sell.name", "sell");
+    }
+
+    private static String getUsage() {
+        String baseCommand = getBaseCommand();
+        return "/" + baseCommand + " [all/hand/gui]";
+    }
+
+    private static List<String> getAliases() {
+        List<String> aliases = ShopMaster.getInstance().getConf().getStringList("config.command.sell.aliases");
+        if (aliases == null) {
+            aliases = Arrays.asList("selling", "ssell");
+        }
+        return aliases;
+    }
+
+
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {

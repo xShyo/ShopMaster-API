@@ -14,13 +14,33 @@ import xshyo.us.shopMaster.superclass.AbstractCommand;
 import xshyo.us.shopMaster.utilities.PluginUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ShopCommand extends AbstractCommand {
 
     public ShopCommand() {
-        super("shop", "/shop [shopName/player] [page/shopName] [player/page]", "Abre el menú de la tienda");
+        super(getBaseCommand(), getUsage(), "Open the store menu", getAliases());
     }
+
+    private static String getBaseCommand() {
+        return ShopMaster.getInstance().getConf().getString("config.command.shop.name", "shop");
+    }
+
+    private static String getUsage() {
+        String baseCommand = getBaseCommand();
+        return "/" + baseCommand + " [shopName/player] [page/shopName] [player/page]";
+    }
+
+    private static List<String> getAliases() {
+        List<String> aliases = ShopMaster.getInstance().getConf().getStringList("config.command.shop.aliases");
+        if (aliases == null) {
+            aliases = Arrays.asList("store", "market");
+        }
+        return aliases;
+    }
+
+
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -227,12 +247,12 @@ public class ShopCommand extends AbstractCommand {
         if (args.length == 1) {
             // Sugerencias para primer argumento: nombres de tiendas o jugadores
             String partialName = args[0].toLowerCase();
-            boolean hasAllShopsPermission = PluginUtils.hasPermissionToCategory((Player) sender, ".all");
+            boolean hasAllShopsPermission = PluginUtils.hasPermissionToCategory(sender, ".all");
 
             // Añadir nombres de tiendas
             for (String shopName : ShopMaster.getInstance().getShopManager().getShopMap().keySet()) {
                 if (!needPermissions ||
-                        hasAllShopsPermission || PluginUtils.hasPermissionToCategory((Player) sender, shopName.toLowerCase())) {
+                        hasAllShopsPermission || PluginUtils.hasPermissionToCategory(sender, shopName.toLowerCase())) {
                     if (shopName.toLowerCase().startsWith(partialName)) {
                         completions.add(shopName);
                     }
