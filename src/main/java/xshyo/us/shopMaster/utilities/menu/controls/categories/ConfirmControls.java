@@ -86,7 +86,7 @@ public class ConfirmControls extends Controls {
                 }
 
                 PluginUtils.sellLog(player.getName(), TypeService.BUY, amount,
-                        PluginUtils.formatItemName(shopItem.createItemStack().getType()), "" + shopItem.getBuyPrice(), shopItem.getShopName());
+                        PluginUtils.formatItemName(shopItem.createItemStack().getType()), "" + result.price(), shopItem.getShopName());
 
             }
 
@@ -100,6 +100,7 @@ public class ConfirmControls extends Controls {
                     if (!shopItem.getSellCommands().isEmpty()) {
                         PluginUtils.executeActions(shopItem.getSellCommands(), player, shopItem, amount);
                     }
+                    PluginUtils.sendSellAll(player, amount,  result.price());
                     PluginUtils.sellLog(player.getName(), typeService, amount, PluginUtils.formatItemName(shopItem.createItemStack().getType()), "" + result.price(), shopItem.getShopName());
                     break;
                 case WORLD_BLACKLISTED:

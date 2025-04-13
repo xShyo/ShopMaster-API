@@ -82,8 +82,8 @@ public class Shop {
                 int page = config.getInt(path + ".page", 1);
                 String economy = config.getString(path + ".economy", "VAULT");
 
-                int buyPrice = config.getInt(path + ".buyPrice", -1);
-                int sellPrice = config.getInt(path + ".sellPrice", -1);
+                double buyPrice = config.getDouble(path + ".buyPrice", -1.0);
+                double sellPrice = config.getDouble(path + ".sellPrice", -1.0);
 
                 // Procesar configuración de slots
                 ShopItem item;

@@ -33,8 +33,8 @@ public class DisplayControls extends Controls {
         List<String> lore = (meta != null && meta.getLore() != null) ? meta.getLore() : new ArrayList<>();
 
         // Obtener los precios de compra y venta
-        int buyPrice = shopItem.getBuyPrice();
-        int sellPrice = shopItem.getSellPrice();
+        double buyPrice = shopItem.getBuyPrice();
+        double sellPrice = shopItem.getSellPrice();
 
         // Verificar si se puede comprar o vender y cargar el lore correspondiente
         List<String> additionalLore = new ArrayList<>();

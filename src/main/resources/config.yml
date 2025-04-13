@@ -91,6 +91,18 @@ config:
           # Variables: {player}, {action} (bought/sold), {amount}, {item}, {money}, {shopName}
           message: "{player} {action} {amount} x {item} for {money} from {shopName} shop"
 
+        title:
+          enabled: true
+          fade-in: 10          # Ticks (1 tick = 1/20 segundos)
+          stay: 40
+          fade-out: 10
+          title: "&a+${earnings}"
+          subtitle: "&7You sold &e{amount} &7items"
+
+        actionbar:
+          enabled: true
+          message: "&aYou earned &e${earnings} &afrom selling &e{amount} &aitems"
+
         # Message for simple sell (/sell hand)
         # Variables: {amount}, {item}, {earnings}
         simple: "&aYou sold &e{amount} x {item} &afor a total of &e${earnings}"

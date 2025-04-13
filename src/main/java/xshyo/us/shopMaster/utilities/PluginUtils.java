@@ -25,6 +25,49 @@ import java.util.logging.Level;
 @UtilityClass
 public class PluginUtils {
 
+    public String replacePlaceholders(String message, Player player, int amount, double earnings) {
+        if (message == null) return "";
+
+        return Utils.translate(message)
+                .replace("{player}", player.getName())
+                .replace("{amount}", String.valueOf(amount))
+                .replace("{earnings}", String.format("%.2f", earnings));
+    }
+
+    public void sendSellAll(Player player, int amount, double earnings) {
+        sendSellTitle(player, amount, earnings);
+        sendSellActionbar(player, amount, earnings);
+    }
+
+    public void sendSellTitle(Player player, int amount, double earnings) {
+        String path = "config.command.sell.messages.title";
+        if (!ShopMaster.getInstance().getConf().getBoolean(path + ".enabled", false)) return;
+
+        String title = ShopMaster.getInstance().getConf().getString(path + ".title");
+        String subtitle = ShopMaster.getInstance().getConf().getString(path + ".subtitle");
+        int fadeIn = ShopMaster.getInstance().getConf().getInt(path + ".fade-in", 10);
+        int stay = ShopMaster.getInstance().getConf().getInt(path + ".stay", 40);
+        int fadeOut = ShopMaster.getInstance().getConf().getInt(path + ".fade-out", 10);
+
+        player.sendTitle(
+                replacePlaceholders(title, player, amount, earnings),
+                replacePlaceholders(subtitle, player, amount, earnings),
+                fadeIn, stay, fadeOut
+        );
+    }
+
+    public void sendSellActionbar(Player player, int amount, double earnings) {
+        String path = "config.command.sell.messages.actionbar";
+        if (!ShopMaster.getInstance().getConf().getBoolean(path + ".enabled", false)) return;
+
+        String message = ShopMaster.getInstance().getConf().getString(path + ".message");
+        if (message == null || message.isEmpty()) return;
+
+        Utils.sendActionbar(player, replacePlaceholders(message, player, amount, earnings));
+    }
+
+
+
     public void sellLog(String player, TypeService typeService, int amount, String item, String money, String ShopName) {
         boolean enabled = ShopMaster.getInstance().getConf().getBoolean("config.command.sell.messages.log.enabled", true);
         if (enabled) {

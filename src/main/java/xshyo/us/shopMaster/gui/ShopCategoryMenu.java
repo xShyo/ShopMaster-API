@@ -33,6 +33,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ShopCategoryMenu {
+    /**
+     * Registro del log erroneo al comprar muchos stacks
+     * reiniciar la cantidad configurada cada vez que se realize una venta desde el menu
+     *
+     * */
     private final ShopMaster plugin = ShopMaster.getInstance();
 
     private final Player viewer;

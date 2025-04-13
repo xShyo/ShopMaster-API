@@ -172,6 +172,7 @@ public class SellCommand extends AbstractCommand {
                 message = Utils.translate(message);
                 player.sendMessage(message);
                 player.getInventory().setItemInMainHand(null);
+                PluginUtils.sendSellAll(player, itemInHand.getAmount(), result.price());
                 PluginUtils.sellLog(player.getName(), TypeService.SELL, itemInHand.getAmount(), PluginUtils.formatItemName(itemInHand.getType()), "" + result.price(), result.shopItem().getShopName());
 
                 break;

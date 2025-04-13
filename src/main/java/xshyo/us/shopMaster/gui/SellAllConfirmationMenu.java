@@ -233,8 +233,7 @@ public class SellAllConfirmationMenu {
         ).forEach((slot, controls) -> {
             if (controls.getButtonItem(viewer).getType() != Material.AIR) {
                 sellAllMenu.updateItem(slot, new GuiItem(controls.getButtonItem(viewer),
-                        event ->
-                        {
+                        event -> {
                             new ConfirmControls(MENU_PATH + ".items.confirm", quantity, item, sellService, TypeService.SELL).clicked(viewer, event.getSlot(), event.getClick(), event.getHotbarButton());
                             updateItemsWithQuantity();
                         }

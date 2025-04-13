@@ -151,6 +151,9 @@ public record SellAllResult(
             // Enviar mensaje con componentes de MiniMessage
             Component component = miniMessage.deserialize(miniMessageText);
             ShopMaster.getInstance().getAdventure().player(player).sendMessage(component);
+
+            PluginUtils.sendSellAll(player, totalItemsSold, totalEarnings);
+
         } else {
             // Si no se muestra detallado, enviar solo el mensaje básico
             Component component = miniMessage.deserialize(message.replace("{summary}", ""));

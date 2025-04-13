@@ -154,7 +154,7 @@ public class StackSelectorMenu {
                         PluginUtils.executeActions(item.getBuyCommands(), viewer, item, finalTotalItems);
                     }
                     PluginUtils.sellLog(viewer.getName(), TypeService.BUY, finalTotalItems,
-                            PluginUtils.formatItemName(item.createItemStack().getType()), "" + item.getBuyPrice(), item.getShopName());
+                            PluginUtils.formatItemName(item.createItemStack().getType()), "" + result.price(), item.getShopName());
 
                 }
             }));

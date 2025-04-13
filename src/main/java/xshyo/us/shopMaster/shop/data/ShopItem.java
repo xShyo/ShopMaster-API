@@ -36,8 +36,8 @@ public class ShopItem {
     private final List<Integer> slots;
     private final int page;
     private final String economy;
-    private final int buyPrice;
-    private final int sellPrice;
+    private final double buyPrice;
+    private final double sellPrice;
     private String displayName;
     private List<String> lore;
     private final Map<Enchantment, Integer> enchantments;
@@ -73,7 +73,7 @@ public class ShopItem {
     /**
      * Constructor para un único slot
      */
-    public ShopItem(String shopName, String material, int amount, int slot, int page, String economy, int buyPrice, int sellPrice) {
+    public ShopItem(String shopName, String material, int amount, int slot, int page, String economy, double buyPrice, double sellPrice) {
         this.shopName = shopName;
 
         this.material = material;
@@ -109,7 +109,7 @@ public class ShopItem {
     /**
      * Constructor para múltiples slots específicos
      */
-    public ShopItem(String shopName, String material, int amount, List<Integer> slots, int page, String economy, int buyPrice, int sellPrice) {
+    public ShopItem(String shopName, String material, int amount, List<Integer> slots, int page, String economy, double buyPrice, double sellPrice) {
         this.shopName = shopName;
         this.material = material;
         this.amount = amount;
@@ -143,7 +143,7 @@ public class ShopItem {
     /**
      * Constructor para un rango de slots
      */
-    public ShopItem(String shopName, String material, int amount, int startSlot, int endSlot, int page, String economy, int buyPrice, int sellPrice) {
+    public ShopItem(String shopName, String material, int amount, int startSlot, int endSlot, int page, String economy, double buyPrice, double sellPrice) {
         this.shopName = shopName;
         this.material = material;
         this.amount = amount;

@@ -46,6 +46,7 @@ public class SellMenu {
     private GuiAction<InventoryCloseEvent> createCloseHandler() {
         return event -> {
             if (!(event.getPlayer() instanceof Player player)) return;
+            int totalRows = gui.getRows();
 
             // Process all items in the first 5 rows (excluding control row)
             Map<Material, Integer> itemCounts = new HashMap<>();
@@ -58,7 +59,7 @@ public class SellMenu {
             List<ItemStack> skippedItems = new ArrayList<>(); // Add this for skipped items
             Map<Material, Double> earningsByMaterial = new HashMap<>();
 
-            for (int row = 0; row < 5; row++) {
+            for (int row = 0; row < totalRows; row++) {
                 for (int col = 0; col < 9; col++) {
                     int slot = row * 9 + col;
                     ItemStack item = gui.getInventory().getItem(slot);
