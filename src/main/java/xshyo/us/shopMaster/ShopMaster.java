@@ -8,11 +8,11 @@ import dev.dejvokep.boostedyaml.settings.loader.LoaderSettings;
 import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
 import lombok.Getter;
 import net.milkbowl.vault.economy.Economy;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
-import xshyo.us.shopMaster.api.ShopMasterAPI;
 import xshyo.us.shopMaster.commands.SellCommand;
 import xshyo.us.shopMaster.services.PurchaseService;
 import xshyo.us.shopMaster.services.SellService;
@@ -44,7 +44,6 @@ public final class ShopMaster extends TheAPI {
     private SellService sellService;
     private PurchaseService purchaseService;
     private ItemComparator itemComparator;
-    private ShopMasterAPI shopMasterAPI;
 
     private final HashMap<CurrencyType, CurrencyManager> currencyMap;
     private Economy economy;
@@ -100,8 +99,9 @@ public final class ShopMaster extends TheAPI {
 
         CurrencyFormatter.initialize();
 
+        new Metrics(this, 25460);
+
         new SellCommand(this, sellService).register(); // Registrar el comando
-        this.shopMasterAPI = new ShopMasterAPI();
 
         logPluginEnabled(startTime);
 
@@ -220,9 +220,6 @@ public final class ShopMaster extends TheAPI {
     }
 
 
-
-
-
     @Override
     public void setupFiles() {
         getLogger().log(Level.INFO, "Registering files...");
@@ -288,7 +285,6 @@ public final class ShopMaster extends TheAPI {
     public void setupActions() {
 
     }
-
 
 
 }

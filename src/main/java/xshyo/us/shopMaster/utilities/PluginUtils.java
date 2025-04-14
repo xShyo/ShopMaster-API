@@ -69,9 +69,9 @@ public class PluginUtils {
 
 
     public void sellLog(String player, TypeService typeService, int amount, String item, String money, String ShopName) {
-        boolean enabled = ShopMaster.getInstance().getConf().getBoolean("config.command.sell.messages.log.enabled", true);
+        boolean enabled = ShopMaster.getInstance().getConf().getBoolean("config.log.enabled", true);
         if (enabled) {
-            String message = ShopMaster.getInstance().getConf().getString("config.command.sell.messages.log.message");
+            String message = ShopMaster.getInstance().getConf().getString("config.log.message");
             message = message.replace("{player}", player);
             message = message.replace("{action}", typeService.toString());
             message = message.replace("{amount}", "" + amount);

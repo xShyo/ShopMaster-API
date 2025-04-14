@@ -86,6 +86,108 @@
                 </configuration>
             </plugin>
 
+
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <id>obfuscate</id>
+                        <configuration>
+                            <tasks>
+                                <property name="runtime_classpath" refid="maven.runtime.classpath"/>
+                                <taskdef name="yguard" classname="com.yworks.yguard.YGuardTask" classpath="${runtime_classpath}"/>
+                                <yguard>
+                                    <inoutpair in="${project.build.directory}/${project.build.finalName}.jar"
+                                               out="${project.build.directory}/${project.build.finalName}.jar"/>
+                                    <rename logfile="${project.build.directory}/yguard.log.xml"
+                                            replaceClassNameStrings="true">
+                                        <property name="obfuscation-prefix" value="xshyo.us.shopMaster"/>
+
+                                        <keep>
+                                            <class classes="private" methods="private" fields="private">
+                                                <patternset>
+                                                    <include name="org.**"/>
+                                                </patternset>
+                                            </class>
+                                            <class classes="private" methods="private" fields="private">
+                                                <patternset>
+                                                    <include name="net.**"/>
+                                                </patternset>
+                                            </class>
+                                            <class classes="private" methods="private" fields="private">
+                                                <patternset>
+                                                    <include name="xshyo.us.shopMaster.ShopMaster"/>
+                                                </patternset>
+                                            </class>
+                                            <class classes="private" methods="private" fields="private">
+                                                <patternset>
+                                                    <include name="xshyo.us.shopMaster.api.**"/>
+                                                </patternset>
+                                            </class>
+                                            <class classes="private" methods="private" fields="private">
+                                                <patternset>
+                                                    <include name="xshyo.us.shopMaster.Metrics"/>
+                                                </patternset>
+                                            </class>
+                                            <class classes="private" methods="private" fields="private">
+                                                <patternset>
+                                                    <include name="xshyo.us.shopMaster.shop.**"/>
+                                                </patternset>
+                                            </class>
+                                            <class classes="private" methods="private" fields="private">
+                                                <patternset>
+                                                    <include name="xshyo.us.shopMaster.managers.ShopManager"/>
+                                                </patternset>
+                                            </class>
+                                            <class classes="private" methods="private" fields="private">
+                                                <patternset>
+                                                    <include name="xshyo.us.shopMaster.placeholders.**"/>
+                                                </patternset>
+                                            </class>
+                                            <class classes="private" methods="private" fields="private">
+                                                <patternset>
+                                                    <include name="xshyo.us.shopMaster.services.records.**"/>
+                                                </patternset>
+                                            </class>
+                                            <class classes="private" methods="private" fields="private">
+                                                <patternset>
+                                                    <include name="xshyo.us.shopMaster.superclass.**"/>
+                                                </patternset>
+                                            </class>
+                                            <class classes="private" methods="private" fields="private">
+                                                <patternset>
+                                                    <include name="xshyo.us.shopMaster.utilities.menu.Controls"/>
+                                                </patternset>
+                                            </class>
+                                            <class classes="private" methods="private" fields="private">
+                                                <patternset>
+                                                    <include name="xshyo.us.shopMaster.utilities.NMSUtils"/>
+                                                </patternset>
+                                            </class>
+                                            <class classes="private" methods="private" fields="private">
+                                                <patternset>
+                                                    <include name="xshyo.us.shopMaster.enums.**"/>
+                                                </patternset>
+                                            </class>
+                                        </keep>
+                                    </rename>
+                                    <externalclasses>
+                                        <pathelement path="${mvn.classpath}"/>
+                                    </externalclasses>
+                                </yguard>
+                            </tasks>
+                        </configuration>
+                    </execution>
+
+                </executions>
+            </plugin>
+
+
         </plugins>
         <resources>
             <resource>

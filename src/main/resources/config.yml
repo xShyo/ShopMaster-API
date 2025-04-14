@@ -1,4 +1,10 @@
 config:
+  # Transaction logging in server console
+  log:
+    enabled: true
+    # Variables: {player}, {action} (BUY/SELL), {amount}, {item}, {money}, {shopName}
+    message: "{player} {action} {amount} x {item} for {money} from {shopName} shop"
+
   item-sell:
     compare-meta: true         # <- Compare display name, lore and customModelData
     compare-damage: false      # <- Compare item durability (damage)
@@ -59,7 +65,7 @@ config:
       need-permissions: true             # Is a specific permission required to use this command?
       permission: shopmaster.open        # Permission required if need-permissions is true
       # Command settings
-      name: sshop                         # Command name
+      name: shop                         # Command name
       aliases: []                        # Alternate commands (empty list = no aliases)
 
       # Restrictions for the shop command
@@ -81,15 +87,10 @@ config:
       need-permissions: true             # Is permission required to use this command?
       permission: shopmaster.sell        # Permission required if need-permissions is true
       # Command settings
-      name: ssell                         # Command name
+      name: sell                         # Command name
       aliases: []                        # Alternate commands (empty list = no aliases)
 
       messages:
-        # Transaction logging in server console
-        log:
-          enabled: true
-          # Variables: {player}, {action} (bought/sold), {amount}, {item}, {money}, {shopName}
-          message: "{player} {action} {amount} x {item} for {money} from {shopName} shop"
 
         title:
           enabled: true

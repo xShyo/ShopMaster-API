@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import xshyo.us.shopMaster.ShopMaster;
 import xshyo.us.shopMaster.enums.TypeService;
 import xshyo.us.shopMaster.services.SellService;
+import xshyo.us.shopMaster.services.records.SellAllResult;
 import xshyo.us.shopMaster.shop.Shop;
 import xshyo.us.shopMaster.shop.data.ShopItem;
 import xshyo.us.shopMaster.utilities.PluginUtils;
@@ -261,7 +262,16 @@ public class SellAllConfirmationMenu {
         ).forEach((slot, controls) -> {
             if (controls.getButtonItem(viewer).getType() != Material.AIR) {
                 sellAllMenu.updateItem(slot, new GuiItem(controls.getButtonItem(viewer),
-                        event -> sellService.sellAllItemOfType(viewer, itemdisplay)));
+                        event -> {
+
+                            SellAllResult result =  sellService.sellAllItemOfType(viewer, itemdisplay);
+                            result.generateSummaryMessages(viewer);
+                            viewer.closeInventory();
+
+
+                        }
+
+                ));
                 reservedSlots.add(slot);
             }
         });

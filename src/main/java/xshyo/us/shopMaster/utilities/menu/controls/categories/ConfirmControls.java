@@ -7,7 +7,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import xshyo.us.shopMaster.ShopMaster;
-import xshyo.us.shopMaster.api.ShopMasterAPI;
 import xshyo.us.shopMaster.enums.TypeService;
 import xshyo.us.shopMaster.services.SellService;
 import xshyo.us.shopMaster.services.records.PurchaseResult;
@@ -89,6 +88,7 @@ public class ConfirmControls extends Controls {
                         PluginUtils.formatItemName(shopItem.createItemStack().getType()), "" + result.price(), shopItem.getShopName());
 
             }
+            player.closeInventory();
 
         } else {
 
@@ -121,6 +121,7 @@ public class ConfirmControls extends Controls {
 
             }
 
+            player.closeInventory();
 
         }
 
