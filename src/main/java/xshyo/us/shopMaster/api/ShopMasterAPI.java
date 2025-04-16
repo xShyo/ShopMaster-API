@@ -1,7 +1,5 @@
 package xshyo.us.shopMaster.api;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -16,11 +14,10 @@ import xshyo.us.shopMaster.shop.data.ShopItem;
  * This API allows developers to interact with the shop system to check if items are sellable
  * and retrieve shop item information.
  */
-@Getter
-@Setter
+
 public class ShopMasterAPI {
 
-
+    private static ShopMaster shopMaster;
     /**
      * Calculates the sell price for a stack of items.
      *
@@ -174,7 +171,7 @@ public class ShopMasterAPI {
      * @return true if the player can sell this item, false otherwise
      */
     public static boolean isSellablePlayer(Player player, ItemStack item) {
-        return ShopMaster.getInstance().getSellService().isSellable(player, item);
+        return shopMaster.getSellService().isSellable(player, item);
     }
 
     /**
@@ -193,7 +190,7 @@ public class ShopMasterAPI {
             return null;
         }
 
-        SellService.SellableItemInfo info = ShopMaster.getInstance().getSellService().getSellableShopItem(player, itemStack);
+        SellService.SellableItemInfo info = shopMaster.getSellService().getSellableShopItem(player, itemStack);
         return info != null ? info.shopItem() : null;
     }
 
@@ -206,7 +203,7 @@ public class ShopMasterAPI {
      * @return true if the item exists in any shop, false otherwise
      */
     public static boolean isSellable(ItemStack item) {
-        return ShopMaster.getInstance().getSellService().isSellable(item);
+        return shopMaster.getSellService().isSellable(item);
     }
 
     /**
@@ -222,7 +219,7 @@ public class ShopMasterAPI {
             return null;
         }
 
-        SellService.SellableItemInfo info = ShopMaster.getInstance().getSellService().getSellableShopItem(itemStack);
+        SellService.SellableItemInfo info = shopMaster.getSellService().getSellableShopItem(itemStack);
         return info != null ? info.shopItem() : null;
     }
 
@@ -235,7 +232,7 @@ public class ShopMasterAPI {
      * @return SellableItemInfo object or null if the item cannot be sold
      */
     public static SellService.SellableItemInfo getSellableInfo(Player player, ItemStack item) {
-        return ShopMaster.getInstance().getSellService().getSellableShopItem(player, item);
+        return shopMaster.getSellService().getSellableShopItem(player, item);
     }
 
 
@@ -249,7 +246,7 @@ public class ShopMasterAPI {
      * @return SellResult containing status and price details
      */
     public static SellResult sellItem(Player player, ItemStack item, int amount, boolean searchEntireInventory) {
-        return ShopMaster.getInstance().getSellService().sellItem(player, item, amount, searchEntireInventory);
+        return shopMaster.getSellService().sellItem(player, item, amount, searchEntireInventory);
     }
 
     /**
@@ -261,7 +258,7 @@ public class ShopMasterAPI {
      * @return SellResult containing status and price details
      */
     public static SellResult sellGuiItem(Player player, ItemStack item, int amount) {
-        return ShopMaster.getInstance().getSellService().sellGuiItem(player, item, amount);
+        return shopMaster.getSellService().sellGuiItem(player, item, amount);
     }
 
     /**
@@ -271,7 +268,7 @@ public class ShopMasterAPI {
      * @return SellAllResult containing status and detailed sale information
      */
     public static SellAllResult sellAllItems(Player player) {
-        return ShopMaster.getInstance().getSellService().sellAllItems(player);
+        return shopMaster.getSellService().sellAllItems(player);
     }
 
 
@@ -283,7 +280,7 @@ public class ShopMasterAPI {
      * @return SellAllResult containing status and detailed sale information
      */
     public static SellAllResult sellAllItemOfType(Player player, ItemStack referenceItem) {
-        return ShopMaster.getInstance().getSellService().sellAllItemOfType(player, referenceItem);
+        return shopMaster.getSellService().sellAllItemOfType(player, referenceItem);
     }
 
 
@@ -297,25 +294,6 @@ public class ShopMasterAPI {
         result.generateSummaryMessages(player);
     }
 
-    /**
-     * Check if a world is blacklisted for selling
-     *
-     * @param worldName The name of the world to check
-     * @return true if the world is blacklisted, false otherwise
-     */
-    public static boolean isWorldBlacklistedForSelling(String worldName) {
-        return ShopMaster.getInstance().getConf().getStringList("config.command.sell.black-list.world").contains(worldName);
-    }
-
-    /**
-     * Check if a gamemode is blacklisted for selling
-     *
-     * @param gameMode The gamemode to check
-     * @return true if the gamemode is blacklisted, false otherwise
-     */
-    public static boolean isGameModeBlacklistedForSelling(String gameMode) {
-        return ShopMaster.getInstance().getConf().getStringList("config.command.sell.black-list.gameModes").contains(gameMode);
-    }
 
 
 }

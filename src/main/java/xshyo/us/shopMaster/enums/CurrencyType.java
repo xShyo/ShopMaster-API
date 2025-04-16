@@ -1,10 +1,6 @@
 package xshyo.us.shopMaster.enums;
 
-import lombok.Getter;
 
-import java.util.Locale;
-
-@Getter
 public enum CurrencyType {
     VAULT("money"),
     LEVEL("levels"),
@@ -21,10 +17,6 @@ public enum CurrencyType {
     }
 
     public static CurrencyType getType(String paramString, CurrencyType paramCostType) {
-        try {
-            return valueOf(paramString.toUpperCase(Locale.ROOT));
-        } catch (Throwable throwable) {
-            return paramCostType;
-        }
+        return null;
     }
 }

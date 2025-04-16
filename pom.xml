@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>xshyo.us</groupId>
-    <artifactId>ShopMaster</artifactId>
-    <version>1.0.0-STABLE</version>
+    <artifactId>ShopMaster-API</artifactId>
+    <version>1.0.0</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -21,61 +21,6 @@
     <build>
         <finalName>${project.artifactId}-${project.version}</finalName>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.4.1</version>
-                <configuration>
-                    <createDependencyReducedPom>false</createDependencyReducedPom>
-                    <shadedArtifactAttached>false</shadedArtifactAttached>
-                    <minimizeJar>true</minimizeJar>
-                    <filters>
-                        <filter>
-                            <artifact>*:*</artifact>
-                            <excludes>
-                                <exclude>META-INF/**</exclude>
-                                <exclude>**/ant_logo_large.gif</exclude> <!-- Excluir el archivo GIF -->
-                                <exclude>com/yworks/yguard/**</exclude> <!-- Excluir el paquete yguard -->
-                            </excludes>
-                        </filter>
-                    </filters>
-                </configuration>
-
-
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <relocations>
-                                <relocation>
-                                    <pattern>com.zaxxer.hikari</pattern>
-                                    <shadedPattern>xshyo.us.shopMaster.libs.hikaricp</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>dev.dejvokep.boostedyaml</pattern>
-                                    <shadedPattern>xshyo.us.shopMaster.libs.config</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>dev.triumphteam.gui</pattern>
-                                    <shadedPattern>xshyo.us.shopMaster.libs.guis</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>xshyo.us.theAPI</pattern>
-                                    <shadedPattern>xshyo.us.shopMaster.libs.theAPI</shadedPattern> <!-- Replace package here here -->
-                                </relocation>
-                                <relocation>
-                                    <pattern>org.bstats</pattern>
-                                    <shadedPattern>xshyo.us.shopMaster.libs.bstats</shadedPattern>
-                                </relocation>
-                            </relocations>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -84,107 +29,6 @@
                     <source>16</source>
                     <target>16</target>
                 </configuration>
-            </plugin>
-
-
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.8</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <id>obfuscate</id>
-                        <configuration>
-                            <tasks>
-                                <property name="runtime_classpath" refid="maven.runtime.classpath"/>
-                                <taskdef name="yguard" classname="com.yworks.yguard.YGuardTask" classpath="${runtime_classpath}"/>
-                                <yguard>
-                                    <inoutpair in="${project.build.directory}/${project.build.finalName}.jar"
-                                               out="${project.build.directory}/${project.build.finalName}.jar"/>
-                                    <rename logfile="${project.build.directory}/yguard.log.xml"
-                                            replaceClassNameStrings="true">
-                                        <property name="obfuscation-prefix" value="xshyo.us.shopMaster"/>
-
-                                        <keep>
-                                            <class classes="private" methods="private" fields="private">
-                                                <patternset>
-                                                    <include name="org.**"/>
-                                                </patternset>
-                                            </class>
-                                            <class classes="private" methods="private" fields="private">
-                                                <patternset>
-                                                    <include name="net.**"/>
-                                                </patternset>
-                                            </class>
-                                            <class classes="private" methods="private" fields="private">
-                                                <patternset>
-                                                    <include name="xshyo.us.shopMaster.ShopMaster"/>
-                                                </patternset>
-                                            </class>
-                                            <class classes="private" methods="private" fields="private">
-                                                <patternset>
-                                                    <include name="xshyo.us.shopMaster.api.**"/>
-                                                </patternset>
-                                            </class>
-                                            <class classes="private" methods="private" fields="private">
-                                                <patternset>
-                                                    <include name="xshyo.us.shopMaster.Metrics"/>
-                                                </patternset>
-                                            </class>
-                                            <class classes="private" methods="private" fields="private">
-                                                <patternset>
-                                                    <include name="xshyo.us.shopMaster.shop.**"/>
-                                                </patternset>
-                                            </class>
-                                            <class classes="private" methods="private" fields="private">
-                                                <patternset>
-                                                    <include name="xshyo.us.shopMaster.managers.ShopManager"/>
-                                                </patternset>
-                                            </class>
-                                            <class classes="private" methods="private" fields="private">
-                                                <patternset>
-                                                    <include name="xshyo.us.shopMaster.placeholders.**"/>
-                                                </patternset>
-                                            </class>
-                                            <class classes="private" methods="private" fields="private">
-                                                <patternset>
-                                                    <include name="xshyo.us.shopMaster.services.records.**"/>
-                                                </patternset>
-                                            </class>
-                                            <class classes="private" methods="private" fields="private">
-                                                <patternset>
-                                                    <include name="xshyo.us.shopMaster.superclass.**"/>
-                                                </patternset>
-                                            </class>
-                                            <class classes="private" methods="private" fields="private">
-                                                <patternset>
-                                                    <include name="xshyo.us.shopMaster.utilities.menu.Controls"/>
-                                                </patternset>
-                                            </class>
-                                            <class classes="private" methods="private" fields="private">
-                                                <patternset>
-                                                    <include name="xshyo.us.shopMaster.utilities.NMSUtils"/>
-                                                </patternset>
-                                            </class>
-                                            <class classes="private" methods="private" fields="private">
-                                                <patternset>
-                                                    <include name="xshyo.us.shopMaster.enums.**"/>
-                                                </patternset>
-                                            </class>
-                                        </keep>
-                                    </rename>
-                                    <externalclasses>
-                                        <pathelement path="${mvn.classpath}"/>
-                                    </externalclasses>
-                                </yguard>
-                            </tasks>
-                        </configuration>
-                    </execution>
-
-                </executions>
             </plugin>
 
 
@@ -202,143 +46,15 @@
             <id>spigotmc-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
-        <repository>
-            <id>sk89q-repo</id>
-            <url>https://maven.enginehub.org/repo/</url>
-        </repository>
-        <repository>
-            <id>codemc-repo</id>
-            <url>https://repo.codemc.io/repository/maven-public/</url>
-            <layout>default</layout>
-        </repository>
-        <repository>
-            <id>sonatype</id>
-            <url>https://oss.sonatype.org/content/groups/public/</url>
-        </repository>
-        <repository>
-            <id>placeholderapi</id>
-            <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
-        </repository>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-        <repository>
-            <id>central</id>
-            <url>https://repo.maven.apache.org/maven2</url>
-        </repository>
-        <repository>
-            <id>oraxen</id>
-            <name>Oraxen Repository</name>
-            <url>https://repo.oraxen.com/releases</url>
-        </repository>
-        <repository>
-            <id>rosewood-repo</id>
-            <url>https://repo.rosewooddev.io/repository/public/</url>
-        </repository>
+
 
     </repositories>
 
     <dependencies>
         <dependency>
-            <groupId>com.yworks</groupId>
-            <artifactId>yguard</artifactId>
-            <version>4.1.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.bstats</groupId>
-            <artifactId>bstats-bukkit</artifactId>
-            <version>3.0.2</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>xshyo.us</groupId>
-            <artifactId>TheAPI</artifactId>
-            <version>1.2</version>
-            <scope>compile</scope>
-
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/com.mojang/authlib -->
-        <dependency>
-            <groupId>dev.triumphteam</groupId>
-            <artifactId>triumph-gui</artifactId>
-            <version>3.1.10</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>net.kyori</groupId>
-                    <artifactId>adventure-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>net.kyori</groupId>
-                    <artifactId>adventure-platform-bukkit</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>net.kyori</groupId>
-                    <artifactId>adventure-nbt</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>net.kyori</groupId>
-                    <artifactId>adventure-text-serializer-legacy</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>net.kyori</groupId>
-                    <artifactId>adventure-text-serializer-gson</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>dev.dejvokep</groupId>
-            <artifactId>boosted-yaml</artifactId>
-            <version>1.3.6</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
             <version>1.20.1-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.26</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>me.clip</groupId>
-            <artifactId>placeholderapi</artifactId>
-            <version>2.11.1</version>
-            <scope>provided</scope>
-        </dependency>
-
-<!--        <dependency>-->
-<!--            <groupId>com.zaxxer</groupId>-->
-<!--            <artifactId>HikariCP</artifactId>-->
-<!--            <version>5.0.1</version>-->
-<!--            <scope>compile</scope>-->
-<!--        </dependency>-->
-
-
-        <dependency>
-            <groupId>me.mraxetv.beasttokens</groupId>
-            <artifactId>BeastTokens</artifactId>
-            <version>3.14.6</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/libs/BeastTokens-3.14.9.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>com.github.MilkBowl</groupId>
-            <artifactId>VaultAPI</artifactId>
-            <version>1.7</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.black_ixx</groupId>
-            <artifactId>playerpoints</artifactId>
-            <version>3.2.6</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
