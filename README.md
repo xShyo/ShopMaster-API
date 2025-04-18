@@ -29,7 +29,7 @@ Public API for the [ShopMaster](https://builtbybit.com/resources/shopmaster-adva
 </dependency>
 ```
 
-> 💡 You can also use **Gradle**, **Kotlin DSL**, **SBT**, or **Leiningen** – check [JitPack](https://jitpack.io/#xShyo/ShopMaster-API) for more formats.
+> 💡 You can also use **Gradle** – check [JitPack](https://jitpack.io/#xShyo/ShopMaster-API) for more formats.
 
 ---
 
@@ -83,17 +83,3 @@ ShopMasterAPI.sendSaleSummary(player, result);
 - Compatible with Spigot / Paper / Purpur.
 - Java 17 or higher recommended.
 
----
-
-## 💬 Support
-
-For questions, suggestions, or bug reports:
-
-- [Open an Issue](https://github.com/xShyo/ShopMaster/issues)
-- Contact directly via GitHub or Discord if publicly available
-
----
-
-## 📄 License
-
-This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
