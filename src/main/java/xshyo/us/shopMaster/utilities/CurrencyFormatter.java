@@ -1,148 +1,126 @@
 package xshyo.us.shopMaster.utilities;
 
-import java.text.DecimalFormatSymbols;
 import java.util.Map;
 
-/**
- * Utilidad combinada para manejar formateo de números y monedas en el plugin
- */
 public class CurrencyFormatter {
 
-    /**
-     * Inicializa el formateador
-     */
     public static void initialize() {
 
     }
 
-    /**
-     * Recarga toda la configuración
-     */
     public static void reload() {
 
     }
 
-
-    /**
-     * Obtiene el símbolo para una moneda específica
-     *
-     * @param currency Identificador de la moneda (ej: "VAULT", "TOKENS", etc.)
-     * @return Símbolo de la moneda
-     */
     public static String getCurrencySymbol(String currency) {
         return null;
     }
 
-
-
-
     /**
-     * Formatea un valor monetario con su símbolo correspondiente
+     * Formats a monetary value with its corresponding symbol
      *
-     * @param amount Cantidad a formatear
-     * @param currency Identificador de la moneda
-     * @param decimals Número de decimales a mostrar
-     * @return Cadena formateada con el valor y símbolo
+     * @param amount   Amount to format
+     * @param currency Currency identifier
+     * @param decimals Number of decimals to display
+     * @return Formatted string with the value and symbol
      */
     public static String formatCurrency(double amount, String currency, int decimals) {
         return null;
     }
 
     /**
-     * Formatea un valor monetario con su símbolo correspondiente usando 2 decimales
+     * Formats a monetary value with its corresponding symbol using 2 decimals
      *
-     * @param amount Cantidad a formatear
-     * @param currency Identificador de la moneda
-     * @return Cadena formateada con el valor y símbolo
+     * @param amount   Amount to format
+     * @param currency Currency identifier
+     * @return Formatted string with the value and symbol
      */
     public static String formatCurrency(double amount, String currency) {
         return null;
     }
 
     /**
-     * Formatea una lista de monedas y cantidades para mostrar
+     * Formats a list of currencies and amounts for display
      *
-     * @param currencyAmounts Mapa de monedas y cantidades
-     * @return Cadena formateada con las monedas y cantidades
+     * @param currencyAmounts Map of currencies and amounts
+     * @return Formatted string with the currencies and amounts
      */
     public static String formatCurrencyList(Map<String, Double> currencyAmounts) {
         return null;
     }
 
     /**
-     * Formatea un número según la configuración
-     * @param number El número a formatear
-     * @return El número formateado como String
+     * Formats a number according to the configuration
+     * @param number The number to format
+     * @return The formatted number as a String
      */
     public static String formatNumber(double number) {
         return null;
     }
 
     /**
-     * Formatea un número con un número específico de decimales
-     * @param number El número a formatear
-     * @param decimals Número de decimales a usar
-     * @return El número formateado como String
+     * Formats a number with a specific number of decimals
+     * @param number   The number to format
+     * @param decimals Number of decimals to use
+     * @return The formatted number as a String
      */
     public static String formatNumber(double number, int decimals) {
         return null;
     }
 
     /**
-     * Verifica si un número es entero (sin parte decimal)
+     * Checks if a number is an integer (has no decimal part)
      */
-    private static boolean esNumeroEntero(double number) {
+    private static boolean isInteger(double number) {
         return false;
     }
 
     /**
-     * Determina el índice del sufijo apropiado para un número dado
-     * @param number El número para el que se necesita determinar el sufijo
-     * @return El índice del sufijo en el array de sufijos
+     * Determines the suffix index for a given number
+     * @param number The number for which to determine the suffix
+     * @return The index of the suffix in the suffix array
      */
-    private static int determinarIndiceSufijo(double number) {
+    private static int determineSuffixIndex(double number) {
         return 0;
     }
 
     /**
-     * Formatea un número en escala corta usando los suffixes configurados
-     * @param number El número a formatear
-     * @return El número formateado en escala corta (ej: "1.5 M")
+     * Formats a number in short scale using configured suffixes
+     * @param number The number to format
+     * @return The number formatted in short scale (e.g., "1.5 M")
      */
     private static String formatShortScale(double number) {
         return null;
     }
 
     /**
-     * Formatea un número en escala corta usando los suffixes configurados
-     * @param number El número a formatear
-     * @param decimals Número de decimales a usar
-     * @return El número formateado en escala corta (ej: "1.5 M")
+     * Formats a number in short scale using configured suffixes
+     * @param number   The number to format
+     * @param decimals Number of decimals to use
+     * @return The number formatted in short scale (e.g., "1.5 M")
      */
     private static String formatShortScale(double number, int decimals) {
         return null;
     }
 
     /**
-     * Limpia la caché de símbolos
+     * Clears the symbol cache
      */
     public static void clearCache() {
 
     }
 
     /**
-     * Actualiza la caché con valores de la configuración actual
+     * Updates the cache with values from the current configuration
      */
     public static void refreshCache() {
 
-
     }
+
     /**
-     * Recarga la configuración del formateador de números
+     * Reloads the number formatter configuration
      */
     private static void reloadNumberFormat() {
 
     }
-
-
 }

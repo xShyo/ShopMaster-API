@@ -12,9 +12,6 @@ public class ShopManager {
     public ShopManager() {
     }
 
-    /**
-     * Loads all shops from configuration files
-     */
     public void load() {
     }
 

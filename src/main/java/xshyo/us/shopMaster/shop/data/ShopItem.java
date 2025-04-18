@@ -19,31 +19,21 @@ import java.util.Set;
 
 public class ShopItem {
 
-    /**
-     * Constructor para un único slot
-     */
+
     public ShopItem(String shopName, String material, int amount, int slot, int page, String economy, double buyPrice, double sellPrice) {
 
     }
 
-    /**
-     * Constructor para múltiples slots específicos
-     */
+
     public ShopItem(String shopName, String material, int amount, List<Integer> slots, int page, String economy, double buyPrice, double sellPrice) {
 
     }
 
-    /**
-     * Constructor para un rango de slots
-     */
     public ShopItem(String shopName, String material, int amount, int startSlot, int endSlot, int page, String economy, double buyPrice, double sellPrice) {
 
     }
 
-    /**
-     * Método para crear un ItemStack con todos los metadatos configurados
-     * utilizando la clase ItemBuilder mejorada
-     */
+
     public ItemStack createItemStack() {
         return null;
     }

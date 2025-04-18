@@ -8,7 +8,6 @@ import xshyo.us.shopMaster.utilities.menu.Controls;
 public class ConfirmControls extends Controls {
 
 
-
     @Override
     public ItemStack getButtonItem(Player player) {
         return null;

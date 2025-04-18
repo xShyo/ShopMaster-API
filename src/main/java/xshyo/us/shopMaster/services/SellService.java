@@ -18,22 +18,15 @@ public class SellService {
     public SellService(ShopMaster plugin, ShopManager shopManager) {
     }
 
-    /**
-     * Clave para el caché de resultados
-     */
+
     private static class CacheKey {
 
     }
 
-    /**
-     * Clase auxiliar para almacenar items personalizados con el ItemStack pre-creado
-     */
     private record CustomItemEntry(Shop shop, ShopItem shopItem) {
     }
 
-    /**
-     * Clase para información de ítem vendible
-     */
+
     public record SellableItemInfo(Shop shop, ShopItem shopItem, ItemStack itemStack) {
     }
 
@@ -43,13 +36,6 @@ public class SellService {
     }
 
 
-    /**
-     * Verifica rápidamente si un ItemStack es vendible
-     *
-     * @param player El jugador que intenta vender el ítem
-     * @param item   El ItemStack a verificar
-     * @return true si el ítem puede ser vendido, false en caso contrario
-     */
     public boolean isSellable(Player player, ItemStack item) {
         return false;
     }
@@ -60,17 +46,10 @@ public class SellService {
     }
 
 
-    /**
-     * Optimized item indexing with better parallel processing
-     */
     public void buildSellableItemsIndex() {
 
     }
 
-
-    /**
-     * Busca en items personalizados usando un algoritmo de partición
-     */
     private SellableItemInfo findCustomItem(ItemStack item) {
         return null;
     }
@@ -80,56 +59,41 @@ public class SellService {
         return null;
     }
 
-    /**
-     * Enhanced sellable item search with improved caching and performance
-     */
+
     public SellableItemInfo getSellableShopItem(Player player, ItemStack item) {
         return null;
     }
 
 
-    // En SellService, añade un nuevo método
     public SellResult sellGuiItem(Player player, ItemStack item, int amount) {
         return null;
     }
 
 
-    /**
-     * Vende un ítem y retorna el resultado
-     */
     public SellResult sellItem(Player player, ItemStack item, int amount, boolean searchEntireInventory) {
         return null;
     }
 
 
-    // Método para contar ítems en todo el inventario
     private int countItemsInEntireInventory(PlayerInventory inventory, ItemStack referenceItem) {
         return 0;
     }
 
-    // Método para remover ítems
     private void removeItems(PlayerInventory inventory, ItemStack referenceItem, int amountToRemove, boolean searchEntireInventory) {
 
     }
 
 
-    /**
-     * Comprehensive sell method with enhanced error handling and logging
-     */
+
     public SellAllResult sellAllItems(Player player) {
         return null;
     }
 
-    /**
-     * Vende todos los ítems de un tipo específico
-     */
+
     public SellAllResult sellAllItemOfType(Player player, ItemStack referenceItem) {
         return null;
     }
 
-    /**
-     * Inner class for advanced sell processing
-     */
     private class SellAllProcessor {
 
         SellAllProcessor(Player player) {
@@ -171,23 +135,17 @@ public class SellService {
         return null;
     }
 
-    /**
-     * Verifica si un mundo está en la lista negra
-     */
+
     private boolean isWorldBlacklisted(String worldName) {
         return false;
     }
 
-    /**
-     * Verifica si un modo de juego está en la lista negra
-     */
+
     private boolean isGameModeBlacklisted(String gameMode) {
       return false;
     }
 
-    /**
-     * Recarga el índice de ítems vendibles
-     */
+
     public void reload() {
         buildSellableItemsIndex();
     }

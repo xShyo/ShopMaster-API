@@ -9,9 +9,7 @@ import xshyo.us.shopMaster.shop.data.ShopItem;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Resultado detallado de la operación de venta masiva
- */
+
 public record SellAllResult(
         SellStatus status,
         double totalEarnings,
@@ -24,18 +22,10 @@ public record SellAllResult(
         int totalItemsSold) {
 
 
-    /**
-     * Genera un mensaje de resumen de venta formateado
-     */
+
     public void generateSummaryMessages(Player player) {
     }
 
-    /**
-     * Crea un mapa que relaciona cada material con su tipo de economía
-     */
-    private Map<Material, String> createItemCurrencyMap() {
-        return null;
-    }
 
 
 }
